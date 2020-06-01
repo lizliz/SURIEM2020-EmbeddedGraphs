@@ -175,7 +175,7 @@ def listify_nodes(G):
 def add_node(n_, G, M):
     #The actual node
     n = G.nodes[n_] 
-    f = function_value(n) #The node's value
+    f = f_(n) #The node's value
     
     children = list(G[n_]) #Note: This contains the parent as well.
     cr=n_ #tentative child rep
