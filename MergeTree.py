@@ -4,6 +4,7 @@
 import networkx as nx
 import matplotlib.pyplot as plt
 import random
+import numpy as np
 
 
 #####TREE DRAWING!!!#####
@@ -285,9 +286,7 @@ def merge_tree(G):
     return M
 ##############################################################
 
-
 ############INTERLEAVING MATRICES###################
-
 #Adds all the elements in L2 to the end of L1, preserving order
 def get_leaves(M) :
     n = list(M.nodes)
@@ -405,7 +404,7 @@ def interleaving_distances(M):
         for j in range(i, len(n)):
             calc_set_distance(ancestry_dict,i,j,M,distances)
     
-    return (distances, n)
+    return (np.matrix(distances), n)   
     
 ####################################################
     
@@ -468,7 +467,7 @@ def shift_f(T, n, pos, amount):
 def draw_pretty_f(T):
     #Sorted by function value, reversed
     nodes = listify_nodes(T)
-    nodes.sort(reverse=True, key=f_)
+    nodes.sort(key=f_)
     
     pos_dict = {}
     
@@ -488,14 +487,9 @@ def draw_pretty_f(T):
     for i in range(0, len(nodes)):
         n=nodes[i]
         
-        if(last_f != f_(n)):
-            last_f = f_(n)
-            count = 0
-        
         if(not is_leaf_f(T, n['name'])):
             pos_dict[n['name']] = (get_x_pos_f(T, n['name'], pos_dict),f_(n))
     nx.draw(T, pos_dict, with_labels=True,node_color="yellow",node_size=1500)
-        
 ##############
 
 #####TESTING#######
@@ -503,19 +497,20 @@ G = nx.Graph()
 G.clear()
 G = nx.Graph()
 
-nodes = list( [1,3,5,4,2,7,8,9,10] )
-edges = [ (1,4),(2,4),(3,5),(4,5),(4,6),(5,7),(6,7),(6,8),(7,9),(9,10),(10,8),(8,2)]
+nodes = list( [1,2,3,4,5,6,7,8,9,10] )
+edges = [(1,2),(2,3),(3,4),(4,9),(9,10),(9,7),(5,7),(6,7),(8,9)]
 f_vals = {}
-f_vals[3]= {'value': 2}
-f_vals[1]= {'value': 1}
-f_vals[2]= {'value': 1}
-f_vals[7]= {'value': 4}
-f_vals[5]= {'value': 3}
-f_vals[4]= {'value': 2}
-f_vals[6]= {'value': 3}
-f_vals[8]= {'value': 2}
-f_vals[9]= {'value': 2}
-f_vals[10]= {'value': 1}
+f_vals[1 ]= {'value': 3}
+f_vals[2 ]= {'value': 2}
+f_vals[3 ]= {'value': 1}
+f_vals[4 ]= {'value': 2}
+f_vals[5 ]= {'value': 1}
+f_vals[6 ]= {'value': 1}
+f_vals[7 ]= {'value': 2}
+f_vals[8 ]= {'value': 2.5}
+f_vals[9 ]= {'value': 3}
+f_vals[10]= {'value': 4}
+
 
 G.add_nodes_from(nodes)
 G.add_edges_from(edges)
@@ -531,5 +526,6 @@ print(IL[1])
 print(IL[0])
 
 draw_pretty_f(M)
+
 plt.show()
 ####################
