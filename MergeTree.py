@@ -190,7 +190,6 @@ def add_node(n_, G, M):
             rel_cr = relative['c_rep']
             rel_cr = M.nodes[rel_cr]['p_rep']
             rel_cr = G.nodes[rel_cr]['c_rep']
-            print("rel_cr " + str(rel_cr))
             
             #Not already connected to child
             if(rel_cr != cr):
@@ -236,10 +235,15 @@ def add_node(n_, G, M):
         for i in range(0, len(to_add)):
             rep_ = M.nodes[to_add[i][1]]['p_rep'] #The "representative parent of the child" before addition
             edges.append( (p, rep_) ) #Add the edge
+             
+            #Set the most direct parent of the connected representative
+            M.nodes[rep_]['p'] = p
+
             M.nodes[to_add[i][0]]['p_rep'] = p #Update the rep. parent
             M.nodes[to_add[i][1]]['p_rep'] = p #Update the rep. parent
             G.nodes[rep_]['c_rep']=cr #Update the rep child
         M.add_edges_from(edges)
+        M.nodes[p]['p'] = p #A node is its own parent until otherwise
      
     #Update the child rep of the added node. This must always be done
     n['c_rep']=cr
@@ -261,19 +265,150 @@ def merge_tree(G):
     M = nx.Graph()
     for i in range(0, len(nodes)):
         #Add the node to the merge tree
-        print("node: " + str(nodes[i]['name']))
         name = add_node(nodes[i]['name'], G, M)
         
-        #Naming stuff, doesn't matter how it works
+        #Naming stuff
+        #name[1] is the 'reference'
         if(name[1] in naming):
-            naming[name[1]] = naming[name[1]] + name[0] 
+            naming[name[1]] = naming[name[1]] + name[0]
         else:
             naming[name[1]] = name[0]
+    
+    #Rename the parent pointers to be consistent with the new naming scheme        
+    parent_dict = {}
+    parent_dict[nodes[i]['name']] = naming[name[1]]
+    m = listify_nodes(M)
+    for i in range(0, len(m)):
+        m[i]['p'] = naming[m[i]['p']]
         
     M = nx.relabel_nodes(M, naming)
     return M
 ##############################################################
 
+
+############INTERLEAVING MATRICES###################
+
+#Adds all the elements in L2 to the end of L1, preserving order
+def get_leaves(M) :
+    n = list(M.nodes)
+    
+    #Find all of the leaves by checking every node
+    leaves = []
+    for i in range(0, len(n)):
+        if(is_leaf_f(M, n[i])):
+            leaves.append(n[i])
+    
+    return leaves
+
+def list_append(L1, L2):
+    for i in range(0,len(L2)):
+        L1.append(L2[i])
+
+#Computes and sets the lines of ancestry, given a merge tree and a node
+def ancestry_line(M, n,ancestry_dict):
+    node = M.nodes[n]
+    
+    #The ancestry line has already been computed
+    if(n in ancestry_dict):
+        return 
+    
+    line = []
+    
+    #If we aren't at the root...
+    if(node['p'] != n):
+        p = node['p']
+        line.append(p) #Add the parent!
+        
+        ancestry_line(M, p, ancestry_dict) #Get the rest of the line recursively
+        list_append(line,ancestry_dict[p])
+    #Why did I use recursion here? Well, this guarantees that we will never do any
+    #calculation twice. Consequently, we only need to call ancestry_line on all the leaves.
+    
+    ancestry_dict[n] = line
+
+#Computes the ancestry dictionary, given a merge tree
+#Returns a dictionary
+def ancestry(M):
+    ancestry_dict= {}
+    
+    leaves = get_leaves(M)
+    for i in range(0,len(leaves)):
+        ancestry_line(M, leaves[i], ancestry_dict)
+    
+    return ancestry_dict
+
+#Calculates the interleaving distance between two nodes
+#Also sets the proper entries in the distances matrix
+def calc_set_distance(anc, i1, i2, M, distances):
+    n = list(M.nodes)
+    
+    #Distance has already been calculated
+    if(distances[i1][i2] != -1):
+        return distances[i1][i2]
+    
+    #The two nodes corresponding to the given indices.
+    #We want f(n1) <= f(n2)
+    n1 = n[i1]
+    node1 = M.nodes[n1]
+    n2 = n[i2]
+    node2 = M.nodes[n2]
+    
+    #Make sure node 1 doesn't have the greater function value
+    if(f_(node1) > f_(node2)):
+        n1, n2 = n2, n1
+        node1, node2 = node1, node2
+    
+    #The ancestry lines of n1 and n2, respectively
+    a1 = anc[n1]
+    a2 = anc[n2]
+    
+    #Distance of a node to itself is its function value
+    #(not 0)
+    if(n1 == n2):
+        f = f_(node1)
+        distances[i1][i2] = f
+        distances[i2][i1] = f
+        return f
+        
+    #Node 2 is an ancestor of node 1
+    #Note: node 1 will never be an ancestor of node 2 bc
+    #      we ensured that f(n1) <= f(n2)
+    if(n2 in a1):
+        f = f_(node2)
+        distances[i1][i2] = f
+        distances[i2][i1] = f
+        return f
+    
+    #We need to find the common ancestor
+    for i in range(0, len(a2)):
+        if(a2[i] in a1):
+            f = f_(M.nodes[a2[i]])
+            distances[i1][i2] = f
+            distances[i2][i1] = f
+            return f
+        
+
+#Returns the interleaving distances matrix with labeling as well.
+def interleaving_distances(M):
+    n = list(M.nodes)
+    
+    ancestry_dict = ancestry(M)
+    
+    #Set up the square matrix of interleaving distances
+    distances = []
+    for i in range(0, len(n)):
+        distances.append([])
+        for j in range(0, len(n)):
+            distances[i].append(-1) #Meaningless number, just for initialization
+            
+    for i in range(0, len(n)):
+        for j in range(i, len(n)):
+            calc_set_distance(ancestry_dict,i,j,M,distances)
+    
+    return (distances, n)
+    
+####################################################
+    
 #################DRAWING#######################
 #Produces a level planar drawing based on function values
 def LP_draw_f(G):
@@ -389,6 +524,11 @@ nx.set_node_attributes(G,f_vals)
 #tree_draw_basic(G,7)
 
 M = merge_tree(G)
+#print(listify_nodes(M))
+#print(ancestry(M))
+IL = interleaving_distances(M)
+print(IL[1])
+print(IL[0])
 
 draw_pretty_f(M)
 plt.show()
