@@ -2,7 +2,7 @@
 #Union-Find data structure basics and testing notebook
 #6/1/2020
 import networkx as nx
-import matplotlib as plt
+import matplotlib.pyplot as plt
 import random
 
 
@@ -157,6 +157,7 @@ def random_tree(n):
 
 
 ###Merge Tree Construction###
+###Merge Tree Construction###
 #Returns the function value of a node
 def f_(node):
     return node['value']
@@ -193,17 +194,22 @@ def add_node(n_, G, M):
             #Not already connected to child
             if(rel_cr != cr):
                 #Add to the list of children to merge
-                to_add.append(rel_cr)
+                to_add.append([relative['c_rep'],rel_cr])
                 
                 #New representative child!
                 if(f_(G.nodes[rel_cr]) < f_(G.nodes[cr])):
                     cr=rel_cr        
+    
+    #Naming is important
+    name = ''
+    ref = n_
     
     c_count=len(to_add)
     #Leaf                   
     if(c_count==0):
         M.add_node(n_,value=f) #Add new leaf to merge tree
         M.nodes[n_]['p_rep']=n_ # Update the parent rep
+        name = 'Rep. ' + str(n_)
     #Merge
     elif(c_count>1):
         edges = []
@@ -212,25 +218,31 @@ def add_node(n_, G, M):
         #Check for nodes on the level
         first_on_lvl = True
         for i in range(0, len(to_add)):
-            rep_ = M.nodes[to_add[i]]['p_rep'] #The "representative parent of the child" before addition
+            rep_ = M.nodes[to_add[i][1]]['p_rep'] #The "representative parent of the child" before addition
             if(f_(G.nodes[rep_]) == f): #Found node on level
                 first_on_lvl = False
                 p=rep_ #There won't be a new merged node
                 i = -1
-        
+        ref = p
         #Only create a new node if it'd be the first one on the level
         if(first_on_lvl):
             M.add_node(n_,value=f, p_rep=n_) #Add new vertex to merge tree
+            name = 'Rep. ' + str(n_)
+        else:
+            name += ',' + str(n_)
             
         #Add the edges
         for i in range(0, len(to_add)):
-            rep_ = M.nodes[to_add[i]]['p_rep'] #The "representative parent of the child" before addition
+            rep_ = M.nodes[to_add[i][1]]['p_rep'] #The "representative parent of the child" before addition
             edges.append( (p, rep_) ) #Add the edge
-            M.nodes[to_add[i]]['p_rep'] = p #Update the rep. parent of the child
+            M.nodes[to_add[i][0]]['p_rep'] = p #Update the rep. parent of the child
+            M.nodes[to_add[i][1]]['p_rep'] = p #Update the rep. parent of the child
         M.add_edges_from(edges)
      
     #Update the child rep of the added node. This must always be done
     n['c_rep']=cr
+    return [name, ref]
+    
 
     
 #Construct the merge tree given a graph G with function values.
@@ -241,16 +253,22 @@ def merge_tree(G):
     
     #Sort the nodes in order of increasing function value
     nodes.sort(key=f_)
-    print(nodes)
     
     #The legendary Merge Tree
+    naming = {}
     M = nx.Graph()
     for i in range(0, len(nodes)):
-        add_node(nodes[i]['name'], G, M)
-    
+        name = add_node(nodes[i]['name'], G, M)
+        if(name[1] in naming):
+            naming[name[1]] = naming[name[1]] + name[0] 
+        else:
+            naming[name[1]] = name[0]
+        
+    M = nx.relabel_nodes(M, naming)
     return M
 ##############################################################
 
+#################DRAWING#######################
 #Produces a level planar drawing based on function values
 def LP_draw_f(G):
     #Sorted by function value
@@ -277,7 +295,66 @@ def LP_draw_f(G):
         pos_dict[n['name']] = (count,f_(n))
         count = count + 1
     
-    nx.draw(G, pos_dict, with_labels=True,node_color="blue")
+    nx.draw(G, pos_dict, with_labels=True,node_color="yellow",node_size=1500)
+
+#True if the node is a leaf
+def is_leaf_f(T, node):
+    if(len(T[node]) == 1 and f_(T.nodes[list(T[node])[0]]) > f_(T.nodes[node])):
+        return True
+    return False
+
+#Gets the average x position of a node's children
+def get_x_pos_f(T, n, pos):
+    avg = 0
+    c = list(T[n])
+    count = 0
+    f = f_(T.nodes[n])
+    for i in range(0, len(c)):
+        if(f_(T.nodes[c[i]]) < f):
+            avg = avg + pos[c[i]][0]
+            count = count + 1
+    return avg / count
+        
+#Shifts a node and all its descendants 
+def shift_f(T, n, pos, amount):
+    pos[n] = (pos[n][0]+amount,pos[n][1])
+    c = list(T[n])
+    f = f_(T.nodes[n])
+    for i in range(0,len(c)):
+        if(f_(T.nodes[c[i]]) < f):
+            shift(T, c[i], pos, amount)
+    
+def draw_pretty_f(T):
+    #Sorted by function value, reversed
+    nodes = listify_nodes(T)
+    nodes.sort(reverse=True, key=f_)
+    
+    pos_dict = {}
+    
+    #Place the nodes without thinking  
+    last_f = f_(nodes[0])
+    count = 0
+    for i in range(0, len(nodes)):
+        n=nodes[i]
+        
+        if(last_f != f_(n)):
+            last_f = f_(n)
+            count = 0
+        pos_dict[n['name']] = (count,f_(n))
+        count += 1
+    
+    #center over children
+    for i in range(0, len(nodes)):
+        n=nodes[i]
+        
+        if(last_f != f_(n)):
+            last_f = f_(n)
+            count = 0
+        
+        if(not is_leaf_f(T, n['name'])):
+            pos_dict[n['name']] = (get_x_pos_f(T, n['name'], pos_dict),f_(n))
+    nx.draw(T, pos_dict, with_labels=True,node_color="yellow",node_size=1500)
+        
 ##############
 
 #####TESTING#######
@@ -305,5 +382,6 @@ nx.set_node_attributes(G,f_vals)
 
 M = merge_tree(G)
 
-LP_draw_f(M)
+draw_pretty_f(M)
+plt.show()
 ####################
