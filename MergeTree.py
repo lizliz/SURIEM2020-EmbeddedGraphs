@@ -190,6 +190,7 @@ def add_node(n_, G, M):
             rel_cr = relative['c_rep']
             rel_cr = M.nodes[rel_cr]['p_rep']
             rel_cr = G.nodes[rel_cr]['c_rep']
+            print("rel_cr " + str(rel_cr))
             
             #Not already connected to child
             if(rel_cr != cr):
@@ -235,8 +236,9 @@ def add_node(n_, G, M):
         for i in range(0, len(to_add)):
             rep_ = M.nodes[to_add[i][1]]['p_rep'] #The "representative parent of the child" before addition
             edges.append( (p, rep_) ) #Add the edge
-            M.nodes[to_add[i][0]]['p_rep'] = p #Update the rep. parent of the child
-            M.nodes[to_add[i][1]]['p_rep'] = p #Update the rep. parent of the child
+            M.nodes[to_add[i][0]]['p_rep'] = p #Update the rep. parent
+            M.nodes[to_add[i][1]]['p_rep'] = p #Update the rep. parent
+            G.nodes[rep_]['c_rep']=cr #Update the rep child
         M.add_edges_from(edges)
      
     #Update the child rep of the added node. This must always be done
@@ -258,7 +260,11 @@ def merge_tree(G):
     naming = {}
     M = nx.Graph()
     for i in range(0, len(nodes)):
+        #Add the node to the merge tree
+        print("node: " + str(nodes[i]['name']))
         name = add_node(nodes[i]['name'], G, M)
+        
+        #Naming stuff, doesn't matter how it works
         if(name[1] in naming):
             naming[name[1]] = naming[name[1]] + name[0] 
         else:
@@ -362,8 +368,8 @@ G = nx.Graph()
 G.clear()
 G = nx.Graph()
 
-nodes = list( [1,3,5,4,2,7,8] )
-edges = [ (1,4),(2,4),(3,5),(4,5),(4,6),(5,7),(6,7),(6,8)]
+nodes = list( [1,3,5,4,2,7,8,9,10] )
+edges = [ (1,4),(2,4),(3,5),(4,5),(4,6),(5,7),(6,7),(6,8),(7,9),(9,10),(10,8),(8,2)]
 f_vals = {}
 f_vals[3]= {'value': 2}
 f_vals[1]= {'value': 1}
@@ -372,7 +378,9 @@ f_vals[7]= {'value': 4}
 f_vals[5]= {'value': 3}
 f_vals[4]= {'value': 2}
 f_vals[6]= {'value': 3}
-f_vals[8]= {'value': 2.5}
+f_vals[8]= {'value': 2}
+f_vals[9]= {'value': 2}
+f_vals[10]= {'value': 1}
 
 G.add_nodes_from(nodes)
 G.add_edges_from(edges)
