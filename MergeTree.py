@@ -157,7 +157,6 @@ def random_tree(n):
 
 
 ###Merge Tree Construction###
-
 #Returns the function value of a node
 def f_(node):
     return node['value']
@@ -186,7 +185,11 @@ def add_node(n_, G, M):
         relative = G.nodes[children[i]]
         #Relative is a child
         if(f_(relative) < f):
-            rel_cr = relative['c_rep']#rep child of the relative
+            #Does this work? idk
+            rel_cr = relative['c_rep']
+            rel_cr = M.nodes[rel_cr]['p_rep']
+            rel_cr = G.nodes[rel_cr]['c_rep']
+            
             #Not already connected to child
             if(rel_cr != cr):
                 #Add to the list of children to merge
@@ -246,8 +249,7 @@ def merge_tree(G):
         add_node(nodes[i]['name'], G, M)
     
     return M
-###################################################################################################
-
+##############################################################
 
 #Produces a level planar drawing based on function values
 def LP_draw_f(G):
