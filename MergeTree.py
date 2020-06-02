@@ -490,6 +490,21 @@ def draw_pretty_f(T):
         if(not is_leaf_f(T, n['name'])):
             pos_dict[n['name']] = (get_x_pos_f(T, n['name'], pos_dict),f_(n))
     nx.draw(T, pos_dict, with_labels=True,node_color="yellow",node_size=1500)
+
+
+#comparing the maximum distance between the two matricies by subtracting them
+#and taking the absolute value of each entry. The largest entry will be the
+#distance. Added (6/2/2020)
+
+def compare_trees(x,y):
+    distanceMatrix = np.subtract(x,y)
+    distances = []
+    print(distanceMatrix)
+    for row in range(0,len(distanceMatrix)):
+        for entry in range(0,len(distanceMatrix)):
+            distances.append(abs(distanceMatrix.item(row,entry)))      
+    return max(distances)
+
 ##############
 
 #####TESTING#######
@@ -516,6 +531,7 @@ G.add_nodes_from(nodes)
 G.add_edges_from(edges)
 nx.set_node_attributes(G,f_vals)
 
+
 #tree_draw_basic(G,7)
 
 M = merge_tree(G)
@@ -526,6 +542,9 @@ print(IL[1])
 print(IL[0])
 
 draw_pretty_f(M)
+
+#testing distance
+print(compare_trees(IL[0],IL[0]))
 
 plt.show()
 ####################
