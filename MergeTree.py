@@ -6,6 +6,8 @@ import matplotlib.pyplot as plt
 import random
 import numpy as np
 import math
+import matplotlib.image as mpimg
+from matplotlib.offsetbox import OffsetImage, AnnotationBbox
 
 
 #####TREE DRAWING!!!#####
@@ -437,8 +439,9 @@ def LP_draw_f(G):
         
         pos_dict[n['name']] = (count,f_(n))
         count = count + 1
-    
-    nx.draw(G, pos_dict, with_labels=True,node_color="yellow",node_size=1500)
+
+    ax = plt.subplot(121)
+    nx.draw(G, pos_dict, ax, with_labels=True,node_color="yellow",node_size=1500)
 
 #True if the node is a leaf
 def is_leaf_f(T, n):
@@ -495,7 +498,10 @@ def draw_pretty_f(T):
         
         if(not is_leaf_f(T, n['name'])):
             pos_dict[n['name']] = (get_x_pos_f(T, n['name'], pos_dict),f_(n))
-    nx.draw(T, pos_dict, with_labels=True,node_color="yellow",node_size=1500)
+    
+    ax = plt.subplot(133)
+    ax.title.set_text("Resulting Merge Tree")
+    nx.draw(T, pos_dict, ax, with_labels=True,node_color="yellow", node_size=1500)
 
 
 #comparing the maximum distance between the two matricies by subtracting them
@@ -538,7 +544,9 @@ def calc_values_height(G, pos, direction):
 
 ##TESTING METHODS##
 def draw_w_pos(G, pos):
-     nx.draw(G, pos, with_labels=True,node_color="yellow",node_size=1500)
+    ax = plt.subplot(131)
+    ax.title.set_text("Input Graph")
+    nx.draw(G, pos, ax, with_labels=True,node_color="blue",node_size=700)
      
 def IL_test(M):
     IL = interleaving_distances(M)
@@ -549,8 +557,8 @@ def IL_test(M):
 
 #####TESTING#######
 G = nx.Graph()
-nodes = list( [1,2,3,4,5,6,7,8,9,10,11] )
-edges = [(1,4),(2,4),(5,4),(6,4),(6,7),(3,5),(7,5),(8,2),(8,10),(9,10),(9,7),(7,8),(10,11)]
+nodes = list( [1,2,3,4,5,6,7,8,9,10] )
+edges = [(1,4),(2,4),(5,4),(6,4),(6,7),(3,5),(7,5),(8,2),(8,10),(9,10),(9,7),(7,8)]
 G.add_nodes_from(nodes)
 G.add_edges_from(edges)
 
@@ -565,7 +573,6 @@ pos_dict= {
         8: (4,1.5) ,
         9: (6,1) ,
         10: (5,0) ,
-        11: (7,3)
         }
 direction = [0,1]
 
@@ -582,8 +589,17 @@ direction = [0,1]
 #f_vals[10]= {'value': 4}
 #nx.set_node_attributes(G,f_vals)
 
+fig = plt.subplots(1,3,figsize=(15,5))
+
+ax = plt.subplot(132,frameon=False)
+ax.axis('off')
+arrow = mpimg.imread('./images/arrow.png')
+imagebox = OffsetImage(arrow,zoom=0.25)
+ab = AnnotationBbox(imagebox, (0.5, 0.5), frameon=False)
+ax.add_artist(ab)
+
 #Draw G
-#draw_w_pos(G,pos_dict)
+draw_w_pos(G,pos_dict)
 
 #Calculate height values
 calc_values_height(G, pos_dict, direction)
@@ -595,8 +611,9 @@ M = merge_tree(G)
 IL = IL_test(M)
 
 ##DRAWING MERGE
-print(draw_pretty_f(M))
+draw_pretty_f(M)
 
+plt.show()
 #testing distance
 #print(compare_trees(IL[0],IL[0]))
 
