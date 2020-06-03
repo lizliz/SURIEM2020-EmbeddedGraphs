@@ -502,7 +502,7 @@ def draw_pretty_f(T):
         if(not is_leaf_f(T, n['name'])):
             newX = get_x_pos_f(T, n['name'], pos_dict)
             
-            #Shift level neighbors!
+            #Shift level neighbors! pretty important for real
             shift_ = newX -pos_dict[n['name']][0]
             f=f_(n)
             j=i+1
@@ -535,20 +535,18 @@ def compare_trees(x,y):
 
 #Computes the height relative to (0,0) by computing the scalar projection
 #direction should be a unit vector!!!
-def height(pos, direction):
-    return pos[0]*direction[0]+pos[1]*direction[1]
+def height(pos, angle):
+    return pos[0]*math.cos(angle)+pos[1]* math.sin(angle)
+
+#Sets all the function values based on height
+def calc_values_height(G, pos, angle):
+    direction = [math.cos(angle), math.sin(angle)]
     
-def calc_values_height(G, pos, direction):
     x = direction[0]
     y = direction[1]
     if(len(direction) > 2 or (x==0 and y==0)):
         print("Faulty input direction!")
         return
-    
-    #Make sure we're working with a unit vector
-    magnitude = math.sqrt(x*x + y*y)
-    x, y = x/magnitude, y/magnitude
-    direction = [x,y]
     
     #Get the list of node objects
     n = listify_nodes(G)
@@ -557,39 +555,28 @@ def calc_values_height(G, pos, direction):
     for i in range(0, len(n)):
         n[i]['value'] = height(pos[n[i]['name']], direction)
         
-def calc_values_height_reorient(G, pos, direction):
-    reorient(pos, direction)
+def calc_values_height_reorient(G, pos, angle):
+    reorient(pos, angle)
     
     #Get the list of node objects
     n = listify_nodes(G)
     
     #Set all of the function values by height
     for i in range(0, len(n)):
-        n[i]['value'] = height(pos[n[i]['name']], [0,1])
+        n[i]['value'] = height(pos[n[i]['name']], math.pi / 2)
         
     
-def reorient(pos, d):
+def reorient(pos, angle):
+
+    norm = angle - math.pi / 2
     
-    #Unit direction!
-    x, y= d[0],d[1]
-    magnitude = math.sqrt(x*x + y*y)
-    x, y = x/magnitude, y/magnitude
-    d = [x,y]
-    
-    #Unit normal
-    x_, y_ = y, x
-    if(x*y < 0):
-        x_ *= -1
-    elif(x*y<0):
-        y_ *= -1
-    elif(y==0):
-        y_ *= -1
-    norm = [x_,y_]
+    #testing
+    #print("direction: " + str(d) + "  Norm: " + str(norm))
 
     #Calculate the new positions by computing the vector projection
     for p in pos:
-        xNew = abs(height(pos[p], d))*x + abs(height(pos[p], norm))*x_
-        yNew = abs(height(pos[p], d))*y + abs(height(pos[p], norm))*y_
+        xNew = height(pos[p], norm)
+        yNew = height(pos[p], angle)
         pos[p] = (xNew,yNew)
 
 def add_arrow():
@@ -633,8 +620,8 @@ pos_dict= {
         9: (6,1) ,
         11: (5,0) ,
         }
-direction = [0, 1]
-calc_values_height_reorient(G, pos_dict, direction)
+angle = math.pi / 2
+calc_values_height_reorient(G, pos_dict, angle)
 
 #f_vals = {}
 #f_vals[1 ]= {'value': 3}
