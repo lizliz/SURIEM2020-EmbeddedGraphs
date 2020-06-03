@@ -163,3 +163,17 @@ def random_tree(n):
 #the test
 rt = random_tree(20)
 pos = tree_draw_basic(rt)
+
+
+##TESTING METHODS##
+def draw_w_pos(G, pos):
+    ax = plt.subplot(131)
+    ax.title.set_text("Input Graph")
+    nx.draw(G, pos, ax, with_labels=True,node_color="blue",node_size=700)
+     
+def IL_test(M):
+    IL = interleaving_distances(M)
+    print("Labels:" + str(IL[1]))
+    print(IL[0])
+    return IL
+###################
