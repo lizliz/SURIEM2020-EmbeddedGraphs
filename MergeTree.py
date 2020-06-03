@@ -243,14 +243,15 @@ def add_node(n_, G, M):
             M.nodes[to_add[i][0]]['p_rep'] = p #Update the rep. parent
             M.nodes[to_add[i][1]]['p_rep'] = p #Update the rep. parent
             G.nodes[rep_]['c_rep']=cr #Update the rep child
+            
         M.add_edges_from(edges)
         M.nodes[p]['p'] = p #A node is its own parent until otherwise
+        
+        G.nodes[p]['c_rep']=cr #Update child rep of the node we connected to
      
-    #Update the child rep of the added node. This must always be done
+    #Update the child rep of the added node and parent node. This must always be done
     n['c_rep']=cr
     return [name, ref]
-    
-
     
 #Construct the merge tree given a graph G with function values.
 #Returns a networkx tree with a position dictionary for drawing
@@ -389,7 +390,7 @@ def calc_set_distance(anc, i1, i2, M, distances):
 
 #Returns the interleaving distances matrix with labeling as well.
 def interleaving_distances(M):
-    n = list(M.nodes)
+    n = get_leaves(M) #Only leaves matter
     
     ancestry_dict = ancestry(M)
     
@@ -495,16 +496,14 @@ def draw_pretty_f(T):
 #comparing the maximum distance between the two matricies by subtracting them
 #and taking the absolute value of each entry. The largest entry will be the
 #distance. Added (6/2/2020)
-
 def compare_trees(x,y):
     distanceMatrix = np.subtract(x,y)
     distances = []
-    print(distanceMatrix)
+    #print(distanceMatrix)
     for row in range(0,len(distanceMatrix)):
         for entry in range(0,len(distanceMatrix)):
             distances.append(abs(distanceMatrix.item(row,entry)))      
     return max(distances)
-
 ##############
 
 #####TESTING#######
@@ -530,7 +529,6 @@ f_vals[10]= {'value': 4}
 G.add_nodes_from(nodes)
 G.add_edges_from(edges)
 nx.set_node_attributes(G,f_vals)
-
 
 #tree_draw_basic(G,7)
 
