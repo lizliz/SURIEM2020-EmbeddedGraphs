@@ -5,6 +5,7 @@ import networkx as nx
 import matplotlib.pyplot as plt
 import random
 import numpy as np
+import math
 
 
 #####TREE DRAWING!!!#####
@@ -203,13 +204,14 @@ def add_node(n_, G, M):
     
     #Naming is important
     name = ''
-    ref = n_
+    p = n_
     
     c_count=len(to_add)
     #Leaf                   
     if(c_count==0):
         M.add_node(n_,value=f) #Add new leaf to merge tree
         M.nodes[n_]['p_rep']=n_ # Update the parent rep
+        M.nodes[n_]['p']=n_ # Update the parent 
         name = 'Rep. ' + str(n_)
     #Merge
     elif(c_count>1):
@@ -224,7 +226,6 @@ def add_node(n_, G, M):
                 first_on_lvl = False
                 p=rep_ #There won't be a new merged node
                 i = -1
-        ref = p
         #Only create a new node if it'd be the first one on the level
         if(first_on_lvl):
             M.add_node(n_,value=f, p_rep=n_) #Add new vertex to merge tree
@@ -232,7 +233,7 @@ def add_node(n_, G, M):
         else:
             name += ',' + str(n_)
             
-        #Add the edges
+        #Calculate the edges
         for i in range(0, len(to_add)):
             rep_ = M.nodes[to_add[i][1]]['p_rep'] #The "representative parent of the child" before addition
             edges.append( (p, rep_) ) #Add the edge
@@ -243,15 +244,16 @@ def add_node(n_, G, M):
             M.nodes[to_add[i][0]]['p_rep'] = p #Update the rep. parent
             M.nodes[to_add[i][1]]['p_rep'] = p #Update the rep. parent
             G.nodes[rep_]['c_rep']=cr #Update the rep child
-            
-        M.add_edges_from(edges)
-        M.nodes[p]['p'] = p #A node is its own parent until otherwise
         
-        G.nodes[p]['c_rep']=cr #Update child rep of the node we connected to
+        #Add the edges
+        M.add_edges_from(edges)
+        
+        M.nodes[p]['p'] = p #A node is its own parent until otherwise
+    G.nodes[p]['c_rep']=cr #Update child rep of the node we connected to
      
     #Update the child rep of the added node and parent node. This must always be done
     n['c_rep']=cr
-    return [name, ref]
+    return [name, p]
     
 #Construct the merge tree given a graph G with function values.
 #Returns a networkx tree with a position dictionary for drawing
@@ -279,9 +281,9 @@ def merge_tree(G):
     #Rename the parent pointers to be consistent with the new naming scheme        
     parent_dict = {}
     parent_dict[nodes[i]['name']] = naming[name[1]]
-    m = listify_nodes(M)
-    for i in range(0, len(m)):
-        m[i]['p'] = naming[m[i]['p']]
+    m_ = listify_nodes(M)
+    for m in m_ :
+        m['p'] = naming[m['p']]
         
     M = nx.relabel_nodes(M, naming)
     return M
@@ -439,10 +441,13 @@ def LP_draw_f(G):
     nx.draw(G, pos_dict, with_labels=True,node_color="yellow",node_size=1500)
 
 #True if the node is a leaf
-def is_leaf_f(T, node):
-    if(len(T[node]) == 1 and f_(T.nodes[list(T[node])[0]]) > f_(T.nodes[node])):
-        return True
-    return False
+def is_leaf_f(T, n):
+    c = list(T[n])
+    f = f_(T.nodes[n])
+    for i in range(0, len(c)):
+        if(f_(T.nodes[c[i]]) < f):
+            return False
+    return True
 
 #Gets the average x position of a node's children
 def get_x_pos_f(T, n, pos):
@@ -504,45 +509,95 @@ def compare_trees(x,y):
         for entry in range(0,len(distanceMatrix)):
             distances.append(abs(distanceMatrix.item(row,entry)))      
     return max(distances)
+
+#Computes the height relative to (0,0) by computing the scalar projection
+#direction should be a unit vector!!!
+def height(pos, direction):
+    return pos[0]*direction[0]+pos[1]*direction[1]
+    
+def calc_values_height(G, pos, direction):
+    x = direction[0]
+    y = direction[1]
+    if(len(direction) > 2 or (x==0 and y==0)):
+        print("Faulty input direction!")
+        return
+    
+    #Make sure we're working with a unit vector
+    magnitude = math.sqrt(x*x + y*y)
+    x, y = x/magnitude, y/magnitude
+    direction = [x,y]
+    print(direction)
+    
+    #Get the list of node objects
+    n = listify_nodes(G)
+    
+    #Set all of the function values by height
+    for i in range(0, len(n)):
+        n[i]['value'] = height(pos[n[i]['name']], direction)
 ##############
+
+##TESTING METHODS##
+def draw_w_pos(G, pos):
+     nx.draw(G, pos, with_labels=True,node_color="yellow",node_size=1500)
+     
+def IL_test(M):
+    IL = interleaving_distances(M)
+    print("Labels:" + str(IL[1]))
+    print(IL[0])
+    return IL
+###################
 
 #####TESTING#######
 G = nx.Graph()
-G.clear()
-G = nx.Graph()
-
-nodes = list( [1,2,3,4,5,6,7,8,9,10] )
-edges = [(1,2),(2,3),(3,4),(4,9),(9,10),(9,7),(5,7),(6,7),(8,9)]
-f_vals = {}
-f_vals[1 ]= {'value': 3}
-f_vals[2 ]= {'value': 2}
-f_vals[3 ]= {'value': 1}
-f_vals[4 ]= {'value': 2}
-f_vals[5 ]= {'value': 1}
-f_vals[6 ]= {'value': 1}
-f_vals[7 ]= {'value': 2}
-f_vals[8 ]= {'value': 2.5}
-f_vals[9 ]= {'value': 3}
-f_vals[10]= {'value': 4}
-
-
+nodes = list( [1,2,3,4,5,6,7,8,9,10,11] )
+edges = [(1,4),(2,4),(5,4),(6,4),(6,7),(3,5),(7,5),(8,2),(8,10),(9,10),(9,7),(7,8),(10,11)]
 G.add_nodes_from(nodes)
 G.add_edges_from(edges)
-nx.set_node_attributes(G,f_vals)
 
-#tree_draw_basic(G,7)
+pos_dict= {
+        1: (1,0) ,
+        2: (3,0) ,
+        3: (0,1) ,
+        4: (2,1) ,
+        5: (2,2) ,
+        6: (3,2) ,
+        7: (3,3) ,
+        8: (4,1.5) ,
+        9: (6,1) ,
+        10: (5,0) ,
+        11: (7,3)
+        }
+direction = [0,1]
 
+#f_vals = {}
+#f_vals[1 ]= {'value': 3}
+#f_vals[2 ]= {'value': 2}
+#f_vals[3 ]= {'value': 1}
+#f_vals[4 ]= {'value': 2}
+#f_vals[5 ]= {'value': 1}
+#f_vals[6 ]= {'value': 1}
+#f_vals[7 ]= {'value': 2}
+#f_vals[8 ]= {'value': 2.5}
+#f_vals[9 ]= {'value': 3}
+#f_vals[10]= {'value': 4}
+#nx.set_node_attributes(G,f_vals)
+
+#Draw G
+#draw_w_pos(G,pos_dict)
+
+#Calculate height values
+calc_values_height(G, pos_dict, direction)
+
+#Make the mergre tree
 M = merge_tree(G)
-#print(listify_nodes(M))
-#print(ancestry(M))
-IL = interleaving_distances(M)
-print(IL[1])
-print(IL[0])
 
-draw_pretty_f(M)
+#Interleaving
+IL = IL_test(M)
+
+##DRAWING MERGE
+print(draw_pretty_f(M))
 
 #testing distance
-print(compare_trees(IL[0],IL[0]))
+#print(compare_trees(IL[0],IL[0]))
 
-plt.show()
 ####################
