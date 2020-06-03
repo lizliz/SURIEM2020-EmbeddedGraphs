@@ -37,7 +37,7 @@ def shift(T, n, pos, p, amount):
         if(c[i] != p):
             shift(T, c[i], pos, n, amount)
         
-#Preforms a BFS search and returns the nodes, parent, and level dictionaries
+#Performs a BFS search and returns the nodes, parent, and level dictionaries
 def BFS(G, r):
     
     #Level Dictionary.
@@ -214,7 +214,7 @@ def add_node(n_, G, M):
         M.add_node(n_,value=f) #Add new leaf to merge tree
         M.nodes[n_]['p_rep']=n_ # Update the parent rep
         M.nodes[n_]['p']=n_ # Update the parent 
-        name = 'Rep. ' + str(n_)
+        name = 'R. ' + str(n_)
     #Merge
     elif(c_count>1):
         edges = []
@@ -231,7 +231,7 @@ def add_node(n_, G, M):
         #Only create a new node if it'd be the first one on the level
         if(first_on_lvl):
             M.add_node(n_,value=f, p_rep=n_) #Add new vertex to merge tree
-            name = 'Rep. ' + str(n_)
+            name = 'R. ' + str(n_)
         else:
             name += ',' + str(n_)
             
@@ -441,7 +441,7 @@ def LP_draw_f(G):
         count = count + 1
 
     ax = plt.subplot(121)
-    nx.draw(G, pos_dict, ax, with_labels=True,node_color="yellow",node_size=1500)
+    nx.draw(G, pos_dict, ax, with_labels=True,node_color="yellow",node_size=700)
 
 #True if the node is a leaf
 def is_leaf_f(T, n):
@@ -483,12 +483,15 @@ def draw_pretty_f(T):
     #Place the nodes without thinking  
     last_f = f_(nodes[0])
     count = 0
+    c2 = 0
     for i in range(0, len(nodes)):
         n=nodes[i]
         
         if(last_f != f_(n)):
             last_f = f_(n)
-            count = 0
+            c2 += 1
+            count = c2
+            
         pos_dict[n['name']] = (count,f_(n))
         count += 1
     
@@ -497,13 +500,27 @@ def draw_pretty_f(T):
         n=nodes[i]
         
         if(not is_leaf_f(T, n['name'])):
-            pos_dict[n['name']] = (get_x_pos_f(T, n['name'], pos_dict),f_(n))
+            newX = get_x_pos_f(T, n['name'], pos_dict)
+            
+            #Shift level neighbors!
+            shift_ = newX -pos_dict[n['name']][0]
+            f=f_(n)
+            j=i+1
+            while(j < len(nodes) and f_(nodes[j])==f):
+                shift_f(T, nodes[j]['name'], pos_dict, shift_)
+                j+=1
+            j=i-1
+            while(j >= 0 and f_(nodes[j])==f):
+                shift_f(T, nodes[j]['name'], pos_dict, shift_)
+                j-=1
+            
+            pos_dict[n['name']] = (newX, f_(n))
+            
     
     ax = plt.subplot(133)
     ax.title.set_text("Resulting Merge Tree")
-    nx.draw(T, pos_dict, ax, with_labels=True,node_color="yellow", node_size=1500)
-
-
+    nx.draw(T, pos_dict, ax, with_labels=True,node_color="yellow", node_size=700)
+    
 #comparing the maximum distance between the two matricies by subtracting them
 #and taking the absolute value of each entry. The largest entry will be the
 #distance. Added (6/2/2020)
@@ -532,7 +549,6 @@ def calc_values_height(G, pos, direction):
     magnitude = math.sqrt(x*x + y*y)
     x, y = x/magnitude, y/magnitude
     direction = [x,y]
-    print(direction)
     
     #Get the list of node objects
     n = listify_nodes(G)
@@ -540,6 +556,49 @@ def calc_values_height(G, pos, direction):
     #Set all of the function values by height
     for i in range(0, len(n)):
         n[i]['value'] = height(pos[n[i]['name']], direction)
+        
+def calc_values_height_reorient(G, pos, direction):
+    reorient(pos, direction)
+    
+    #Get the list of node objects
+    n = listify_nodes(G)
+    
+    #Set all of the function values by height
+    for i in range(0, len(n)):
+        n[i]['value'] = height(pos[n[i]['name']], [0,1])
+        
+    
+def reorient(pos, d):
+    
+    #Unit direction!
+    x, y= d[0],d[1]
+    magnitude = math.sqrt(x*x + y*y)
+    x, y = x/magnitude, y/magnitude
+    d = [x,y]
+    
+    #Unit normal
+    x_, y_ = y, x
+    if(x*y < 0):
+        x_ *= -1
+    elif(x*y<0):
+        y_ *= -1
+    elif(y==0):
+        y_ *= -1
+    norm = [x_,y_]
+
+    #Calculate the new positions by computing the vector projection
+    for p in pos:
+        xNew = abs(height(pos[p], d))*x + abs(height(pos[p], norm))*x_
+        yNew = abs(height(pos[p], d))*y + abs(height(pos[p], norm))*y_
+        pos[p] = (xNew,yNew)
+
+def add_arrow():
+    ax = plt.subplot(132,frameon=False)
+    ax.axis('off')
+    arrow = mpimg.imread('./images/arrow.png')
+    imagebox = OffsetImage(arrow,zoom=0.25)
+    ab = AnnotationBbox(imagebox, (0.5, 0.5), frameon=False)
+    ax.add_artist(ab)
 ##############
 
 ##TESTING METHODS##
@@ -557,8 +616,8 @@ def IL_test(M):
 
 #####TESTING#######
 G = nx.Graph()
-nodes = list( [1,2,3,4,5,6,7,8,9,10] )
-edges = [(1,4),(2,4),(5,4),(6,4),(6,7),(3,5),(7,5),(8,2),(8,10),(9,10),(9,7),(7,8)]
+nodes = list( [1,2,3,4,5,6,7,8,9,11] )
+edges = [(1,4),(2,4),(5,4),(6,4),(6,7),(3,5),(7,5),(8,2),(8,11),(9,11),(9,7),(7,8)]
 G.add_nodes_from(nodes)
 G.add_edges_from(edges)
 
@@ -572,9 +631,10 @@ pos_dict= {
         7: (3,3) ,
         8: (4,1.5) ,
         9: (6,1) ,
-        10: (5,0) ,
+        11: (5,0) ,
         }
-direction = [0,1]
+direction = [0, 1]
+calc_values_height_reorient(G, pos_dict, direction)
 
 #f_vals = {}
 #f_vals[1 ]= {'value': 3}
@@ -591,18 +651,12 @@ direction = [0,1]
 
 fig = plt.subplots(1,3,figsize=(15,5))
 
-ax = plt.subplot(132,frameon=False)
-ax.axis('off')
-arrow = mpimg.imread('./images/arrow.png')
-imagebox = OffsetImage(arrow,zoom=0.25)
-ab = AnnotationBbox(imagebox, (0.5, 0.5), frameon=False)
-ax.add_artist(ab)
+add_arrow()
 
 #Draw G
 draw_w_pos(G,pos_dict)
 
 #Calculate height values
-calc_values_height(G, pos_dict, direction)
 
 #Make the mergre tree
 M = merge_tree(G)
