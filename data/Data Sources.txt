@@ -1,0 +1,7 @@
+From the Mapconstruction repository on GitHub:
+(https://github.com/pfoser/mapconstruction/tree/master/data/maps)
+berlin_large_edges_osm
+berlin_large_vertices_osm
+chicago_edges_osm
+chicago_vertices_osm
+
