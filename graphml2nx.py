@@ -36,41 +36,42 @@ def graphml(filePath, draw = True):
         # If I say string.find("id") it will return the index of the character
         # 'i', so to get from the 'i' to the actual number we need to increase the index
         # Same sort of thing for the x and y positions
+        # This will all make a lot more sense if you open a GraphML file in notepad or something and look at the layout
         
         # Find name of node
         nodeIDStartindex = nodeList[i].find("id") + 4
         nodeIDEndindex = nodeList[i].find("mainText") - 2
-        #nodeIDEndindex -= 2
-        #nodeIDStartindex += 4 
         nodeID = nodeList[i][nodeIDStartindex:nodeIDEndindex]
         
         # Find x and y position
         xPosStartIndex = nodeList[i].find("positionX") + 11
-        #xPosStartIndex += 11
         yPosStartIndex = nodeList[i].find("positionY")
         xPosEndIndex = yPosStartIndex - 2
         yPosStartIndex += 11
         yPosEndIndex = nodeIDStartindex - 7
-        xPos = float(nodeList[i][xPosStartIndex:xPosEndIndex])
-        yPos = float(nodeList[i][yPosStartIndex:yPosEndIndex])
+        xPos = float(nodeList[i][xPosStartIndex:xPosEndIndex]) # Convert strings
+        yPos = float(nodeList[i][yPosStartIndex:yPosEndIndex]) # To numbers
         
-        fixed_positions[nodeID] = (xPos,yPos)
+        fixed_positions[nodeID] = (xPos,yPos) # Add positions to dictionary
         
-        i += 1
+        i += 1 # move on th next node in the list
     
-    file.close()
+    file.close() # close the file
     
+    # Use networkx's inbuilt method to build the graph
     G = nx.readwrite.graphml.read_graphml(path = filePath)  
     
+    # Networkx doesn't get positions from GraphML files so we use our position dictionary
     for node in list(G.nodes):
         G.nodes[node]['x'] = fixed_positions[node][0]
         G.nodes[node]['y'] = fixed_positions[node][1]
     
+    # Draw it if desired
     if draw == True:
         fixed_nodes = fixed_positions.keys()
         pos = nx.spring_layout(G,pos=fixed_positions, fixed = fixed_nodes)
         nx.draw_networkx(G,pos)
-        #fixed_positions = {1:(0,0),2:(1,2),3:(2,0),4:(1,1)}#dict with two of the positions set
     
+    # Returns the graph object
     return G
     
