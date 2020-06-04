@@ -52,7 +52,10 @@ def graphml(filePath, draw = True):
         xPos = float(nodeList[i][xPosStartIndex:xPosEndIndex]) # Convert strings
         yPos = float(nodeList[i][yPosStartIndex:yPosEndIndex]) # To numbers
         
-        fixed_positions[nodeID] = (xPos,yPos) # Add positions to dictionary
+        # Add positions to dictionary
+        # I multiplied the vertical position by -1 because the graphs 
+        # kept appearing upside down and I didn't know why
+        fixed_positions[nodeID] = (xPos, yPos*(-1)) 
         
         i += 1 # move on th next node in the list
     
