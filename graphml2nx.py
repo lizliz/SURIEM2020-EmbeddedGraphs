@@ -9,6 +9,10 @@ Created on Wed Jun  3 22:12:46 2020
 import networkx as nx
 
 # This function will take a .graphml file and convert it into a networkx graph
+# This will NOT produce a directed graph and will NOT give any edges a weight
+# It won't break if you feed it a weighted directed graph, but the graph you
+# get out won't be weighted or directed
+
 # The entire file path, including the file name itself and the file extension,
 # must be a string
 # By default the function will also draw the graph you give it
