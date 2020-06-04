@@ -39,7 +39,6 @@ def shift(T, n, pos, p, amount):
         
 #Performs a BFS search and returns the nodes, parent, and level dictionaries
 def BFS(G, r):
-    
     #Level Dictionary.
     #Maps each node to a level. The root is level 0, 
     #and every other node has level < 0. Also, the level
@@ -185,6 +184,11 @@ def find_c(n_, G):
 #Recursively find the parent
 def find_p(n_, G):
     n = G.nodes[n_]
+
+    #print("     " + str(n_) + "  F val: " + str(f_(n)))
+    #print("             Data: " + str(n) + "    index: ")
+    #print("Function value " + str(f_(n)))
+    
     parent = n['p_rep']
     if(n['p_rep'] != n_):
         return find_p(parent, G)
@@ -241,6 +245,9 @@ def add_node(n_, G, M):
             if(f_(G.nodes[rep_]) == f): #Found node on level
                 first_on_lvl = False
                 p=rep_ #There won't be a new merged node - we found one to connect to
+                        
+        #Update findings
+        G.nodes[p]['c_rep']=cr #Update child rep of the node we connected to
 
         #Only create a new node if it'd be the first one on the level
         if(first_on_lvl):
@@ -250,23 +257,31 @@ def add_node(n_, G, M):
         else:
             name += ',' + str(n_)
             
+        #print()
+        #print("n: " + str(n_) + "  F val: " + str(f))
+        
         #Calculate the edges
         for i in range(0, len(to_add)):
+            #print("To add: " + str(to_add) + "  F val: " + str(f_(G.nodes[to_add[i]])))
+            
             rep_ = find_p(to_add[i], G) #The "representative parent of the child" before addition
             edges.append( (p, rep_) ) #Add the edge
              
             #Set the most direct parent of the connected representative
             M.nodes[rep_]['p'] = p
-            
-
-            G.nodes[rep_]['p_rep'] = p #Update the rep. parent
+        
+        #Update stuff
+        for i in range(0, len(to_add)):
+            G.nodes[to_add[i]]['p_rep']=p
             G.nodes[to_add[i]]['c_rep']=cr #Update the rep child of the node from the list
         
         #Add the edges
         M.add_edges_from(edges)
         M.nodes[p]['p'] = p #A node is its own parent until otherwise
         
-    G.nodes[p]['c_rep']=cr #Update child rep of the node we connected to 
+    #Update findings
+    G.nodes[p]['c_rep']=cr #Update child rep of the node we connected to
+    G.nodes[p]['p_rep']=p
     n['c_rep']=cr #Update the child rep of the added node and parent node. This must always be done
     n['p_rep']=p #Update the parent rep of the newly added node
     
@@ -780,22 +795,34 @@ G.add_edges_from(edges)
 pos_dict = {}
 for i in range(len(vertexnames)):
     pos_dict[vertexnames[i]] = [coordinate1[i], coordinate2[i]]
+ 
+for j in range(0, 121):
+    G.clear()
+    G = nx.Graph()
+    G.add_nodes_from(vertexnames)
+    G.add_edges_from(edges)
+    pos_dict = {}
+    for i in range(len(vertexnames)):
+        pos_dict[vertexnames[i]] = [coordinate1[i], coordinate2[i]]
     
-angle = math.pi / 2
-calc_values_height_reorient(G, pos_dict, angle)
+    fig = plt.subplots(1,3,figsize=(15,5))
+    add_arrow()
     
-draw_w_pos_(G,pos_dict)
-
-M = merge_tree(G)
-print(nx.is_forest(M))
-
-draw_pretty_f_(M)
+    angle = j * math.pi / 60
+    calc_values_height_reorient(G, pos_dict, angle)
+        
+    draw_w_pos_(G,pos_dict)
     
-#RandomSample = random.sample(list(G.nodes), 2600)
-#G.remove_nodes_from(RandomSample)
-
-
-plt.show()
+    M = merge_tree(G)
+    
+    if(nx.is_forest(M) == False):
+        print("A Tragedy")
+    
+    draw_pretty_f_(M)
+    print(j)
+    plt.savefig('./animation/frame' + str(j))
+    plt.show()
+    plt.close()
 #testing distance
 #print(compare_trees(IL[0],IL[0]))
 
