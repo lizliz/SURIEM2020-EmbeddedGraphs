@@ -108,13 +108,30 @@ def osm(filePath, draw = True):
             
         # Now we've added all of the edges on this way, so we can move on
         w += 1
-            
+    
+    # For some reason the .osm file that you export is sometimes outside of the
+    # field of view on the map you're acually looking at, so we're going to delete
+    # those nodes. This may need to be altered later because this might just
+    # be a problem specific to openstree
+    minlat = float(contents[contents.find("minlat") + 8:contents.find("minlon")-2])
+    minlon = float(contents[contents.find("minlon") + 8:contents.find("maxlat")-2])
+    maxlat = float(contents[contents.find("maxlat") + 8:contents.find("maxlon")-2])
+    maxlon = float(contents[contents.find("maxlon") + 8:contents.find("/>\n")-1])
+    
     file.close() # close the file
 
     # Give each node their long and lat attributes
     for node in list(G.nodes):
-        G.nodes[node]['longitude'] = fixed_positions[node][0]
-        G.nodes[node]['latitude'] = fixed_positions[node][1]
+        lon = fixed_positions[node][0]
+        lati = fixed_positions[node][1]
+        
+        # Remove nodes outside of our range of view
+        if (lon < minlon) or (lon > maxlon) or (lati < minlat) or (lati > maxlat):
+            G.remove_node(node)
+            del fixed_positions[node]
+        else:
+            G.nodes[node]['longitude'] = lon
+            G.nodes[node]['latitude'] = lati
     
     # Draw it if desired
     if draw == True:
@@ -128,4 +145,3 @@ def osm(filePath, draw = True):
     
     # Returns the graph object
     return G
-    
