@@ -7,6 +7,7 @@ Please double check this.
 
 To import data from MapConstruction:
     download the data files
+    remove extra line at the end of .txt files
     run converting_input.py, editing the athens files with the ones you want to use.
 
 (In the future we may be able to input data from other sources)
