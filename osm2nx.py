@@ -4,14 +4,12 @@ Created on Wed Jun  3 22:12:46 2020
 
 @author: Candace Todd
 """
-
-# Will comment more later if needed
 import networkx as nx
 
 #### NOTE: I made longitude values x values and latitude y values
 
-# This function will take a .osm file and convert it into a networkx graph
-# This will NOT produce a directed graph and will NOT give any edges a weight
+# This function will take a .osm file and convert it into a networkx graph object
+# This will NOT produce a directed and/or weighted graph
 
 # The entire file path, including the file name itself and the file extension,
 # must be a string
@@ -20,6 +18,7 @@ import networkx as nx
 
 def osm(filePath, draw = True):
     G = nx.Graph()
+    
     # Open the file and read in its contents as one long string
     file = open(filePath, mode = "r", encoding = "utf8")
     contents = file.read()
@@ -55,7 +54,7 @@ def osm(filePath, draw = True):
         longStartIndex += 5
         
         # I noticed that all of the long and lat positions had 7 digits
-        # after the decimal, so after finding the index of the decmial i could
+        # after the decimal, so after finding the index of the decmial I could
         # easily find the rest of the number
         decimal = longStartIndex
         for char in nodeList[i][longStartIndex:]:
@@ -64,7 +63,7 @@ def osm(filePath, draw = True):
             decimal += 1
         
         # Finding the end of the long number is different than lat because the long
-        # is at the end of the string, and some of the lines end with different characters
+        # is at the end of the line, and some of the lines end with different characters
         # whereas the lat number always ends right before the long number
         longEndIndex = decimal + 8
         long = float(nodeList[i][longStartIndex:longEndIndex]) # Convert strings
@@ -81,7 +80,7 @@ def osm(filePath, draw = True):
     # a bunch of nodes on it. I'm going to say that there are edges
     # bewteen consecutive nodes listed in a way.
     # From looking at the files, I know osm files start a new way
-    # with the string "<node"
+    # with the string "<way"
     wayList = contents.split("<way ")
     
     # We split each way up into a list of the nodes it contains
