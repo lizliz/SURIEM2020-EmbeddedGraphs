@@ -39,7 +39,6 @@ def shift(T, n, pos, p, amount):
         
 #Performs a BFS search and returns the nodes, parent, and level dictionaries
 def BFS(G, r):
-    
     #Level Dictionary.
     #Maps each node to a level. The root is level 0, 
     #and every other node has level < 0. Also, the level
@@ -174,6 +173,28 @@ def listify_nodes(G):
         n_list.append(G.nodes[n[i]])
     return n_list
 
+#Recursively find the child
+def find_c(n_, G):
+    n = G.nodes[n_]
+    child = n['c_rep']
+    if(n['c_rep'] != n_):
+        return find_c(child, G)
+    return n_
+
+#Recursively find the parent
+def find_p(n_, G):
+    n = G.nodes[n_]
+
+    #print("     " + str(n_) + "  F val: " + str(f_(n)))
+    #print("             Data: " + str(n) + "    index: ")
+    #print("Function value " + str(f_(n)))
+    
+    parent = n['p_rep']
+    if(n['p_rep'] != n_):
+        return find_p(parent, G)
+    return n_
+    
+
 #Adds a node to the merge tree
 #n_=node name, G=graph, M=merge tree
 def add_node(n_, G, M):
@@ -190,15 +211,13 @@ def add_node(n_, G, M):
         relative = G.nodes[children[i]]
         #Relative is a child
         if(f_(relative) < f):
-            #Does this work? idk
-            rel_cr = relative['c_rep']
-            rel_cr = M.nodes[rel_cr]['p_rep']
-            rel_cr = G.nodes[rel_cr]['c_rep']
+            #Does this work? idk !!!!!!
+            rel_cr = find_c(children[i], G)
             
             #Not already connected to child
             if(rel_cr != cr):
                 #Add to the list of children to merge
-                to_add.append([relative['c_rep'],rel_cr])
+                to_add.append(rel_cr)
                 
                 #New representative child!
                 if(f_(G.nodes[rel_cr]) < f_(G.nodes[cr])):
@@ -212,49 +231,60 @@ def add_node(n_, G, M):
     #Leaf                   
     if(c_count==0):
         M.add_node(n_,value=f) #Add new leaf to merge tree
-        M.nodes[n_]['p_rep']=n_ # Update the parent rep
-        M.nodes[n_]['p']=n_ # Update the parent 
+        M.nodes[n_]['p']=p # Update the parent (THIS IS KIND OF REDUNDANT) 
         name = 'R. ' + str(n_)
     #Merge
     elif(c_count>1):
         edges = []
-        p=n_ #By default, nodes will connect to a new merged node
         
-        #Check for nodes on the level
+        #Check if there's already a node on this level that is representative of
+        #one of the components to add
         first_on_lvl = True
         for i in range(0, len(to_add)):
-            rep_ = M.nodes[to_add[i][1]]['p_rep'] #The "representative parent of the child" before addition
+            rep_ = find_p(to_add[i], G) #The "representative parent of the child" before addition
             if(f_(G.nodes[rep_]) == f): #Found node on level
                 first_on_lvl = False
-                p=rep_ #There won't be a new merged node
-                i = -1
+                p=rep_ #There won't be a new merged node - we found one to connect to
+                        
+        #Update findings
+        G.nodes[p]['c_rep']=cr #Update child rep of the node we connected to
+
         #Only create a new node if it'd be the first one on the level
         if(first_on_lvl):
             M.add_node(n_,value=f, p_rep=n_) #Add new vertex to merge tree
             name = 'R. ' + str(n_)
+        #The node is representative of multiple from the original graph
         else:
             name += ',' + str(n_)
             
+        #print()
+        #print("n: " + str(n_) + "  F val: " + str(f))
+        
         #Calculate the edges
         for i in range(0, len(to_add)):
-            rep_ = M.nodes[to_add[i][1]]['p_rep'] #The "representative parent of the child" before addition
+            #print("To add: " + str(to_add) + "  F val: " + str(f_(G.nodes[to_add[i]])))
+            
+            rep_ = find_p(to_add[i], G) #The "representative parent of the child" before addition
             edges.append( (p, rep_) ) #Add the edge
              
             #Set the most direct parent of the connected representative
             M.nodes[rep_]['p'] = p
-
-            M.nodes[to_add[i][0]]['p_rep'] = p #Update the rep. parent
-            M.nodes[to_add[i][1]]['p_rep'] = p #Update the rep. parent
-            G.nodes[rep_]['c_rep']=cr #Update the rep child
+        
+        #Update stuff
+        for i in range(0, len(to_add)):
+            G.nodes[to_add[i]]['p_rep']=p
+            G.nodes[to_add[i]]['c_rep']=cr #Update the rep child of the node from the list
         
         #Add the edges
         M.add_edges_from(edges)
-        
         M.nodes[p]['p'] = p #A node is its own parent until otherwise
+        
+    #Update findings
     G.nodes[p]['c_rep']=cr #Update child rep of the node we connected to
-     
-    #Update the child rep of the added node and parent node. This must always be done
-    n['c_rep']=cr
+    G.nodes[p]['p_rep']=p
+    n['c_rep']=cr #Update the child rep of the added node and parent node. This must always be done
+    n['p_rep']=p #Update the parent rep of the newly added node
+    
     return [name, p]
     
 #Construct the merge tree given a graph G with function values.
@@ -281,13 +311,13 @@ def merge_tree(G):
             naming[name[1]] = name[0]
     
     #Rename the parent pointers to be consistent with the new naming scheme        
-    parent_dict = {}
-    parent_dict[nodes[i]['name']] = naming[name[1]]
-    m_ = listify_nodes(M)
-    for m in m_ :
-        m['p'] = naming[m['p']]
+    #parent_dict = {}
+    #parent_dict[nodes[i]['name']] = naming[name[1]]
+    #m_ = listify_nodes(M)
+    #for m in m_ :
+    #    m['p'] = naming[m['p']]
         
-    M = nx.relabel_nodes(M, naming)
+    #M = nx.relabel_nodes(M, naming)
     return M
 ##############################################################
 
@@ -373,15 +403,6 @@ def calc_set_distance(anc, i1, i2, M, distances):
         distances[i1][i2] = f
         distances[i2][i1] = f
         return f
-        
-    #Node 2 is an ancestor of node 1
-    #Note: node 1 will never be an ancestor of node 2 bc
-    #      we ensured that f(n1) <= f(n2)
-    if(n2 in a1):
-        f = f_(node2)
-        distances[i1][i2] = f
-        distances[i2][i1] = f
-        return f
     
     #We need to find the common ancestor
     for i in range(0, len(a2)):
@@ -450,7 +471,7 @@ def is_leaf_f(T, n):
     for i in range(0, len(c)):
         if(f_(T.nodes[c[i]]) < f):
             return False
-    return True
+    return True    
 
 #Gets the average x position of a node's children
 def get_x_pos_f(T, n, pos):
@@ -521,6 +542,11 @@ def draw_pretty_f(T):
     ax.title.set_text("Resulting Merge Tree")
     nx.draw(T, pos_dict, ax, with_labels=True,node_color="yellow", node_size=700)
     
+def merge_draw(M, pos):
+    ax = plt.subplot(133)
+    ax.title.set_text("Resulting Merge Tree")
+    nx.draw(M, pos, ax, with_labels=False,node_color="white",node_size=0)
+    
 def draw_pretty_f_(T):
     #Sorted by function value, reversed
     nodes = listify_nodes(T)
@@ -532,6 +558,7 @@ def draw_pretty_f_(T):
     last_f = f_(nodes[0])
     count = 0
     c2 = 0
+    delta = 1
     for i in range(0, len(nodes)):
         n=nodes[i]
         
@@ -541,7 +568,7 @@ def draw_pretty_f_(T):
             count = c2
             
         pos_dict[n['name']] = (count,f_(n))
-        count += 1
+        count += delta
     
     #center over children
     for i in range(0, len(nodes)):
@@ -602,9 +629,11 @@ def calc_values_height(G, pos, angle):
     #Set all of the function values by height
     for i in range(0, len(n)):
         n[i]['value'] = height(pos[n[i]['name']], direction)
-        
+
+#Calculates the height by reorienting the graph then using conventional height
+#Returns the min x coord and the min y coord
 def calc_values_height_reorient(G, pos, angle):
-    reorient(pos, angle)
+    avg = reorient(pos, angle)
     
     #Get the list of node objects
     n = listify_nodes(G)
@@ -613,6 +642,7 @@ def calc_values_height_reorient(G, pos, angle):
     for i in range(0, len(n)):
         n[i]['value'] = height(pos[n[i]['name']], math.pi / 2)
         
+    return avg
     
 def reorient(pos, angle):
 
@@ -621,11 +651,27 @@ def reorient(pos, angle):
     #testing
     #print("direction: " + str(d) + "  Norm: " + str(norm))
 
+    x = [100000000000, -100000000000]
+    y = [100000000000, -100000000000]
+
     #Calculate the new positions by computing the vector projection
     for p in pos:
         xNew = height(pos[p], norm)
         yNew = height(pos[p], angle)
+        
+        if(xNew > x[1]):
+            x[1] = xNew
+        if(xNew < x[0]):
+            x[0] = xNew
+            
+        if(yNew > y[1]):
+            y[1] = yNew
+        if(yNew < y[0]):
+            y[0] = yNew
+            
         pos[p] = (xNew,yNew)
+        
+    return [(x[1]+x[0])/2,(y[1]+y[0])/2]
 
 def add_arrow():
     ax = plt.subplot(132,frameon=False)
@@ -646,6 +692,20 @@ def draw_w_pos_(G, pos):
     ax = plt.subplot(131)
     ax.title.set_text("Input Graph")
     nx.draw(G, pos, ax, with_labels=False,node_color="white",node_size=0)
+    
+def draw_w_pos_square(G, pos, avg):
+    ax = plt.subplot(131)
+    ax.title.set_text("Input Graph")
+    ax.set_xlim((avg[0]-2700, avg[0]+2700))
+    ax.set_ylim((avg[1]-2700, avg[1]+2700))
+    nx.draw(G, pos, ax, with_labels=False,node_color="white",node_size=0)
+    
+def draw_M_square(M, pos, avg):
+    ax = plt.subplot(133)
+    ax.title.set_text("Resulting Merge Tree")
+    ax.set_xlim((avg[0]-2700, avg[0]+2700))
+    ax.set_ylim((avg[1]-2700, avg[1]+2700))
+    nx.draw(M, pos, ax, with_labels=False,node_color="white",node_size=0)    
      
 def IL_test(M):
     IL = interleaving_distances(M)
@@ -689,10 +749,6 @@ calc_values_height_reorient(G, pos_dict, angle)
 #f_vals[10]= {'value': 4}
 #nx.set_node_attributes(G,f_vals)
 
-fig = plt.subplots(1,3,figsize=(15,5))
-
-add_arrow()
-
 #Draw G
 #draw_w_pos(G,pos_dict)
 
@@ -732,6 +788,11 @@ with open(vert_path) as vertex:
                 counter+=1
 vertex.close()
 
+#print("X:")
+#print("     min: " + str(min(coordinate1)) + "  max: " + str(max(coordinate1)))
+#print("Y:")
+#print("     min: " + str(min(coordinate2)) + "  max: " + str(max(coordinate2)))
+
 G.add_nodes_from(vertexnames)
 
 
@@ -763,24 +824,38 @@ for i in range(len(firstvertex)):
 G.add_edges_from(edges)
 
 pos_dict = {}
-for i in range(len(vertexnames)):
+for i in range(len(vertexnames)):   
     pos_dict[vertexnames[i]] = [coordinate1[i], coordinate2[i]]
+ 
+for j in range(0, 121):
+    G.clear()
+    G = nx.Graph()
+    G.add_nodes_from(vertexnames)
+    G.add_edges_from(edges)
+    pos_dict = {}
+    for i in range(len(vertexnames)):
+        pos_dict[vertexnames[i]] = [coordinate1[i], coordinate2[i]]
     
-angle = math.pi / 2
-calc_values_height_reorient(G, pos_dict, angle)
+    fig = plt.subplots(1,3,figsize=(15,5))
+    add_arrow()
     
-draw_w_pos_(G,pos_dict)
-
-M = merge_tree(G)
-print(nx.is_forest(M))
-
-draw_pretty_f_(M)
+    angle = j * math.pi / 60
+    avg = calc_values_height_reorient(G, pos_dict, angle)
+        
+    draw_w_pos_square(G,pos_dict, avg)
     
-#RandomSample = random.sample(list(G.nodes), 2600)
-#G.remove_nodes_from(RandomSample)
-
-
-plt.show()
+    M = merge_tree(G)
+    
+    #M should always be a forest
+    if(nx.is_forest(M) == False):
+        print("A Tragedy")
+    
+    draw_M_square(M, pos_dict, avg)
+    
+    print(j)
+    plt.savefig('./animation/frame' + str(j))
+    plt.show()
+    plt.close()
 #testing distance
 #print(compare_trees(IL[0],IL[0]))
 
