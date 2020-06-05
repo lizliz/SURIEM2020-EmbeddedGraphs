@@ -112,7 +112,7 @@ def osm(filePath, draw = True):
     # For some reason the .osm file that you export is sometimes outside of the
     # field of view on the map you're acually looking at, so we're going to delete
     # those nodes. This may need to be altered later because this might just
-    # be a problem specific to openstree
+    # be a problem specific to openstreetmap.org
     minlat = float(contents[contents.find("minlat") + 8:contents.find("minlon")-2])
     minlon = float(contents[contents.find("minlon") + 8:contents.find("maxlat")-2])
     maxlat = float(contents[contents.find("maxlat") + 8:contents.find("maxlon")-2])
