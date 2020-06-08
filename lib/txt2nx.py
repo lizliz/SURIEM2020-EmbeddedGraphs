@@ -14,13 +14,13 @@ def set_edges(G, edge_path):
             counter=1
             for y in x.split(','):
                 if (counter==1):
-                    edgenames.append(y)
+                    edgenames.append(float(y))
                     counter+=1
                 elif(counter==2):
-                    firstvertex.append(y)
+                    firstvertex.append(float(y))
                     counter+=1
                 elif(counter==3):
-                    secondvertex.append(y)
+                    secondvertex.append(float(y))
                     counter+=1
     edge.close()
     
@@ -42,13 +42,13 @@ def set_vertices(G, vertex_path):
             counter=1
             for y in x.split(','):
                 if (counter==1):
-                    vertexnames.append(y)
+                    vertexnames.append(float(y))
                     counter+=1
                 elif(counter==2):
-                    coordinate1.append(y)
+                    coordinate1.append(float(y))
                     counter+=1
                 elif(counter==3):
-                    coordinate2.append(y)
+                    coordinate2.append(float(y))
                     counter+=1
     vertex.close()
     
