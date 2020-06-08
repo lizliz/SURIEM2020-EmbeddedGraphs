@@ -16,7 +16,7 @@ import networkx as nx
 
 # By default the function will also draw the graph you give it
 
-def osm(filePath, draw = True):
+def read_osm(filePath, draw = True):
     G = nx.Graph()
     
     # Open the file and read in its contents as one long string

@@ -17,7 +17,7 @@ import networkx as nx
 # must be a string
 # By default the function will also draw the graph you give it
 
-def graphml(filePath, draw = True):
+def read_graphml(filePath, draw = True):
     
     # Open the file and read in its contents as one long string
     file = open(filePath, "r")
