@@ -50,12 +50,11 @@ def input_output(G, pos, savepath=""):
     plt.show()
     plt.close()
         
-def input_output_square(G, pos, savepath=""):
+def input_output_square(G, pos, r, savepath=""):
     fig = plt.subplots(1,3,figsize=(15,5))
     
     #Figure out the bounds
     geom = get_bounds_and_radius(pos)
-    r = geom[0]
     b = geom[1]
     xAvg = (b[0][1]+b[0][0])/2
     yAvg = (b[1][1]+b[1][0])/2
@@ -94,6 +93,9 @@ def animate(G, pos, frames, savepath=""):
     if(savepath != ""):
         if( not os.path.isdir(directory) ):
             os.makedirs(directory)
+    
+    geom = get_bounds_and_radius(pos)
+    r = geom[0]
             
     for i in range(0, frames):
         
@@ -103,7 +105,7 @@ def animate(G, pos, frames, savepath=""):
               
         calc_values_height_reorient(G, pos_copy, math.pi/2 + 2*math.pi/frames)
         
-        input_output_square(G, pos_copy, pth)
+        input_output_square(G, pos_copy, r, pth)
 
             
         

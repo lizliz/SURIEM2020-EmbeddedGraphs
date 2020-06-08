@@ -164,7 +164,7 @@ def get_bounds_and_radius(pos):
     
     yRange = bounds[1][1]-bounds[1][0]
     
-    radius = max(xRange, yRange) * 1.03
+    radius = max(xRange, yRange) * 1.15
     return [radius, bounds]
 ###
 #END OF GEOMETRY
