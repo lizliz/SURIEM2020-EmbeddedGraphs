@@ -114,6 +114,14 @@ def IsEpsSimilar(S, M, e, memo, rootS="NULL", rootM="NULL"):
                 tag = "TAG FOR M: "
                 subtrees_M = get_child_subtrees(M.root, minima_M, M)
                 
+                #No child trees
+                if(len(subtrees_S) == 0 and len(subtrees_M) == 0):
+                    if(S_ not in memo):
+                                memo[S_] = {}
+                    memo[S_][M_] = True
+                    return True
+                
+                
                 #Set up the bipartite graph to later check for a cover
                 bip = nx.Graph()
                 for s in subtrees_S:
@@ -137,7 +145,8 @@ def IsEpsSimilar(S, M, e, memo, rootS="NULL", rootM="NULL"):
                         
                         if(memo[s][m]):
                             bip.add_edge_from(s1,m1)
-                            
+ 
+                
                 #Compute a maximum-cardinality matching!
                 cover = nx.algorithms.matching.eppstein_matching(bip)
                 #Check if it's a perfect cover
