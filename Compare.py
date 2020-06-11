@@ -280,8 +280,8 @@ def IsEpsSimilar(A, B, e, roots, memo):
                 #Create a bipartite graph representating the matchability of
                 #    subtree pairings between the two lists above. Also, save
                 #    all of the nodes in lists.
-                list_a = node_list(subtrees_A)
-                list_b = node_list(subtrees_B)
+                list_A = node_list(subtrees_A)
+                list_B = node_list(subtrees_B)
                 bip = create_bip(list_A, list_B)
                 
                 #Iterate over all child-subtree pairing and compute matchability.
