@@ -414,10 +414,11 @@ def morozov_distance(T1, T2, radius = 0.05):
     #similar = True
     epsilon = maximum
     similar = IsEpsSimilar(T1,T2, epsilon, roots)
-    delta = epsilon / 2
+    delta = epsilon
     
     # Continue the binary search until we get within our desired margin of error for accuracy
-    while delta*2 >= radius:
+    while delta >= radius:
+        delta=delta/2
     # Decrease epsilon by half of the size between current epsilon and the lower end of the interval we're convergin on
         if similar == True:
             epsilon = epsilon - delta
@@ -427,7 +428,6 @@ def morozov_distance(T1, T2, radius = 0.05):
             epsilon = epsilon+delta
             similar = IsEpsSimilar(T1,T2, epsilon, roots)
         # Debug statement, will remove later
-        delta=delta/2
         #print(epsilon)
         
     # Pretty print statement for debugging, will remove later
