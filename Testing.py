@@ -79,8 +79,8 @@ M2 = Merge.merge_tree(T2)
 
 #print(Compare.descendants(M1, "s1"))
 
-#print(Compare.IsEpsSimilar(M1, M2, 10, ["s4", "s8"]))
+#print(Compare.IsEpsSimilar(M1, M2, 1.9999, ["s4", "s8"]))
 #print(Compare.IsEpsSimilar(M1, M2, 1.99, ["s4", "s8"]))
 #print(Compare.IsEpsSimilar(M2, M1, 1, ["s8", "s4"]))
-print(Compare.morozov_distance(M2, M1))
+Compare.morozov_distance(M1, M1, 0.05)
 
