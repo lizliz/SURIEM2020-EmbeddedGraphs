@@ -52,7 +52,7 @@ pos1 = {
 
 T1.add_nodes_from(nodes_t1)
 T1.add_edges_from(edges_t1)
-Visualization.input_output(T1, pos1)
+#Visualization.input_output(T1, pos1)
 Merge.calc_values_height(T1, pos1, math.pi / 2)
 M1 = Merge.merge_tree(T1)
 
@@ -79,7 +79,8 @@ M2 = Merge.merge_tree(T2)
 
 #print(Compare.descendants(M1, "s1"))
 
-print(Compare.IsEpsSimilar(M1, M2, 10, ["s4", "s8"]))
-print(Compare.IsEpsSimilar(M1, M2, 1, ["s4", "s8"]))
-print(Compare.morozov_distance(M1, M2))
+#print(Compare.IsEpsSimilar(M1, M2, 10, ["s4", "s8"]))
+#print(Compare.IsEpsSimilar(M1, M2, 1.99, ["s4", "s8"]))
+#print(Compare.IsEpsSimilar(M2, M1, 1, ["s8", "s4"]))
+print(Compare.morozov_distance(M2, M1))
 

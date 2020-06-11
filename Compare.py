@@ -8,7 +8,7 @@ import random
 
 #MEMOIZATION VARIABLES
 global D
-D = {}
+D={}
 
 #The associated cost of matching a pair of vertices
 #from two rooted representations of branchings
@@ -191,7 +191,9 @@ def subgraph_without(G, exclude):
     
 
 #determines whether a perfect matching exists in the context of ghost vertices
-def has_perfect_matching(bip, part_A, part_B, results={}):
+def has_perfect_matching(bip, part_A, part_B, results=None):
+    if(results==None):
+        results={}
     
     #Parts A and B are lists of non-ghost nodenames
     #ID is used to identify a result
@@ -245,6 +247,7 @@ def has_perfect_matching(bip, part_A, part_B, results={}):
 def IsEpsSimilar(A, B, e, roots, memo=None):
     if(memo==None):
         memo = {}
+        print(memo)
     
     #Find the root - the highest vertex - of each tree
     root_A = roots[0]
@@ -389,7 +392,7 @@ def morozov_distance(T1, T2, radius = 0.05):
 
     maximum = max(amp1,amp2) # Find the biggest of the two amplitudes
     
-    roots = [find_root(T1), find_root(T2)]
+    roots = [find_root(T1), find_root(T2)]\
     
     # Placeholder until i understand how IsEpsSimilar works
     #similar = True
@@ -399,6 +402,7 @@ def morozov_distance(T1, T2, radius = 0.05):
     
     # Continue the binary search until we get within our desired margin of error for accuracy
     while delta >= radius:
+        print("ITERATION")
     # Decrease epsilon by half of the size between current epsilon and the lower end of the interval we're convergin on
         if similar == True:
             epsilon = epsilon - delta
