@@ -212,13 +212,13 @@ def merge_tree(G):
         else:
             naming[name[1]] = name[0]
     
-    #Rename the parent pointers to be consistent with the new naming scheme        
-    parent_dict = {}
-    parent_dict[nodes[i]['name']] = naming[name[1]]
-    m_ = listify_nodes(M)
-    for m in m_ :
-        m['p'] = naming[m['p']]
-     
     #DON'T RELABEL.
+    #Rename the parent pointers to be consistent with the new naming scheme        
+    #parent_dict = {}
+    #parent_dict[nodes[i]['name']] = naming[name[1]]
+    #m_ = listify_nodes(M)
+    #for m in m_ :
+    #    m['p'] = naming[m['p']] 
     #M = nx.relabel_nodes(M, naming)
+    
     return M
