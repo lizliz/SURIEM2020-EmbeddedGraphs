@@ -359,4 +359,34 @@ def IsEpsSimilar(A, B, e, roots, memo):
     
     
     
+###### Candace added the function below, not sure if it works yet because idek how isEpsSimilar works
+
+# Takes two merge trees and finds the distance between them
+# within a certain radius of accuracy
+def morozov_distance(T1, T2, radius = 0.0005):
+    # Find the larger amplitude between the two trees as our starting epsilon
+    vals1 = [i[1]["value"]for i in list(T1.nodes.data())] # I feel like there is definitely an easier way to find max/mins than making lists
+    amp1 = abs(max(vals1)-min(vals1)) # amplitude for T1
+    vals2 = [j[1]["value"]for j in list(T2.nodes.data())]
+    amp2 = abs(max(vals2)-min(vals2)) # amplitude for T2
+
+    maximum = max(amp1,amp2) # Find the biggest of the two amplitudes
     
+    # i dont think i understand the parameters of this functionnnnnnnnn
+    similar = IsEpsSimilar(A = T1?, B=T2?, e=starting_epsilon, roots = ?, memo = {}?)
+    epsilon = starting_epsilon
+    minimim = 0
+    
+    # Continue the binary search until we get within our desired margin of error for accuracy
+    while (maximum-minimum)/2 >= radius:
+    # Decrease epsilon by half of the size between current epsilon and the lower end of the interval we're convergin on
+        if silimar == true:
+            maximum = epsilon
+            epsilon = ((epsilon-minimum)/2) + minimum
+            similar = IsEpsSimilar(A = T1?, B=T2?, e=epsilon, roots = ?, memo = {}?)
+        else:
+        # Increase epsilon by half of the size between current epsilon and the upper end of the interval we're convergin on
+            minimum = epsilon
+            epsilon = ((maximum-epsilon)/2) + epsilon
+            similar = IsEpsSimilar(A = T1?, B=T2?, e=epsilon, roots = ?, memo = {}?)
+        
