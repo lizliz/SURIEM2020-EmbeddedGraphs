@@ -9,9 +9,6 @@ import random
 #MEMOIZATION VARIABLES
 global D
 D = {}
-global memo
-memo = {}
-global tag
 
 #The associated cost of matching a pair of vertices
 #from two rooted representations of branchings
@@ -245,8 +242,10 @@ def has_perfect_matching(bip, part_A, part_B, results={}):
 #e is the cost maximum
 #roots is an array containing the roots of A and B
 #The function returns whether or not the two merge trees are matchable within e
-def IsEpsSimilar(A, B, e, roots, memo={}):
-
+def IsEpsSimilar(A, B, e, roots, memo=None):
+    if(memo==None):
+        memo = {}
+    
     #Find the root - the highest vertex - of each tree
     root_A = roots[0]
     root_B = roots[1]
