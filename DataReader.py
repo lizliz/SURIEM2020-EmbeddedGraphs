@@ -21,5 +21,5 @@ def read_graphml(path, draw = False):
 
 #osm reading
 def read_osm(path, draw = False):
-    return osm.read_graphml(path, draw)
+    return osm.read_osm(path, draw)
 ##
