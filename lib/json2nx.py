@@ -8,6 +8,8 @@ import networkx as nx
 
 # Will add comments later when I have better internet
 # WARNING: Not thouroughly tested
+# ANOTHER WARNING: Some of these have been taking a few minutes to run for 
+# graphs with a lot of nodes
 ###############################################################################
 # Converting Json to Nx
 
@@ -34,7 +36,7 @@ def read_json(path, draw = True):
         coordinates = contents_list[i]
         coord_points = coordinates.split("],[")
         
-        x, y, lastx, lasty = None, None, None, None
+        x, y, last_point = None, None, None
         
         #breakpoint()
         for point in coord_points:
@@ -64,15 +66,15 @@ def read_json(path, draw = True):
             point_positions[point] = (x,y)
                 
             # If we aren't at the beginning
-            if lastx != None:
-                last_point = str(lastx) + "," + str(lasty) 
+            if last_point != None:
+                #last_point = str(lastx) + "," + str(lasty) 
                 G.add_edge(last_point, point)
             
             # If we are at the end
             if newLine != -1:# or end != -1:
-                lastx, lasty = None, None
+                last_point = None
             else:
-                lastx, lasty = x, y
+                last_point = point
         
         i += 1
     
