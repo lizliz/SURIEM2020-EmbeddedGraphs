@@ -210,6 +210,22 @@ def random_tree(n):
         nodes.append(n2)
     
     return T #return the tree
+
+def random_positions(n):
+    pos = {}
+    
+    center = [random.randint(-10000,10000),random.randint(-10000,10000)]
+    spread = random.randint(1,10000)
+    
+    for i in range(1, n+1):
+        pos[i] = (center[0] + random.randint(-1*spread,spread),center[1] + random.randint(-1*spread,spread))
+        
+    return pos
+
+def random_tree_and_pos(n):
+    T = random_tree(n)
+    pos = random_positions(n)
+    return [T,pos]
 ###
 #END OF RANDOM GENERATION
 ###

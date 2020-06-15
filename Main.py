@@ -5,6 +5,8 @@
 import networkx as nx
 import Visualization as v
 import DataReader as dr
+from lib.Tools import random_tree_and_pos
+from Merge import calc_values_height
 import math
 import Merge
 import Compare
@@ -12,42 +14,41 @@ import timeit
 import time
 
 
-vert = "./data/athens_small_vertices_osm.txt"
-edge = "./data/athens_small_edges_osm.txt"
+n = 15
 
-graph = dr.read_txt(edge, vert)
-G1 = graph[0] #nx graph
-pos1 = graph[1] #position dic
-
-components = nx.connected_components(G1)
-#for c in components:
-    #print(len(c))
+tests = 1000
+for i in range(0, tests):
+    TP = random_tree_and_pos(n)
+    G1 = TP[0]
+    pos1 = TP[1]
+    Merge.calc_values_height(G1, pos1, math.pi/2)
+    M1 = Merge.merge_tree(G1)
+    print("M1 is merge tree: " + str(nx.is_forest(M1) and nx.is_connected(M1)))
     
-G1.remove_node(363972226.0)
-G1.remove_node(1540878773.0)
-
-Merge.calc_values_height(G1, pos1, math.pi/2)
-M1 = Merge.merge_tree(G1)
-
-vert = "./data/chicago_vertices_osm.txt"
-edge = "./data/chicago_edges_osm.txt"
-
-graph = dr.read_txt(edge, vert)
-G2 = graph[0] #nx graph
-pos2 = graph[1] #position dic
-
-components = nx.connected_components(G2)
-G2 = G2.subgraph(list(components)[0])
+    TP = random_tree_and_pos(n)
+    G2 = TP[0]
+    pos2 = TP[1]
+    Merge.calc_values_height(G2, pos2, math.pi/2)
+    M2 = Merge.merge_tree(G2)
+    print("M2 is merge tree: " + str(nx.is_forest(M2) and nx.is_connected(M2)))
     
-Merge.calc_values_height(G2, pos2, math.pi/2)
-M2 = Merge.merge_tree(G2)
-
-#v.input_output(G, pos)
-#v.input_output_square(G, pos)
-#v.animate(G, pos, 60, "/animations/test1")
-
-#print(Compare.morozov_distance(M1,M2))
-
-G2 = G1.copy()
-pos2 = pos1.copy()
-v.compare_many(G1,pos1, G2,pos2, 10)
+    TP = random_tree_and_pos(n)
+    G3 = TP[0]
+    pos3 = TP[1]
+    Merge.calc_values_height(G3, pos3, math.pi/2)
+    M3 = Merge.merge_tree(G3)
+    print("M3 is merge tree: " + str(nx.is_forest(M3) and nx.is_connected(M3)))
+    
+    v.compare(M1, pos1, M2, pos2)
+    
+    dxy = Compare.morozov_distance(M1, M2, 0.1)
+    dxz = Compare.morozov_distance(M1, M3, 0.1)
+    dzy = Compare.morozov_distance(M3, M2, 0.1)
+    
+    dif = min(dxy + dxz - dzy, dxy + dzy - dxz, dxz + dzy - dxy)
+    print(dif)
+    
+    if(dif < 0):
+        "HUZZAH!"
+        i=tests+1
+        

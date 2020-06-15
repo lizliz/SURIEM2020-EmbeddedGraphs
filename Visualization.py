@@ -159,9 +159,9 @@ def compare_square(A, pos_A, r_A, B, pos_B, r_B, pth=""):
     d = Compare.morozov_distance(A, B, 10)
     ax = plt.subplot(132, frameon=False)
     ax.axis('off')
-    ax.title.set_text("DISTANCE = " + str(d))
+    ax.title.set_text("DISTANCE = " + str(d))   
     
-     #Save the image if specified
+    #Save the image if specified
     if(pth != ""):
         plt.savefig(pth)
         
@@ -189,7 +189,7 @@ def compare_many(A, pos_A, B, pos_B, frames, savepath=""):
         pth=""
         if(savepath != ""):
             pth = "." + savepath + str("/frame-" + str(i+1))
-              
+            
         calc_values_height_reorient(A, pos_A_copy, math.pi/2 + 2*math.pi/frames)
         calc_values_height_reorient(B, pos_B_copy, math.pi/2 + 2*math.pi/frames)
         

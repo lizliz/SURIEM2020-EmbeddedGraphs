@@ -36,9 +36,10 @@ def get_child_subtrees(root, minima, T):
     #print("Root and Minima contained in tree: " + str(root in list(T.nodes) and minima in list(T.nodes)))
     
     subtrees = []
-    while(True):
+    while(last != p):
         #print(p)
         neighbors = T[p]
+        #print(neighbors)
         
         #Add all the subtrees with child saddle p
         for n in neighbors:
@@ -82,6 +83,7 @@ def sub_special(G, n):
     g = g.copy()
     g.graph['root'] = G.nodes[n]['p']
     g.graph['ID'] = n
+    
     return g
 
 #Creates a bipartite graph to represent the connections between two
@@ -106,34 +108,9 @@ def node_list(subtrees):
 
     return x
 
-#Computes whether two subtrees a and b are matchable. Calls IsEpsSimilar
-#    in the case that the computation hasn't yet been computed.
-def compute_matchability(a, b, e, memo):
-
-    #These indices always pull the ID and roots because of how the subtrees are
-    #constructed in a previous method. Generally, this will NOT work on subtrees not
-    #computed through IsEpsSimilar!!
-    root_a = a.graph['root'] 
-    id_a = a.graph['ID']
-    root_b= b.graph['root']
-    id_b = b.graph['ID']
-    
-    #Check if subtree 'a' has an entry corresponding to it in memo
-    #Note: because of the input order, we only ever need entries in the
-    #      in the order (a,b)
-    if(id_a not in memo or id_b not in memo[id_a]): #Result not computed yet
-        if(id_a not in memo):
-            memo[id_a] = {}
-            
-        memo[id_a][id_b] = IsEpsSimilar(a, b, e, [root_a, root_b], memo)
-    
-    #Return the result (True or False)
-    return memo[id_a][id_b]
-
 #Compute all the removal costs at and below a root
 #Return the resulting cost dictionary
-def compute_costs(A, root, e, costs={}):
-        
+def compute_costs(A, root, costs={}):
     if(root in costs):
         return costs
     
@@ -145,14 +122,17 @@ def compute_costs(A, root, e, costs={}):
     #Use memoization to speed things up
     f = f_(A.nodes[root])
     neighbors = A[root]
+    max_cost = c
     for nei in neighbors:
         #If nei is a child but its cost hasn't been computed...
         if(f_(A.nodes[nei]) < f):
             if(nei not in costs):
-                costs[nei] = compute_costs(A, nei, e, costs)[nei]
-            c += costs[nei]
-    
-    costs[root] = c
+                costs[nei] = compute_costs(A, nei, costs)[nei]
+            
+            if(costs[nei] > max_cost):
+                max_cost = costs[nei]    
+            
+    costs[root] = max_cost
     return costs
 
 #Add all the ghosts to the bipartite graph
@@ -289,24 +269,58 @@ def update_branching(B, saddle, minima):
         B[saddle] = []
     
     B[saddle].append(minima)
+  
+#Computes whether two subtrees a and b are matchable. Calls IsEpsSimilar
+#    in the case that the computation hasn't yet been computed.
+def compute_matchability(a, b, e, memo, costs):
+
+    #These indices always pull the ID and roots because of how the subtrees are
+    #constructed in a previous method. Generally, this will NOT work on subtrees not
+    #computed through IsEpsSimilar!!
+    root_a = a.graph['root']
+    id_a = a.graph['ID']
+    root_b= b.graph['root']
+    id_b = b.graph['ID']
     
+    roots = [root_a, root_b]
+    
+    #Check if subtree 'a' has an entry corresponding to it in memo
+    #Note: because of the input order, we only ever need entries in the
+    #      in the order (a,b)
+    if(id_a not in memo or id_b not in memo[id_a]): #Result not computed yet
+        if(id_a not in memo):
+            memo[id_a] = {}
+            
+        memo[id_a][id_b] = IsEpsSimilar(a, b, e, costs=costs, roots=roots, memo=memo)
+    
+    #Return the result (True or False)
+    return memo[id_a][id_b]    
+  
 #S and M are two trees to compare
 #e is the cost maximum
 #roots is an array containing the roots of A and B
 #The function returns whether or not the two merge trees are matchable within e
-def IsEpsSimilar(A, B, e, roots=None, memo=None):
+def IsEpsSimilar(A, B, e, costs=None, roots=None, memo=None):
     if(memo==None):
         memo = {}
+        
     if(roots==None):
         roots = [find_root(A), find_root(B)]
-    
-    #Find the root - the highest vertex - of each tree
+        #Find the root - the highest vertex - of each tree
     root_A = roots[0]
     root_B = roots[1]
+    
+    if(costs == None):
+        costs=[{},{}]
+    if(not bool(costs[0])):
+        compute_costs(A, root_A, costs[0])
+        compute_costs(B, root_B, costs[1])
+
+    
 
     #Compute all costs for later ghost-vertex marking
-    costs_A = compute_costs(A, root_A, e)
-    costs_B = compute_costs(B, root_B, e)
+    costs_A = costs[0]
+    costs_B = costs[1]
     
     #Get the minima of the two treees.
     #These are crucial to the construction of branch decompositions
@@ -351,7 +365,7 @@ def IsEpsSimilar(A, B, e, roots=None, memo=None):
                 #Also, fill in the bipartite edges where applicable
                 for a in subtrees_A:
                     for b in subtrees_B:
-                        if(compute_matchability(a, b, e, memo)):
+                        if(compute_matchability(a, b, e, memo, costs)):
                             bip.add_edge(a.graph['ID'], b.graph['ID'])
                 
                 #At this point, we should have a bipartite graph that encodes the
@@ -405,35 +419,33 @@ def morozov_distance(T1, T2, radius = 0.05):
     amp2 = abs(max(vals2)-min(vals2)) # amplitude for T2
 
     maximum = max(amp1,amp2) # Find the biggest of the two amplitudes
-    print("max: " + str(maximum))
-    
+    #print("max: " + str(maximum))
+    costs = [{},{}]
     roots = [find_root(T1), find_root(T2)]
     
     # Placeholder until i understand how IsEpsSimilar works
     #similar = True
-    epsilon = maximum
-    similar = IsEpsSimilar(T1,T2, epsilon, roots)
+    epsilon = 25000
+    similar = IsEpsSimilar(T1,T2, epsilon, costs=costs, roots=roots)
     delta = epsilon
+    
     
     its = 0
     # Continue the binary search until we get within our desired margin of error for accuracy
     while delta >= radius:
-        global matching
-        matching.clear()
-        
         its+=1
         delta=delta/2
     # Decrease epsilon by half of the size between current epsilon and the lower end of the interval we're convergin on
         if similar == True:
             epsilon = epsilon - delta
-            similar = IsEpsSimilar(T1,T2, epsilon, roots)
+            similar = IsEpsSimilar(T1,T2, epsilon,costs=costs, roots=roots)
         else:
         # Increase epsilon by half of the size between current epsilon and the upper end of the interval we're convergin on
             epsilon = epsilon+delta
-            similar = IsEpsSimilar(T1,T2, epsilon, roots)
+            similar = IsEpsSimilar(T1,T2, epsilon,costs=costs, roots=roots)
         # Debug statement, will remove later
         #print(epsilon)
         
     # Pretty print statement for debugging, will remove later
-    print("Morozov Distance:", epsilon, "\nMargin of Error:",radius, "\nIterations:",its)
+    #print("Morozov Distance:", epsilon, "\nMargin of Error:",radius, "\nIterations:",its)
     return epsilon
