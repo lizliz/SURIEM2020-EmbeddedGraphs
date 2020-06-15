@@ -111,19 +111,20 @@ def add_node(n_, G, M):
     to_add = []
     for i in range(0, len(children)):
         relative = G.nodes[children[i]]
-        #Relative is a child
-        if(f_(relative) < f):
-            #Does this work? idk !!!!!!
-            rel_cr = find_c(children[i], G)
-            
-            #Not already connected to child
-            if(rel_cr != cr):
-                #Add to the list of children to merge
-                to_add.append(rel_cr)
+        
+        #Relative is a child or neighbor
+        if(f_(relative) <= f):
+            if('c_rep' in relative):
+                rel_cr = find_c(children[i], G)
                 
-                #New representative child!
-                if(f_(G.nodes[rel_cr]) < f_(G.nodes[cr])):
-                    cr=rel_cr        
+                #Not already connected to child
+                if(rel_cr != cr):
+                    #Add to the list of children to merge
+                    to_add.append(rel_cr)
+                    
+                    #New representative child!
+                    if(f_(G.nodes[rel_cr]) < f_(G.nodes[cr])):
+                        cr=rel_cr
     
     #Naming is important
     name = ''
@@ -188,6 +189,18 @@ def add_node(n_, G, M):
     n['p_rep']=p #Update the parent rep of the newly added node
     
     return [name, p]
+
+def reduced(G):
+    nodes = list(G.nodes)
+    
+    count = 0
+    for n in nodes:
+        if(len(G[n]) == 2):
+            count+=1
+        if(count>=2):
+            return False
+        
+    return True
 
 #Construct the merge tree given a graph G with function values.
 #Returns a networkx tree with a position dictionary for drawing

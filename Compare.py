@@ -4,11 +4,16 @@
 #This program is concerned witht he comparison of merge trees
 import networkx as nx
 from lib.Tools import f_, get_leaves, list_append, listify_nodes
-import random
 
 #MEMOIZATION VARIABLES
 global D
 D={}
+
+global matching
+matching={}
+
+global branching
+branching = [{},{}]
 
 #The associated cost of matching a pair of vertices
 #from two rooted representations of branchings
@@ -28,9 +33,11 @@ def get_child_subtrees(root, minima, T):
     p = T.nodes[minima]['p']
      
     #print("root: " + str(root) + " minima: " + str(minima))
+    #print("Root and Minima contained in tree: " + str(root in list(T.nodes) and minima in list(T.nodes)))
     
     subtrees = []
     while(True):
+        #print(p)
         neighbors = T[p]
         
         #Add all the subtrees with child saddle p
@@ -131,6 +138,7 @@ def compute_costs(A, root, e, costs={}):
         return costs
     
     #Base removal cost
+    #print("Saddle and Minima in tree: " + str(root in A and A.nodes[root]['p'] in A))
     c = remove_cost(A, root, A.nodes[root]['p'])
     
     #Account for the necessary removal of descendants
@@ -170,15 +178,27 @@ def has_ghost(A, a):
 def is_ghost(a):
     return (isinstance(a, str) and len(a) >= 5 and a[0:5] == "GHOST")
 
-#Check if all nodes in a set are ghosts
+#Check if good match
+#yeah, this comment is bad
 def good_match(A):
     nodes = list(A.nodes)
     
+    global matching    
     for a in nodes:
         if not is_ghost(a) and len(A[a]) == 0:
             return False
+        elif not is_ghost(a):
+            if(is_ghost(list(A[a])[0])):
+                update_matching(list(A[a])[0], a)
         
     return True
+
+def update_matching(a, b):
+    global matching
+    if(is_ghost(a)):
+        matching[b] = "DELETED"
+    else:
+        matching[a] = b
 
 #Returns a subgraph induced by removign certain nodes
 def subgraph_without(G, exclude):
@@ -189,7 +209,6 @@ def subgraph_without(G, exclude):
         
     return G.subgraph(nodes)
     
-
 #determines whether a perfect matching exists in the context of ghost vertices
 def has_perfect_matching(bip, part_A, part_B, results=None):
     if(results==None):
@@ -221,6 +240,7 @@ def has_perfect_matching(bip, part_A, part_B, results=None):
     #Iterate over the possibilities
     neighbors = list(bip[a])
     for nei in neighbors:
+        
         #Delete the chosen nodes from the list and graph.
         b = subgraph_without(bip, [a, nei])
         
@@ -235,18 +255,50 @@ def has_perfect_matching(bip, part_A, part_B, results=None):
         #Recursively solve the subproblem
         if(has_perfect_matching(b, new_A, new_B, results)):
             results[ID] = True
+            #update_matching(a,nei)
             return results[ID]
         
     results[ID] = False
     return results[ID]
-           
+    
+def find_root(T):
+     nodes = listify_nodes(T)
+     
+     max_ = f_(nodes[0])
+     max_node = nodes[0]
+     for n in nodes:
+         if(f_(n) > max_):
+             max_ = f_(n)
+             max_node = n
+             
+     return max_node['name']
+    
+def relabel(G, tag):
+    nodes = list(G.nodes)
+    
+    new_names = {}    
+    
+    for n in nodes:
+        new_names[n] = tag + str(n)
+        G.nodes[n]['p'] = tag + str(G.nodes[n]['p'])
+    
+    nx.relabel.relabel_nodes(G, new_names, copy=False)
+        
+def update_branching(B, saddle, minima):
+    if(saddle not in B):
+        B[saddle] = []
+    
+    B[saddle].append(minima)
+    
 #S and M are two trees to compare
 #e is the cost maximum
 #roots is an array containing the roots of A and B
 #The function returns whether or not the two merge trees are matchable within e
-def IsEpsSimilar(A, B, e, roots, memo=None):
+def IsEpsSimilar(A, B, e, roots=None, memo=None):
     if(memo==None):
         memo = {}
+    if(roots==None):
+        roots = [find_root(A), find_root(B)]
     
     #Find the root - the highest vertex - of each tree
     root_A = roots[0]
@@ -268,6 +320,7 @@ def IsEpsSimilar(A, B, e, roots, memo=None):
     #    bipartite graph with vertices representing the child subtrees. In the
     #    case that a pairing is matchable, an edge will be drawn between the
     #    corresponding vertices in the bipartite representation
+    global branching
     for mA in minima_A:
         for mB in minima_B:
             
@@ -276,6 +329,11 @@ def IsEpsSimilar(A, B, e, roots, memo=None):
             #If it isn't check if the rest of the graph is matchable by considering
             #   all of the child subtrees.
             if(match_cost(A,B, mA, root_A, mB, root_B) <= e):
+                update_matching(mA, mB)
+                update_matching(root_A, root_B)
+                
+                update_branching(branching[0], root_A, mA)
+                update_branching(branching[1], root_B, mB)
                 
                 #Get a list of all the child subtrees of each root-branch
                 subtrees_A = get_child_subtrees(root_A, mA, A)
@@ -317,72 +375,12 @@ def IsEpsSimilar(A, B, e, roots, memo=None):
                 if(has_perfect_matching(bip, list_A, list_B)):
                     return True
     
+    if(root_A in branching[0]):            
+        branching[0].pop(root_A)
+    if(root_B in branching[1]):            
+        branching[1].pop(root_B)
     #No matching was found!
     return False
-        
-                
-                
-            
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-def find_root(T):
-     nodes = listify_nodes(T)
-     
-     max_ = f_(nodes[0])
-     max_node = nodes[0]
-     for n in nodes:
-         if(f_(n) > max_):
-             max_ = f_(n)
-             max_node = n
-             
-     return max_node['name']
-    
-    
-def relabel(G, tag):
-    nodes = list(G.nodes)
-    
-    new_names = {}    
-    
-    for n in nodes:
-        new_names[n] = tag + str(n)
-        G.nodes[n]['p'] = tag + str(G.nodes[n]['p'])
-    
-    nx.relabel.relabel_nodes(G, new_names, copy=False)
 
 ###### I (Candace) added the function below but I'm not sure if it works yet 
 ###### because idek how isEpsSimilar works (which I realize is probably because
@@ -407,6 +405,7 @@ def morozov_distance(T1, T2, radius = 0.05):
     amp2 = abs(max(vals2)-min(vals2)) # amplitude for T2
 
     maximum = max(amp1,amp2) # Find the biggest of the two amplitudes
+    print("max: " + str(maximum))
     
     roots = [find_root(T1), find_root(T2)]
     
@@ -416,8 +415,13 @@ def morozov_distance(T1, T2, radius = 0.05):
     similar = IsEpsSimilar(T1,T2, epsilon, roots)
     delta = epsilon
     
+    its = 0
     # Continue the binary search until we get within our desired margin of error for accuracy
     while delta >= radius:
+        global matching
+        matching.clear()
+        
+        its+=1
         delta=delta/2
     # Decrease epsilon by half of the size between current epsilon and the lower end of the interval we're convergin on
         if similar == True:
@@ -431,5 +435,5 @@ def morozov_distance(T1, T2, radius = 0.05):
         #print(epsilon)
         
     # Pretty print statement for debugging, will remove later
-    print("Morozov Distance:", epsilon, "\nMargin of Error:",radius)
-    #return epsilon
+    print("Morozov Distance:", epsilon, "\nMargin of Error:",radius, "\nIterations:",its)
+    return epsilon
