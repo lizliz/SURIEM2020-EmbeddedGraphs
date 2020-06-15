@@ -4,6 +4,7 @@
 import lib.txt2nx as txt
 import lib.graphml2nx as graphml
 import lib.osm2nx as osm
+import lib.json2nx as json
 
 
 #txt reading
@@ -21,5 +22,10 @@ def read_graphml(path, draw = False):
 
 #osm reading
 def read_osm(path, draw = False):
-    return osm.read_graphml(path, draw)
+    return osm.read_osm(path, draw)
+##
+
+#json reading
+def read_json(path, draw = False):
+    return json.read_json(path, draw)
 ##
