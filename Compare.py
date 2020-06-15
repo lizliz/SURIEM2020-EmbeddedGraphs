@@ -33,11 +33,12 @@ def get_child_subtrees(root, minima, T):
     p = T.nodes[minima]['p']
      
     #print("root: " + str(root) + " minima: " + str(minima))
-    #print("Root and Minima contained in tree: " + str(root in list(T.nodes) and minima in list(T.nodes)))
+    #print("     Root and Minima contained in tree: " + str(root in list(T.nodes) and minima in list(T.nodes)))
+    #print("     Nodes: " + str(T.nodes))
     
     subtrees = []
     while(last != p):
-        #print(p)
+        #print("     current parent: " + str(p))
         neighbors = T[p]
         #print(neighbors)
         
@@ -56,6 +57,7 @@ def get_child_subtrees(root, minima, T):
         
         last = p #Update the last variable
         p = T.nodes[p]['p'] #Move to the next ancestor
+    return subtrees
 
 #Gets a list including n and all of its descendants, recursively
 def descendants(G, n):
@@ -315,8 +317,6 @@ def IsEpsSimilar(A, B, e, costs=None, roots=None, memo=None):
     if(not bool(costs[0])):
         compute_costs(A, root_A, costs[0])
         compute_costs(B, root_B, costs[1])
-
-    
 
     #Compute all costs for later ghost-vertex marking
     costs_A = costs[0]
