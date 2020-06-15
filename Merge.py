@@ -190,16 +190,27 @@ def add_node(n_, G, M):
     
     return [name, p]
 
-def reduced(G):
-    nodes = list(G.nodes)
+def find_root(T):
+     nodes = listify_nodes(T)
+     
+     max_ = f_(nodes[0])
+     max_node = nodes[0]
+     for n in nodes:
+         if(f_(n) > max_):
+             max_ = f_(n)
+             max_node = n
+             
+     return max_node['name']
+
+def reduced(M):
+    r = find_root(M)
+    
+    nodes = list(M.nodes)
     
     count = 0
     for n in nodes:
-        if(len(G[n]) == 2):
-            count+=1
-        if(count>=2):
+        if(len(M[n]) == 2 and n != r):
             return False
-        
     return True
 
 #Construct the merge tree given a graph G with function values.
