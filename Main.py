@@ -23,6 +23,7 @@ forest_lst = [] #list keeping track of the cyclic graphs
 poss = [] #list keeping track of the positions in the cyclic graphs
 key_lst = [] # list keeping track of the key error graphs
 key = "" #string keeping track of the key errors
+posk = []
 
 for i in range(0, tests):
     if(i % 25 == 0):
@@ -32,7 +33,14 @@ for i in range(0, tests):
     G1 = TP[0]
     pos1 = TP[1]
     Merge.calc_values_height(G1, pos1, math.pi/2)
-    M1 = Merge.merge_tree(G1)
+    #M1 = Merge.merge_tree(G1)
+    try:
+        M1 = Merge.merge_tree(G1)
+    except KeyError:
+        print("Key Error When making G1 a merge tree! Most likely from line 171 in Merge.py")
+        key_lst.append((G1, "KeyError when making this Graph into Merge"))
+        key += "\nKey Error When making G1 a merge tree! Most likely from line 171 in Merge.py"
+        posk.append(pos1)
     if(not nx.is_forest(M1)):
         print("M1 is not a forest!!!")
         errors += "\nM1 is not a forest!!!"
@@ -54,7 +62,14 @@ for i in range(0, tests):
     G2 = TP[0]
     pos2 = TP[1]
     Merge.calc_values_height(G2, pos2, math.pi/2)
-    M2 = Merge.merge_tree(G2)
+    #M2 = Merge.merge_tree(G2)
+    try:
+        M2 = Merge.merge_tree(G2)
+    except KeyError:
+        print("Key Error When making G2 a merge tree! Most likely from line 171 in Merge.py")
+        key_lst.append((G2, "KeyError when making this Graph into Merge"))
+        key += "\nKey Error When making G2 a merge tree! Most likely from line 171 in Merge.py"
+        posk.append(pos2)
     if(not nx.is_forest(M2)):
         print("M2 is not a forest!!!")
         errors += "\nM2 is not a forest!!!"
@@ -75,7 +90,13 @@ for i in range(0, tests):
     G3 = TP[0]
     pos3 = TP[1]
     Merge.calc_values_height(G3, pos3, math.pi/2)
-    M3 = Merge.merge_tree(G3)
+    try:
+        M3 = Merge.merge_tree(G3)
+    except KeyError:
+        print("Key Error When making G3 a merge tree! Most likely from line 171 in Merge.py")
+        key_lst.append((G3, "KeyError when making this Graph into Merge"))
+        key += "\nKey Error When making G3 a merge tree! Most likely from line 171 in Merge.py"
+        posk.append(pos3)
     if(not nx.is_forest(M3)):
         print("M3 is not a forest!!!")
         forest_lst.append((G3,M3))
@@ -100,7 +121,7 @@ for i in range(0, tests):
         print("Key Error with M1 and M2!!!!!!")
         key_lst.append((M1, M2))
         v.compare(M1, pos1, M2, pos2, labels=True, n_size=500)
-        key += "Key Error with M1 and M2!!!!!!"
+        key += "\nKey Error with M1 and M2!!!!!!"
         
     try:
         Compare.morozov_distance(M1, M3, 0.1)
@@ -110,7 +131,7 @@ for i in range(0, tests):
         print("Key Error with M1 and M3!!!!!!")
         key_lst.append((M1, M3))
         v.compare(M1, pos1, M3, pos3, labels=True, n_size=500)
-        key += "Key Error with M1 and M3!!!!!!"
+        key += "\nKey Error with M1 and M3!!!!!!"
         
     try:
         Compare.morozov_distance(M2, M3, 0.1)
@@ -120,7 +141,7 @@ for i in range(0, tests):
         print("Key Error with M2 and M3!!!!!!")
         v.compare(M2, pos2, M3, pos3, labels=True, n_size=500)
         key_lst.append((M2, M3))
-        key += "Key Error with M2 and M3!!!!!!"
+        key += "\nKey Error with M2 and M3!!!!!!"
   
     #v.compare(M1, pos1, M2, pos2, labels=True, n_size=500)
     #dxy = Compare.morozov_distance(M1, M2, 0.1)
