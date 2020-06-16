@@ -32,7 +32,7 @@ for i in range(0, tests):
     Merge.calc_values_height(G1, pos1, math.pi/2)
     #M1 = Merge.merge_tree(G1)
     try:
-        M2 = Merge.merge_tree(G2)
+        M1 = Merge.merge_tree(G1)
     except KeyError:
         print("Key Error When making G1 a merge tree! Most likely from line 171 in Merge.py")
         key_lst.append((G1, "KeyError when making this Graph into Merge"))
