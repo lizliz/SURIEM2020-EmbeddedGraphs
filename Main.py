@@ -14,12 +14,16 @@ import timeit
 import time
 
 
-n = 25
+n = 15
 
-tests = 2000
+tests = 1000
 i=0
 errors = ""
-error_lst = []
+forest_lst = []
+poss = []
+key_lst = []
+key = ""
+
 for i in range(0, tests):
     TP = random_tree_and_pos(n)
     G1 = TP[0]
@@ -29,16 +33,19 @@ for i in range(0, tests):
     if(not nx.is_forest(M1)):
         print("M1 is not a forest!!!")
         errors += "\nM1 is not a forest!!!"
-        error_lst.append((G1,M1))
+        forest_lst.append((G1,M1))
+        poss.append(pos1)
     if(not nx.is_connected(M1)):
         print("M1 is not connected!!!")
         errors += "\nM1 is not connected!!!"
-        error_lst.append((G1,M1))
+        poss.append(pos1)
+        forest_lst.append((G1,M1))
     if(not Merge.reduced(M1)):
         print(M1)
         print("M1 is not reduced")
+        poss.append(pos1)
         errors += "\nM1 is not reduced!!!"
-        error_lst.append((G1,M1))
+        forest_lst.append((G1,M1))
         
     TP = random_tree_and_pos(n)
     G2 = TP[0]
@@ -48,15 +55,18 @@ for i in range(0, tests):
     if(not nx.is_forest(M2)):
         print("M2 is not a forest!!!")
         errors += "\nM2 is not a forest!!!"
-        error_lst.append((G2,M2))
+        poss.append(pos2)
+        forest_lst.append((G2,M2))
     if(not nx.is_connected(M2)):
         print("M2 is not connected!!!")
         errors += "\nM2 is not connected!!!"
-        error_lst.append((G2,M2))
+        poss.append(pos2)
+        forest_lst.append((G2,M2))
     if(not Merge.reduced(M2)):
         print("M2 is not reduced")
         errors += "\nM2 is not reduced!!!"
-        error_lst.append((G2,M2))
+        poss.append(pos2)
+        forest_lst.append((G2,M2))
     
     TP = random_tree_and_pos(n)
     G3 = TP[0]
@@ -65,26 +75,58 @@ for i in range(0, tests):
     M3 = Merge.merge_tree(G3)
     if(not nx.is_forest(M3)):
         print("M3 is not a forest!!!")
-        error_lst.append((G3,M3))
+        forest_lst.append((G3,M3))
+        poss.append(pos3)
         errors += "\nM3 is not a forest!!!"
     if(not nx.is_connected(M3)):
-        error_lst.append((G3,M3))
+        forest_lst.append((G3,M3))
+        poss.append(pos3)
         print("M3 is not connected!!!")
         errors += "\nM3 is not connected!!!"
     if(not Merge.reduced(M3)):
-        error_lst.append((G3,M3))
+        poss.append(pos3)
+        forest_lst.append((G3,M3))
         print("M3 is not reduced")
         errors += "\nM3 is not reduced!!!"
     
-
+    try:
+        Compare.morozov_distance(M1, M2, 0.1)
+    #except KeyError:
+    #    print("")
+    except KeyError:
+        print("Key Error with M1 and M2!!!!!!")
+        key_lst.append((M1, M2))
+        v.compare(M1, pos1, M2, pos2, labels=True, n_size=500)
+        key += "Key Error with M1 and M2!!!!!!"
+        
+    try:
+        Compare.morozov_distance(M1, M3, 0.1)
+    #except KeyError:
+    #    print("")
+    except KeyError:
+        print("Key Error with M1 and M3!!!!!!")
+        key_lst.append((M1, M3))
+        v.compare(M1, pos1, M3, pos3, labels=True, n_size=500)
+        key += "Key Error with M1 and M3!!!!!!"
+        
+    try:
+        Compare.morozov_distance(M2, M3, 0.1)
+    #except KeyError:
+    #    print("")
+    except KeyError:
+        print("Key Error with M2 and M3!!!!!!")
+        v.compare(M2, pos2, M3, pos3, labels=True, n_size=500)
+        key_lst.append((M2, M3))
+        key += "Key Error with M2 and M3!!!!!!"
+  
     #v.compare(M1, pos1, M2, pos2, labels=True, n_size=500)
-    dxy = Compare.morozov_distance(M1, M2, 0.1)
+    #dxy = Compare.morozov_distance(M1, M2, 0.1)
     #v.compare(M1, pos1, M3, pos3, labels=True, n_size=500)
-    dxz = Compare.morozov_distance(M1, M3, 0.1)
+    #dxz = Compare.morozov_distance(M1, M3, 0.1)
     #v.compare(M3, pos3, M2, pos2, labels=True, n_size=500)
-    dzy = Compare.morozov_distance(M3, M2, 0.1)
+    #dzy = Compare.morozov_distance(M3, M2, 0.1)
     
-    dif = min(dxy + dxz - dzy, dxy + dzy - dxz, dxz + dzy - dxy)
+    #dif = min(dxy + dxz - dzy, dxy + dzy - dxz, dxz + dzy - dxy)
     #print("dif:" + str(dif))
     print('-')
     
