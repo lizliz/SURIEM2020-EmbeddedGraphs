@@ -14,10 +14,12 @@ import timeit
 import time
 
 
-n = 15
+n = 25
 
-tests = 1000
+tests = 2000
 i=0
+errors = ""
+error_lst = []
 for i in range(0, tests):
     TP = random_tree_and_pos(n)
     G1 = TP[0]
@@ -26,10 +28,17 @@ for i in range(0, tests):
     M1 = Merge.merge_tree(G1)
     if(not nx.is_forest(M1)):
         print("M1 is not a forest!!!")
+        errors += "\nM1 is not a forest!!!"
+        error_lst.append((G1,M1))
     if(not nx.is_connected(M1)):
         print("M1 is not connected!!!")
+        errors += "\nM1 is not connected!!!"
+        error_lst.append((G1,M1))
     if(not Merge.reduced(M1)):
+        print(M1)
         print("M1 is not reduced")
+        errors += "\nM1 is not reduced!!!"
+        error_lst.append((G1,M1))
         
     TP = random_tree_and_pos(n)
     G2 = TP[0]
@@ -38,10 +47,16 @@ for i in range(0, tests):
     M2 = Merge.merge_tree(G2)
     if(not nx.is_forest(M2)):
         print("M2 is not a forest!!!")
+        errors += "\nM2 is not a forest!!!"
+        error_lst.append((G2,M2))
     if(not nx.is_connected(M2)):
         print("M2 is not connected!!!")
+        errors += "\nM2 is not connected!!!"
+        error_lst.append((G2,M2))
     if(not Merge.reduced(M2)):
         print("M2 is not reduced")
+        errors += "\nM2 is not reduced!!!"
+        error_lst.append((G2,M2))
     
     TP = random_tree_and_pos(n)
     G3 = TP[0]
@@ -50,12 +65,18 @@ for i in range(0, tests):
     M3 = Merge.merge_tree(G3)
     if(not nx.is_forest(M3)):
         print("M3 is not a forest!!!")
+        error_lst.append((G3,M3))
+        errors += "\nM3 is not a forest!!!"
     if(not nx.is_connected(M3)):
+        error_lst.append((G3,M3))
         print("M3 is not connected!!!")
+        errors += "\nM3 is not connected!!!"
     if(not Merge.reduced(M3)):
+        error_lst.append((G3,M3))
         print("M3 is not reduced")
+        errors += "\nM3 is not reduced!!!"
     
-    
+
     #v.compare(M1, pos1, M2, pos2, labels=True, n_size=500)
     dxy = Compare.morozov_distance(M1, M2, 0.1)
     #v.compare(M1, pos1, M3, pos3, labels=True, n_size=500)
@@ -73,4 +94,4 @@ for i in range(0, tests):
         #print(pos2)
         #print(pos3)
         #break
-        
+print("All Errors: ", errors)
