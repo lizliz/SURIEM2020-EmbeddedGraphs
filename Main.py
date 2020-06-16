@@ -18,11 +18,11 @@ n = 15
 
 tests = 1000
 i=0
-errors = ""
-forest_lst = []
-poss = []
-key_lst = []
-key = ""
+errors = "" #String keeping track of the forest errors
+forest_lst = [] #list keeping track of the cyclic graphs
+poss = [] #list keeping track of the positions in the cyclic graphs
+key_lst = [] # list keeping track of the key error graphs
+key = "" #string keeping track of the key errors
 
 for i in range(0, tests):
     TP = random_tree_and_pos(n)
