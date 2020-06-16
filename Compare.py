@@ -31,13 +31,16 @@ def remove_cost(A, u,v):
 def get_child_subtrees(root, minima, T):
     last = minima
     p = T.nodes[minima]['p']
-     
-    #print("root: " + str(root) + " minima: " + str(minima))
+    print("GET CHILD SUBTREES") 
+    print("root: ",root, "\nminima: ",minima, "\nparent: ", p)
     #print("     Root and Minima contained in tree: " + str(root in list(T.nodes) and minima in list(T.nodes)))
-    #print("     Nodes: " + str(T.nodes))
+    print("Nodes adjacent to minima: ", list(T.neighbors(minima)), "\nNodes adjacent to parent: ", list(T.neighbors(p)))
+    print("Nodes in T: " + str(T.nodes))
     
+    run = 0
     subtrees = []
     while(last != p):
+        print("run: ", run)
         #print("     current parent: " + str(p))
         neighbors = T[p]
         #print(neighbors)
@@ -335,9 +338,13 @@ def IsEpsSimilar(A, B, e, costs=None, roots=None, memo=None):
     #    case that a pairing is matchable, an edge will be drawn between the
     #    corresponding vertices in the bipartite representation
     global branching
+    run = 0
     for mA in minima_A:
         for mB in minima_B:
-            
+            print("ISEPSSIMILAR")
+            print("run: ", run)
+            print("mA: ", mA, "\nroot_A: ", root_A, "\nNodes in A:", list(A.nodes))
+            print("mB: ", mB, "\nroot_B: ", root_B, "\nNodes in B:", list(B.nodes))
             #At this point, a root-branch pairing will be specified.
             #Check if the initial cost of matching this pairing is prohibitive.
             #If it isn't check if the rest of the graph is matchable by considering
