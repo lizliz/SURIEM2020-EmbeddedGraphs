@@ -112,7 +112,7 @@ def add_node(n_, G, M):
     for i in range(0, len(children)):
         relative = G.nodes[children[i]]
         
-        #Relative is a child or neighbor
+        #Relative is a child or a neighbor
         if(f_(relative) <= f):
             if('c' in relative):
                 rel_cr = find_c(children[i], G)
@@ -126,16 +126,12 @@ def add_node(n_, G, M):
                     if(f_(G.nodes[rel_cr]) < f_(G.nodes[cr])):
                         cr=rel_cr
     
-    #Naming is important
-    name = ''
-    p = n_
-    
+    p = n_   
     c_count=len(to_add)
     #Leaf                   
     if(c_count==0):
         M.add_node(n_,value=f) #Add new leaf to merge tree
         M.nodes[n_]['p']=p # Update the parent (THIS IS KIND OF REDUNDANT) 
-        name = 'R. ' + str(n_)
     #Merge
     elif(c_count>1):
         edges = []
@@ -154,18 +150,13 @@ def add_node(n_, G, M):
 
         #Only create a new node if it'd be the first one on the level
         if(first_on_lvl):
-            M.add_node(n_,value=f, p_rep=n_) #Add new vertex to merge tree
-            name = 'R. ' + str(n_)
-        #The node is representative of multiple from the original graph
-        else:
-            name += ',' + str(n_)
+            M.add_node(n_, value=f, p_rep=n_) #Add new vertex to merge tree
         
         #Calculate the edges
         for i in range(0, len(to_add)):
-            #print("To add: " + str(to_add) + "  F val: " + str(f_(G.nodes[to_add[i]])))
-            
-            rep_ = find_p(to_add[i], G) #The "representative parent of the child" before addition
-            edges.append( (p, rep_) ) #Add the edge
+            rep_ = find_p(to_add[i], M) #The "representative parent of the child" before addition
+            if(rep_ != p):
+                edges.append( (p, rep_) ) #Add the edge
              
             #Set the most direct parent of the connected representative
             M.nodes[rep_]['p'] = p
@@ -185,7 +176,7 @@ def add_node(n_, G, M):
     n['c']=cr #Update the child rep of the added node and parent node. This must always be done
     n['p']=p #Update the parent rep of the newly added node
     
-    return [name, p]
+    return p
 
 def find_root(T):
      nodes = listify_nodes(T)
@@ -199,12 +190,25 @@ def find_root(T):
              
      return max_node['name']
 
+def regular(M, node, root):
+    return node != root and len(M[node]) == 2
+
+def reduce(M):
+    nodes = list(M.nodes)
+    
+    r = find_root(M)
+    for n in nodes:
+        if(regular(M, n, r)):
+            nei1 = M[n][0]
+            nei2 = M[n][1]
+            M.add_edge(nei1,nei2)
+            M.remove_node(n)
+
 def reduced(M):
     r = find_root(M)
     
     nodes = list(M.nodes)
     
-    count = 0
     for n in nodes:
         if(len(M[n]) == 2 and n != r):
             return False
@@ -220,26 +224,9 @@ def merge_tree(G):
     nodes.sort(key=f_)
     
     #The legendary Merge Tree
-    naming = {}
     M = nx.Graph()
     for i in range(0, len(nodes)):
-        #Add the node to the merge tree
-        name = add_node(nodes[i]['name'], G, M)
-        
-        #Naming stuff
-        #name[1] is the 'reference'
-        if(name[1] in naming):
-            naming[name[1]] = naming[name[1]] + name[0]
-        else:
-            naming[name[1]] = name[0]
+        add_node(nodes[i]['name'], G, M)
     
-    #DON'T RELABEL.
-    #Rename the parent pointers to be consistent with the new naming scheme        
-    #parent_dict = {}
-    #parent_dict[nodes[i]['name']] = naming[name[1]]
-    #m_ = listify_nodes(M)
-    #for m in m_ :
-    #    m['p'] = naming[m['p']] 
-    #M = nx.relabel_nodes(M, naming)
-    
+    reduce(M)
     return M

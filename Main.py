@@ -16,7 +16,7 @@ import time
 
 n = 15
 
-tests = 1000
+tests = 10000
 i=0
 errors = "" #String keeping track of the forest errors
 forest_lst = [] #list keeping track of the cyclic graphs
@@ -25,6 +25,9 @@ key_lst = [] # list keeping track of the key error graphs
 key = "" #string keeping track of the key errors
 
 for i in range(0, tests):
+    if(i % 25 == 0):
+        print(i)
+        
     TP = random_tree_and_pos(n)
     G1 = TP[0]
     pos1 = TP[1]
