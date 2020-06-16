@@ -208,7 +208,7 @@ def random_tree(n):
         #Move n2 to the right list
         choices.remove(n2)
         nodes.append(n2)
-    
+        
     return T #return the tree
 
 def random_positions(n):

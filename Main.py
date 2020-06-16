@@ -53,8 +53,8 @@ for i in range(0, tests):
     
     if(dif < -5):        
         print("HUZZAH!")
-        #print(pos1)
-        #print(pos2)
-        #print(pos3)
-        #break
+        print(pos1)
+        print(pos2)
+        print(pos3)
+        break
         
