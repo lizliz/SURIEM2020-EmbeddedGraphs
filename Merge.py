@@ -114,7 +114,7 @@ def add_node(n_, G, M):
         
         #Relative is a child or neighbor
         if(f_(relative) <= f):
-            if('c_rep' in relative):
+            if('c' in relative):
                 rel_cr = find_c(children[i], G)
                 
                 #Not already connected to child
@@ -150,7 +150,7 @@ def add_node(n_, G, M):
                 p=rep_ #There won't be a new merged node - we found one to connect to
                         
         #Update findings
-        G.nodes[p]['c_rep']=cr #Update child rep of the node we connected to
+        G.nodes[p]['c']=cr #Update child rep of the node we connected to
 
         #Only create a new node if it'd be the first one on the level
         if(first_on_lvl):
@@ -159,9 +159,6 @@ def add_node(n_, G, M):
         #The node is representative of multiple from the original graph
         else:
             name += ',' + str(n_)
-            
-        #print()
-        #print("n: " + str(n_) + "  F val: " + str(f))
         
         #Calculate the edges
         for i in range(0, len(to_add)):
@@ -175,18 +172,18 @@ def add_node(n_, G, M):
         
         #Update stuff
         for i in range(0, len(to_add)):
-            G.nodes[to_add[i]]['p_rep']=p
-            G.nodes[to_add[i]]['c_rep']=cr #Update the rep child of the node from the list
+            G.nodes[to_add[i]]['p']=p
+            G.nodes[to_add[i]]['c']=cr #Update the rep child of the node from the list
         
         #Add the edges
         M.add_edges_from(edges)
         M.nodes[p]['p'] = p #A node is its own parent until otherwise
         
     #Update findings
-    G.nodes[p]['c_rep']=cr #Update child rep of the node we connected to
-    G.nodes[p]['p_rep']=p
-    n['c_rep']=cr #Update the child rep of the added node and parent node. This must always be done
-    n['p_rep']=p #Update the parent rep of the newly added node
+    G.nodes[p]['c']=cr #Update child rep of the node we connected to
+    G.nodes[p]['p']=p
+    n['c']=cr #Update the child rep of the added node and parent node. This must always be done
+    n['p']=p #Update the parent rep of the newly added node
     
     return [name, p]
 

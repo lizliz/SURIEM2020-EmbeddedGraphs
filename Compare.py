@@ -279,18 +279,6 @@ def IsEpsSimilar(A, B, e, costs=None, roots=None, memo=None):
     run = 0
     for mA in minima_A:
         for mB in minima_B:
-<<<<<<< HEAD
-            #print("ISEPSSIMILAR")
-            #print("run: ", run)
-            #print("mA: ", mA, "\nroot_A: ", root_A, "\nNodes in A:", list(A.nodes))
-            #print("mB: ", mB, "\nroot_B: ", root_B, "\nNodes in B:", list(B.nodes))
-=======
-            print("ISEPSSIMILAR")
-            print("run: ", run)
-            print("mA: ", mA, "\nroot_A: ", root_A, "\nNodes in A:", list(A.nodes))
-            print("mB: ", mB, "\nroot_B: ", root_B, "\nNodes in B:", list(B.nodes))
-            run +=1
->>>>>>> f542797392d638bf6251b8ad3d55aeefa1f9668e
             #At this point, a root-branch pairing will be specified.
             #Check if the initial cost of matching this pairing is prohibitive.
             #If it isn't check if the rest of the graph is matchable by considering

@@ -55,16 +55,16 @@ def listify_nodes(G):
 def find_p(n_, G):
     n = G.nodes[n_]
     
-    parent = n['p_rep']
-    if(n['p_rep'] != n_):
+    parent = n['p']
+    if(n['p'] != n_):
         return find_p(parent, G)
     return n_
 
 #Recursively find the child
 def find_c(n_, G):
     n = G.nodes[n_]
-    child = n['c_rep']
-    if(n['c_rep'] != n_):
+    child = n['c']
+    if(n['c'] != n_):
         return find_c(child, G)
     return n_
 

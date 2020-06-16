@@ -24,21 +24,36 @@ for i in range(0, tests):
     pos1 = TP[1]
     Merge.calc_values_height(G1, pos1, math.pi/2)
     M1 = Merge.merge_tree(G1)
-    print("M1 is merge tree: " + str(nx.is_forest(M1) and nx.is_connected(M1) and Merge.reduced(M1)))
-    
+    if(not nx.is_forest(M1)):
+        print("M1 is not a forest!!!")
+    if(not nx.is_connected(M1)):
+        print("M1 is not connected!!!")
+    if(not Merge.reduced(M1)):
+        print("M1 is not reduced")
+        
     TP = random_tree_and_pos(n)
     G2 = TP[0]
     pos2 = TP[1]
     Merge.calc_values_height(G2, pos2, math.pi/2)
     M2 = Merge.merge_tree(G2)
-    print("M2 is merge tree: " + str(nx.is_forest(M2) and nx.is_connected(M2) and Merge.reduced(M2)))
+    if(not nx.is_forest(M2)):
+        print("M2 is not a forest!!!")
+    if(not nx.is_connected(M2)):
+        print("M2 is not connected!!!")
+    if(not Merge.reduced(M2)):
+        print("M2 is not reduced")
     
     TP = random_tree_and_pos(n)
     G3 = TP[0]
     pos3 = TP[1]
     Merge.calc_values_height(G3, pos3, math.pi/2)
     M3 = Merge.merge_tree(G3)
-    print("M3 is merge tree: " + str(nx.is_forest(M3) and nx.is_connected(M3) and Merge.reduced(M3)))
+    if(not nx.is_forest(M3)):
+        print("M3 is not a forest!!!")
+    if(not nx.is_connected(M3)):
+        print("M3 is not connected!!!")
+    if(not Merge.reduced(M3)):
+        print("M3 is not reduced")
     
     
     #v.compare(M1, pos1, M2, pos2, labels=True, n_size=500)
@@ -49,12 +64,13 @@ for i in range(0, tests):
     dzy = Compare.morozov_distance(M3, M2, 0.1)
     
     dif = min(dxy + dxz - dzy, dxy + dzy - dxz, dxz + dzy - dxy)
-    print("dif:" + str(dif))
+    #print("dif:" + str(dif))
+    print('-')
     
-    if(dif < -5):        
-        print("HUZZAH!")
-        print(pos1)
-        print(pos2)
-        print(pos3)
+    #if(dif < -5):        
+        #print("HUZZAH!")
+        #print(pos1)
+        #print(pos2)
+        #print(pos3)
         #break
         
