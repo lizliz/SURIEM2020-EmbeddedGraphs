@@ -31,16 +31,16 @@ def remove_cost(A, u,v):
 def get_child_subtrees(root, minima, T):
     last = minima
     p = T.nodes[minima]['p']
-    print("GET CHILD SUBTREES") 
-    print("root: ",root, "\nminima: ",minima, "\nparent: ", p)
-    #print("     Root and Minima contained in tree: " + str(root in list(T.nodes) and minima in list(T.nodes)))
-    print("Nodes adjacent to minima: ", list(T.neighbors(minima)), "\nNodes adjacent to parent: ", list(T.neighbors(p)))
-    print("Nodes in T: " + str(T.nodes))
+    # print("GET CHILD SUBTREES") 
+    # print("root: ",root, "\nminima: ",minima, "\nparent: ", p)
+    # print("     Root and Minima contained in tree: " + str(root in list(T.nodes) and minima in list(T.nodes)))
+    # print("Nodes adjacent to minima: ", list(T.neighbors(minima)), "\nNodes adjacent to parent: ", list(T.neighbors(p)))
+    # print("Nodes in T: " + str(T.nodes))
     
     run = 0
     subtrees = []
     while(last != p):
-        print("run: ", run)
+        #print("run: ", run)
         #print("     current parent: " + str(p))
         neighbors = T[p]
         #print(neighbors)
@@ -70,10 +70,7 @@ def descendants(G, n):
     for nei in neighbors:
         #Check for child
         if(f_(G.nodes[nei]) < f_(G.nodes[n])):
-            #Check if already computed
-            if(str(nei) not in D):
-                D[str(nei)] = descendants(G, nei)
-            list_append(d, D[str(nei)])
+            list_append(d, descendants(G, nei))
     
     return d
 
@@ -281,10 +278,10 @@ def IsEpsSimilar(A, B, e, costs=None, roots=None, memo=None):
     run = 0
     for mA in minima_A:
         for mB in minima_B:
-            print("ISEPSSIMILAR")
-            print("run: ", run)
-            print("mA: ", mA, "\nroot_A: ", root_A, "\nNodes in A:", list(A.nodes))
-            print("mB: ", mB, "\nroot_B: ", root_B, "\nNodes in B:", list(B.nodes))
+            #print("ISEPSSIMILAR")
+            #print("run: ", run)
+            #print("mA: ", mA, "\nroot_A: ", root_A, "\nNodes in A:", list(A.nodes))
+            #print("mB: ", mB, "\nroot_B: ", root_B, "\nNodes in B:", list(B.nodes))
             #At this point, a root-branch pairing will be specified.
             #Check if the initial cost of matching this pairing is prohibitive.
             #If it isn't check if the rest of the graph is matchable by considering

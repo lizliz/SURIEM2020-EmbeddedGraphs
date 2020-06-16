@@ -41,11 +41,11 @@ for i in range(0, tests):
     print("M3 is merge tree: " + str(nx.is_forest(M3) and nx.is_connected(M3) and Merge.reduced(M3)))
     
     
-    v.compare(M1, pos1, M2, pos2, labels=True, n_size=500)
+    #v.compare(M1, pos1, M2, pos2, labels=True, n_size=500)
     dxy = Compare.morozov_distance(M1, M2, 0.1)
-    v.compare(M1, pos1, M3, pos3, labels=True, n_size=500)
+    #v.compare(M1, pos1, M3, pos3, labels=True, n_size=500)
     dxz = Compare.morozov_distance(M1, M3, 0.1)
-    v.compare(M3, pos3, M2, pos2, labels=True, n_size=500)
+    #v.compare(M3, pos3, M2, pos2, labels=True, n_size=500)
     dzy = Compare.morozov_distance(M3, M2, 0.1)
     
     dif = min(dxy + dxz - dzy, dxy + dzy - dxz, dxz + dzy - dxy)
@@ -56,5 +56,5 @@ for i in range(0, tests):
         print(pos1)
         print(pos2)
         print(pos3)
-        break
+        #break
         
