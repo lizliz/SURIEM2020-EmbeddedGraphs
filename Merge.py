@@ -286,6 +286,9 @@ def update_neighbors(G, n1, neighbors, n2):
             neighbors.append(nei)
     
 def collapse_neighbors(G, n):
+    if(n not in list(G.nodes)):
+        return
+    
     lvl_neighbors = on_level_neighbors(G, n)
     
     count=0
@@ -301,35 +304,23 @@ def collapse_neighbors(G, n):
         
         count +=1
         
-    G.nodes[n]['collapsed'] = True
+    #G.nodes[n]['collapsed'] = True
         
     return count
 
 #Pass in any graph G
 def preprocess(G):
-    nodes = list(G.nodes)
+    nodes = listify_nodes(G)
+    nodes.sort(key=f_)
     
     #Collapse the neighbors of each node
-    all_collapsed = False
-    while(not all_collapsed):
-        all_collapsed = True
+    i=0
+    while(i < len(nodes)):
+        n = nodes[i]['name']
+        c = collapse_neighbors(G, n)
         
-        i=0
-        while(i < len(nodes)):
-            n = nodes[i]
-            if('collapsed' not in G.nodes[n]):
-                c = collapse_neighbors(G, n)
-                
-                #Was collapsed, essentially
-                if(c == 0):
-                    i+=1
-                #Needed to be collapsed
-                else:
-                    all_collapsed=False
-                    nodes = list(G.nodes) #Start over.
-                    
-            else: #Go to the next node
-                i+=1
-                 
+        if(i%100 == 0):
+            print(i)
+        i+=1
     
     
