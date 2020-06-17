@@ -168,7 +168,8 @@ def add_node(n_, G, M):
             #print("To add: " + str(to_add) + "  F val: " + str(f_(G.nodes[to_add[i]])))
             
             rep_ = find_p(to_add[i], G) #The "representative parent of the child" before addition
-            edges.append( (p, rep_) ) #Add the edge
+            if(rep_ != p):
+                edges.append( (p, rep_) ) #Add the edge
              
             #Set the most direct parent of the connected representative
             M.nodes[rep_]['p'] = p
