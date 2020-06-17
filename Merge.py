@@ -26,15 +26,22 @@ def calc_values_height(G, pos, angle):
         n[i]['value'] = height(pos[n[i]['name']], angle)
 
         
-def calc_values_height_reorient(G, pos, angle):
-    reorient(pos, angle)
+def calc_values_height_reorient(G, pos, angle=None):
     
     #Get the list of node objects
     n = listify_nodes(G)
     
-    #Set all of the function values by height
-    for i in range(0, len(n)):
-        n[i]['value'] = height(pos[n[i]['name']], math.pi / 2)
+    if(angle!=None):
+        reorient(pos, angle)
+        
+        
+        #Set all of the function values by height
+        for i in range(0, len(n)):
+            n[i]['value'] = height(pos[n[i]['name']], math.pi / 2)
+            
+    else:
+        for i in range(0, len(n)):
+            n[i]['value'] = pos[n[i]['name']][1]
 
 #comparing the maximum distance between the two matricies by subtracting them
 #and taking the absolute value of each entry. The largest entry will be the
@@ -150,7 +157,7 @@ def add_node(n_, G, M):
 
         #Only create a new node if it'd be the first one on the level
         if(first_on_lvl):
-            M.add_node(n_, value=f, p_rep=n_) #Add new vertex to merge tree
+            M.add_node(n_, value=f, p=n_) #Add new vertex to merge tree
         
         #Calculate the edges
         for i in range(0, len(to_add)):
@@ -205,6 +212,9 @@ def reduce(M):
             nei1 = list(M[n])[0]
             nei2 = list(M[n])[1]
             M.add_edge(nei1,nei2)
+            
+            M.nodes[nei1]['p'] = nei2
+            
             M.remove_node(n)
 
 def reduced(M):
