@@ -24,6 +24,7 @@ poss = [] #list keeping track of the positions in the cyclic graphs
 key_lst = [] # list keeping track of the key error graphs
 key = "" #string keeping track of the key errors
 posk = []
+inputs = []
 
 for i in range(0, tests):
     if(i % 25 == 0):
@@ -76,7 +77,7 @@ for i in range(0, tests):
         forest_lst.append((G2,M2))
     if(not nx.is_connected(M2)):
         print("M2 is not connected!!!")
-        errors += "\nM2 is not connected!!!"
+        errors += "\keynM2 is not connected!!!"
         poss.append(pos2)
         forest_lst.append((G2,M2))
     if(not Merge.reduced(M2)):
@@ -120,6 +121,7 @@ for i in range(0, tests):
         print("Key Error with M1 and M2!!!!!!")
         key_lst.append((M1, M2))
         posk.append((pos1,pos2))
+        inputs.append((G1, G2))
         key += "\nKey Error with M1 and M2!!!!!!"
         v.compare(M1, pos1, M2, pos2, labels=True, n_size=500)
     
@@ -131,6 +133,7 @@ for i in range(0, tests):
         print("Key Error with M1 and M3!!!!!!")
         key_lst.append((M1, M3))
         posk.append((pos1,pos3))
+        inputs.append((G1, G3))
         key += "\nKey Error with M1 and M3!!!!!!"
         v.compare(M1, pos1, M3, pos3, labels=True, n_size=500)
         
@@ -143,6 +146,7 @@ for i in range(0, tests):
         key += "\nKey Error with M2 and M3!!!!!!"
         key_lst.append((M2, M3))
         posk.append((pos2,pos3))
+        inputs.append((G2, G3))
         v.compare(M2, pos2, M3, pos3, labels=True, n_size=500)
   
     #v.compare(M1, pos1, M2, pos2, labels=True, n_size=500)
