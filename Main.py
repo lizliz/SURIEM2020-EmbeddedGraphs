@@ -112,7 +112,6 @@ for i in range(0, tests):
         forest_lst.append((G3,M3))
         print("M3 is not reduced")
         errors += "\nM3 is not reduced!!!"
-    
     try:
         Compare.morozov_distance(M1, M2, 0.1)
     #except KeyError:
@@ -158,7 +157,8 @@ for i in range(0, tests):
     
     #dif = min(dxy + dxz - dzy, dxy + dzy - dxz, dxz + dzy - dxy)
     #print("dif:" + str(dif))
-    print('-')
+    x = abs(5 - (i % 10))+1
+    print('-' * x)
     
     #if(dif < -5):        
         #print("HUZZAH!")

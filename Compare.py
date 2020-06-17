@@ -350,6 +350,9 @@ def morozov_distance(T1, T2, radius = 0.05):
     relabel(T1, "*")
     relabel(T2, "~")
     
+    # print(T1.nodes)
+    # print(T2.nodes)
+    
     # Find the larger amplitude between the two trees as our starting epsilon
     vals1 = [i[1]["value"]for i in list(T1.nodes.data())] # I feel like there is definitely an easier way to find max/mins than making lists
     amp1 = abs(max(vals1)-min(vals1)) # amplitude for T1

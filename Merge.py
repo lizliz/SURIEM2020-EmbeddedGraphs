@@ -163,11 +163,13 @@ def add_node(n_, G, M):
         
         #Update stuff
         for i in range(0, len(to_add)):
-            G.nodes[to_add[i]]['p']=p
+            rep_ = find_p(to_add[i], G)
+            G.nodes[rep_]['p']=p
             G.nodes[to_add[i]]['c']=cr #Update the rep child of the node from the list
         
         #Add the edges
         M.add_edges_from(edges)
+        
         M.nodes[p]['p'] = p #A node is its own parent until otherwise
         
     #Update findings
@@ -214,6 +216,19 @@ def reduced(M):
         if(len(M[n]) == 2 and n != r):
             return False
     return True
+
+def is_merge_tree(M):
+    acyclic = nx.is_forest(M)
+    connected = nx.is_connected(M)
+    red = reduced(M)
+    
+    print('---')
+    print("M is acyclic: " + str(acyclic))
+    print("M is connected: " + str(connected))
+    print("M is reduced: " + str(red))
+    print('---')
+    
+    return acyclic and connected and red
 
 #Construct the merge tree given a graph G with function values.
 #Returns a networkx tree with a position dictionary for drawing
