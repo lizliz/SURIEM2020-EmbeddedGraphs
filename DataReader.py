@@ -25,7 +25,8 @@ def read_osm(path, draw = False):
     return osm.read_osm(path, draw)
 ##
 
-#json reading
+#json
 def read_json(path, draw = False):
     return json.read_json(path, draw)
+    # returns graph object and position dictionary
 ##
