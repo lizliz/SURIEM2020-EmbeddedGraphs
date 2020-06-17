@@ -385,7 +385,7 @@ def morozov_distance(T1, T2, radius = 0.05):
     
     # Placeholder until i understand how IsEpsSimilar works
     #similar = True
-    epsilon = 25000
+    epsilon = maximum
     similar = IsEpsSimilar(T1,T2, epsilon, costs=costs, roots=roots)
     delta = epsilon
     
