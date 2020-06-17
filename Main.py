@@ -119,9 +119,10 @@ for i in range(0, tests):
     except KeyError:
         print("Key Error with M1 and M2!!!!!!")
         key_lst.append((M1, M2))
-        v.compare(M1, pos1, M2, pos2, labels=True, n_size=500)
+        posk.append((pos1,pos2))
         key += "\nKey Error with M1 and M2!!!!!!"
-        
+        v.compare(M1, pos1, M2, pos2, labels=True, n_size=500)
+    
     try:
         Compare.morozov_distance(M1, M3, 0.1)
     #except KeyError:
@@ -129,8 +130,9 @@ for i in range(0, tests):
     except KeyError:
         print("Key Error with M1 and M3!!!!!!")
         key_lst.append((M1, M3))
-        v.compare(M1, pos1, M3, pos3, labels=True, n_size=500)
+        posk.append((pos1,pos3))
         key += "\nKey Error with M1 and M3!!!!!!"
+        v.compare(M1, pos1, M3, pos3, labels=True, n_size=500)
         
     try:
         Compare.morozov_distance(M2, M3, 0.1)
@@ -138,9 +140,10 @@ for i in range(0, tests):
     #    print("")
     except KeyError:
         print("Key Error with M2 and M3!!!!!!")
-        v.compare(M2, pos2, M3, pos3, labels=True, n_size=500)
-        key_lst.append((M2, M3))
         key += "\nKey Error with M2 and M3!!!!!!"
+        key_lst.append((M2, M3))
+        posk.append((pos2,pos3))
+        v.compare(M2, pos2, M3, pos3, labels=True, n_size=500)
   
     #v.compare(M1, pos1, M2, pos2, labels=True, n_size=500)
     #dxy = Compare.morozov_distance(M1, M2, 0.1)
