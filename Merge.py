@@ -123,7 +123,7 @@ def add_node(n_, G, M):
                     to_add.append(rel_cr)
                     
                     #New representative child!
-                    if(f_(G.nodes[rel_cr]) < f_(G.nodes[cr])):
+                    if(f_(G.nodes[rel_cr]) <= f_(G.nodes[cr])):
                         cr=rel_cr
     
     p = n_   
@@ -140,8 +140,8 @@ def add_node(n_, G, M):
         #one of the components to add
         first_on_lvl = True
         for i in range(0, len(to_add)):
-            rep_ = find_p(to_add[i], G) #The "representative parent of the child" before addition
-            if(f_(G.nodes[rep_]) == f): #Found node on level
+            rep_ = find_p(to_add[i], M) #The "representative parent of the child" before addition
+            if(f_(M.nodes[rep_]) == f): #Found node on level
                 first_on_lvl = False
                 p=rep_ #There won't be a new merged node - we found one to connect to
                         
@@ -154,7 +154,7 @@ def add_node(n_, G, M):
         
         #Calculate the edges
         for i in range(0, len(to_add)):
-            rep_ = find_p(to_add[i], M) #The "representative parent of the child" before addition
+            rep_ = find_p(to_add[i], G) #The "representative parent of the child" before addition
             if(rep_ != p):
                 edges.append( (p, rep_) ) #Add the edge
              
@@ -173,6 +173,7 @@ def add_node(n_, G, M):
     #Update findings
     G.nodes[p]['c']=cr #Update child rep of the node we connected to
     G.nodes[p]['p']=p
+
     n['c']=cr #Update the child rep of the added node and parent node. This must always be done
     n['p']=p #Update the parent rep of the newly added node
     
@@ -199,8 +200,8 @@ def reduce(M):
     r = find_root(M)
     for n in nodes:
         if(regular(M, n, r)):
-            nei1 = M[n][0]
-            nei2 = M[n][1]
+            nei1 = list(M[n])[0]
+            nei2 = list(M[n])[1]
             M.add_edge(nei1,nei2)
             M.remove_node(n)
 

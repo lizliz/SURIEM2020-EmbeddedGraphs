@@ -33,7 +33,6 @@ for i in range(0, tests):
     G1 = TP[0]
     pos1 = TP[1]
     Merge.calc_values_height(G1, pos1, math.pi/2)
-    #M1 = Merge.merge_tree(G1)
     try:
         M1 = Merge.merge_tree(G1)
     except KeyError:
