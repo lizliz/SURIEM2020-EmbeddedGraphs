@@ -120,7 +120,7 @@ def add_node(n_, G, M):
         relative = G.nodes[children[i]]
         
         #Relative is a child or a neighbor
-        if(f_(relative) <= f):
+        if(f_(relative) < f):
             if('c' in relative):
                 rel_cr = find_c(children[i], G)
                 
@@ -130,7 +130,7 @@ def add_node(n_, G, M):
                     to_add.append(rel_cr)
                     
                     #New representative child!
-                    if(f_(G.nodes[rel_cr]) <= f_(G.nodes[cr])):
+                    if(f_(G.nodes[rel_cr]) < f_(G.nodes[cr])):
                         cr=rel_cr
     
     p = n_   
@@ -243,10 +243,10 @@ def is_merge_tree(M):
 #Construct the merge tree given a graph G with function values.
 #Returns a networkx tree with a position dictionary for drawing
 def merge_tree(G):
+    preprocess(G)
+    
     #Get the nodes from the networkx graph
     nodes = listify_nodes(G)
-    
-    #Sort the nodes in order of increasing function value
     nodes.sort(key=f_)
     
     #The legendary Merge Tree
@@ -256,3 +256,80 @@ def merge_tree(G):
     
     reduce(M)
     return M
+
+def on_level_neighbors(G, n):
+    f = f_(G.nodes[n])
+    
+    neighbors = G[n]
+    on_lvl = []
+    for nei in neighbors:
+        if(f_(G.nodes[nei]) == f):
+            on_lvl.append(nei)
+            
+    return on_lvl
+
+#Collapse n2 into n1
+def collapse(G, n1, n2):
+    n2_neighbors = G[n2]
+    
+    for nei in n2_neighbors:
+        if(nei != n1):
+            G.add_edge(n1, nei)
+            
+    G.remove_node(n2)
+    
+def update_neighbors(G, n1, neighbors, n2):
+    lvl_neighbors = on_level_neighbors(G, n2)
+    
+    for nei in lvl_neighbors:
+        if(nei not in neighbors and nei != n1):
+            neighbors.append(nei)
+    
+def collapse_neighbors(G, n):
+    lvl_neighbors = on_level_neighbors(G, n)
+    
+    count=0
+    while(len(lvl_neighbors) >= 1):
+        nei = lvl_neighbors[0]
+        
+        #add new on-level neighbors (from what we'll collapse)
+        update_neighbors(G, n, lvl_neighbors, nei)
+        
+        #Collapse the first neighbor
+        collapse(G, n, nei)
+        lvl_neighbors.remove(nei)
+        
+        count +=1
+        
+    G.nodes[n]['collapsed'] = True
+        
+    return count
+
+#Pass in any graph G
+def preprocess(G):
+    nodes = list(G.nodes)
+    
+    #Collapse the neighbors of each node
+    all_collapsed = False
+    while(not all_collapsed):
+        all_collapsed = True
+        
+        i=0
+        while(i < len(nodes)):
+            n = nodes[i]
+            if('collapsed' not in G.nodes[n]):
+                c = collapse_neighbors(G, n)
+                
+                #Was collapsed, essentially
+                if(c == 0):
+                    i+=1
+                #Needed to be collapsed
+                else:
+                    all_collapsed=False
+                    nodes = list(G.nodes) #Start over.
+                    
+            else: #Go to the next node
+                i+=1
+                 
+    
+    
