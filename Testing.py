@@ -38,6 +38,7 @@ pos2 = {
 'sk': (4,18),
 'sl': (9,16)
 }
+
 T2.add_nodes_from(nodes_t2)
 T2.add_edges_from(edges_t2)
 
