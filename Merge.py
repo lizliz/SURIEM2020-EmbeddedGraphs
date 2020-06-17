@@ -322,9 +322,12 @@ def preprocess(G):
     #Process all the nodes
     i=0
     while(i < len(nodes)):
-        if(not processed[n]):
-            n = nodes[i]
-            collapse_neighbors(G, n, processed)
+        n = nodes[i]
+        if(processed[n] == False):
+            c = collapse_neighbors(G, n, processed)
+            
+            if(c > 0):
+                print("Collapsed " + str(n))
             
             #Mark the node as processed
             processed[n] = True
@@ -334,4 +337,5 @@ def preprocess(G):
         #     print(i)
         
         i+=1
+    
     

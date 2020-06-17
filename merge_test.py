@@ -9,6 +9,7 @@ import Visualization as v
 import Compare as c
 import math
 import networkx as nx
+import Merge as m
 
 edges1 = [(1, 8),
  (1, 10),
