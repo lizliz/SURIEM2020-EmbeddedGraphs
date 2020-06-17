@@ -313,10 +313,21 @@ def preprocess(G):
     nodes = listify_nodes(G)
     nodes.sort(key=f_)
     
+    seen = {}
+    dupes = []
+    # Only collapse if function values actually repeat
+    for x in nodes:
+        if x["value"] not in seen:# If the function value hasn't been seen before
+            seen[x["value"]] = x # Make the node the value for the function value key
+        else: # If the function value has been seen before
+            if seen[x["value"]] not in dupes: 
+                dupes.append(seen[x["value"]]) # add the 1st seen node to dupes
+            dupes.append(x) # add this node to dupes
+    
     #Collapse the neighbors of each node
     i=0
-    while(i < len(nodes)):
-        n = nodes[i]['name']
+    while(i < len(dupes)):
+        n = dupes[i]['name']
         c = collapse_neighbors(G, n)
         
         if(i%100 == 0):
