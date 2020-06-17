@@ -92,4 +92,4 @@ def read_json(path, draw = True):
         nx.draw_networkx(G, pos, with_labels = False, **options)
     
     # Return networkx graph object
-    return G         
+    return [G, point_positions]         
