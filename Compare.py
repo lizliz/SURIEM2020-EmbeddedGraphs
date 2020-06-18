@@ -70,17 +70,30 @@ def get_child_subtrees(root, minima, T):
         run += 1
     return subtrees
 
-#Gets a list including n and all of its descendants, recursively
-def descendants(G, n):
-    neighbors = G[n]
+#Gets all of the child subtrees of a given root branch
+def get_child_subtrees_(root, minima, T, subtrees):
+    last = minima
+    p = T.nodes[minima]['p']
     
-    d = [n]
-    for nei in neighbors:
-        #Check for child
-        if(f_(G.nodes[nei]) < f_(G.nodes[n])):
-            list_append(d, descendants(G, nei))
-    
-    return d
+    st = []
+    while(True):
+        #print("run: ", run)
+        #print("     current parent: " + str(p))
+        neighbors = T[p]
+        #print(neighbors)
+        
+        #Add all the subtrees with child saddle p
+        for n in neighbors:
+            #Check that n is a child and not an ancestor of minima
+            if (n != last and f_(T.nodes[n]) < f_(T.nodes[p])):
+                st.append(subtrees[n])
+        
+        #We've traced back to the root
+        if(p == root):
+            return st
+        
+        last = p #Update the last variable
+        p = T.nodes[p]['p'] #Move to the next ancestor
 
 #Returns the special subgraph identified by the almost-root
 #The almost-root is first node in the graph. 
@@ -145,6 +158,64 @@ def compute_costs(A, root, costs={}):
             
     costs[root] = max_cost
     return costs
+
+#Gets a list including n and all of its descendants, recursively
+def descendants(G, n):
+    neighbors = G[n]
+    
+    d = [n]
+    for nei in neighbors:
+        #Check for child
+        if(f_(G.nodes[nei]) < f_(G.nodes[n])):
+            list_append(d, descendants(G, nei))
+    
+    return d
+
+#Gets a list including n and all of its descendants, recursively
+def descendants_(G, n, des):
+    if n in des:
+        return des[n]
+    
+    #Add the current node
+    d = [n]
+
+    #Add all the children and their descendants
+    neighbors = G[n]    
+    for nei in neighbors:
+        #Check for child
+        if(f_(G.nodes[nei]) < f_(G.nodes[n])):
+            #memoize!
+            if(nei not in des):
+                des[nei] = descendants_(G, nei, des)
+            list_append(d, des[nei])
+    
+    des[n] = d
+    return d
+
+def compute_subtree(G, saddle, subtrees, des):
+    #Include the parent
+    nodes = [G.nodes[saddle]['p']]
+    list_append(nodes, descendants_(G, saddle, des))
+    
+    #Induce the subgraph and return it
+    g = nx.Graph.subgraph(G, nodes)
+    g = g.copy()
+    g.graph['root'] = G.nodes[saddle]['p']
+    g.graph['ID'] = saddle
+    subtrees[saddle] = g
+
+def compute_subtrees(G, root, subtrees=None):
+    if(subtrees == None):
+        subtrees = {}
+    
+    des = {}
+    
+    #Nodes adjacent to the root
+    neighbors = G[root]
+    for nei in neighbors:
+        compute_subtree(G, nei, subtrees, des)
+        
+    return subtrees
 
 #Add all the dummy vertices (ghosts) to the bipartite graph
 def who_you_gonna_call(subtrees_A, subtrees_B, costs_A, costs_B, bip, e):
@@ -222,7 +293,7 @@ def update_branching(B, saddle, minima):
   
 #Computes whether two subtrees a and b are matchable. Calls IsEpsSimilar
 #    in the case that the computation hasn't yet been computed.
-def compute_matchability(a, b, e, memo, costs):
+def compute_matchability(a, b, e, memo, costs, subtrees):
 
     #These indices always pull the ID and roots because of how the subtrees are
     #constructed in a previous method. Generally, this will NOT work on subtrees not
@@ -241,7 +312,7 @@ def compute_matchability(a, b, e, memo, costs):
         if(id_a not in memo):
             memo[id_a] = {}
             
-        memo[id_a][id_b] = IsEpsSimilar(a, b, e, costs=costs, roots=roots, memo=memo)
+        memo[id_a][id_b] = IsEpsSimilar(a, b, e, costs=costs, roots=roots, memo=memo, subtrees=subtrees)
     
     #Return the result (True or False)
     return memo[id_a][id_b]    
@@ -250,7 +321,7 @@ def compute_matchability(a, b, e, memo, costs):
 #e is the cost maximum
 #roots is an array containing the roots of A and B
 #The function returns whether or not the two merge trees are matchable within e
-def IsEpsSimilar(A, B, e, costs=None, roots=None, memo=None):
+def IsEpsSimilar(A, B, e, costs=None, roots=None, memo=None, subtrees=None):
     if(memo==None):
         memo = {}
         
@@ -265,6 +336,13 @@ def IsEpsSimilar(A, B, e, costs=None, roots=None, memo=None):
     if(not bool(costs[0])):
         compute_costs(A, root_A, costs[0])
         compute_costs(B, root_B, costs[1])
+        
+    if(subtrees == None):
+        print("Computing subtrees!")
+        subtrees = [compute_subtrees(A, root_A), compute_subtrees(B, root_B)]
+        print(subtrees[0])
+        print(subtrees[1])
+        
 
     #Compute all costs for later ghost-vertex marking
     costs_A = costs[0]
@@ -300,8 +378,8 @@ def IsEpsSimilar(A, B, e, costs=None, roots=None, memo=None):
                 #Get a list of all the child subtrees of each root-branch
                 global st
                 start = time.time()
-                subtrees_A = get_child_subtrees(root_A, mA, A)
-                subtrees_B = get_child_subtrees(root_B, mB, B)
+                subtrees_A = get_child_subtrees_(root_A, mA, A, subtrees[0])
+                subtrees_B = get_child_subtrees_(root_B, mB, B, subtrees[1])
                 st += time.time()-start
                 
                 #BASE CASE
@@ -320,7 +398,7 @@ def IsEpsSimilar(A, B, e, costs=None, roots=None, memo=None):
                 #Also, fill in the bipartite edges where applicable
                 for a in subtrees_A:
                     for b in subtrees_B:
-                        if(compute_matchability(a, b, e, memo, costs)):
+                        if(compute_matchability(a, b, e, memo, costs, subtrees)):
                             bip.add_edge(a.graph['ID'], b.graph['ID'])
                 
                 #At this point, we should have a bipartite graph that encodes the
@@ -382,11 +460,12 @@ def morozov_distance(T1, T2, radius = 0.05):
     #print("max: " + str(maximum))
     costs = [{},{}]
     roots = [find_root(T1), find_root(T2)]
+    subtrees = [compute_subtrees(T1, roots[0]),compute_subtrees(T1, roots[1])]
     
     # Placeholder until i understand how IsEpsSimilar works
     #similar = True
-    epsilon = maximum
-    similar = IsEpsSimilar(T1,T2, epsilon, costs=costs, roots=roots)
+    epsilon = 200
+    similar = IsEpsSimilar(T1,T2, epsilon, costs=costs, roots=roots, subtrees=subtrees)
     delta = epsilon
     
 
@@ -398,11 +477,11 @@ def morozov_distance(T1, T2, radius = 0.05):
     # Decrease epsilon by half of the size between current epsilon and the lower end of the interval we're convergin on
         if similar == True:
             epsilon = epsilon - delta
-            similar = IsEpsSimilar(T1,T2, epsilon,costs=costs, roots=roots)
+            similar = IsEpsSimilar(T1,T2, epsilon,costs=costs, roots=roots, subtrees=subtrees)
         else:
         # Increase epsilon by half of the size between current epsilon and the upper end of the interval we're convergin on
             epsilon = epsilon+delta
-            similar = IsEpsSimilar(T1,T2, epsilon,costs=costs, roots=roots)
+            similar = IsEpsSimilar(T1,T2, epsilon,costs=costs, roots=roots, subtrees=subtrees)
         # Debug statement, will remove later
         #print(epsilon)
         

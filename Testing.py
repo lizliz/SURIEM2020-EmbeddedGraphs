@@ -63,9 +63,9 @@ T3.add_edges_from(edges_t3)
 Merge.calc_values_height(T3, pos3, math.pi / 2)
 M3 = Merge.merge_tree(T3)
 
-print(Compare.descendants(M3, 'm5'))
-print(Compare.IsEpsSimilar(M1, M2, 1.9999))
-print(Compare.IsEpsSimilar(M1, M2, 1.99))
+#print(Compare.descendants(M3, 'm5'))
+#print(Compare.IsEpsSimilar(M1, M2, 1.9999))
+#print(Compare.IsEpsSimilar(M1, M2, 1.99))
 
 Visualization.compare(M1, pos1, M2, pos2, n_size = 500, labels = True)
 Visualization.compare(M3, pos3, M2, pos2, n_size = 500, labels = True)

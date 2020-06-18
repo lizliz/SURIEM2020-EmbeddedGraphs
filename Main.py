@@ -14,7 +14,7 @@ import timeit
 import time
 
 
-n = 50
+n = 15
 
 tests = 10000
 i=0
