@@ -41,4 +41,4 @@ m.calc_values_height_reorient(G2, pos2)
 M2 = m.merge_tree(G2)
 
 print("Starting Comparison...")
-v.compare(M1, pos1, M2, pos2)
+v.compare(M2, pos2, M2, pos2)

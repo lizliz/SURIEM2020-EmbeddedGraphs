@@ -465,7 +465,9 @@ def morozov_distance(T1, T2, radius = 0.05):
     # Placeholder until i understand how IsEpsSimilar works
     #similar = True
     epsilon = maximum
+    start = time.time()
     similar = IsEpsSimilar(T1,T2, epsilon, costs=costs, roots=roots, subtrees=subtrees)
+    print(time.time() - start)
     delta = epsilon
     
 
@@ -474,6 +476,7 @@ def morozov_distance(T1, T2, radius = 0.05):
     while delta >= radius:
         its+=1
         delta=delta/2
+        start = time.time()
     # Decrease epsilon by half of the size between current epsilon and the lower end of the interval we're convergin on
         if similar == True:
             epsilon = epsilon - delta
@@ -484,6 +487,7 @@ def morozov_distance(T1, T2, radius = 0.05):
             similar = IsEpsSimilar(T1,T2, epsilon,costs=costs, roots=roots, subtrees=subtrees)
         # Debug statement, will remove later
         #print(epsilon)
+        print(time.time()-start)
         
     # Pretty print statement for debugging, will remove later
     #print("Morozov Distance:", epsilon, "\nMargin of Error:",radius, "\nIterations:",its)
