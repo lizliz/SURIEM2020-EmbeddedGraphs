@@ -5,3 +5,13 @@ berlin_large_vertices_osm
 chicago_edges_osm
 chicago_vertices_osm
 
+From the Earthworks Stanford library:
+(lost the link to colombia and maine but I know I got them from earthworks)
+SanJoaquinCounty - https://earthworks.stanford.edu/catalog/stanford-gt667dj5134
+humboldt2002 - https://earthworks.stanford.edu/catalog/stanford-cq907zw8115
+humboldt2013 - https://earthworks.stanford.edu/catalog/stanford-nj226sg9961
+cambridge - https://earthworks.stanford.edu/catalog/harvard-cambridge14centerlines
+eureka - https://earthworks.stanford.edu/catalog/stanford-rq798pg5939
+sacramento - https://earthworks.stanford.edu/catalog/stanford-rd746hs3254
+somerville2002 - https://earthworks.stanford.edu/catalog/tufts-somervillestreets02
+somerville2015 - https://earthworks.stanford.edu/catalog/tufts-somervillestreets15
