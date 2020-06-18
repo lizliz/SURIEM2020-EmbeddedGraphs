@@ -118,27 +118,27 @@ def add_node(n_, G, M):
     to_add = []
     for i in range(0, len(children)):
         relative = G.nodes[children[i]]
-        
-        #Relative is a child or a neighbor
+        #Relative is a child
         if(f_(relative) < f):
-            if('c' in relative):
-                rel_cr = find_c(children[i], G)
+            #Does this work? idk !!!!!!
+            rel_cr = find_c(children[i], G)
+            
+            #Not already connected to child
+            if(rel_cr != cr):
+                #Add to the list of children to merge
+                to_add.append(rel_cr)
                 
-                #Not already connected to child
-                if(rel_cr != cr):
-                    #Add to the list of children to merge
-                    to_add.append(rel_cr)
-                    
-                    #New representative child!
-                    if(f_(G.nodes[rel_cr]) < f_(G.nodes[cr])):
-                        cr=rel_cr
+                #New representative child!
+                if(f_(G.nodes[rel_cr]) < f_(G.nodes[cr])):
+                    cr=rel_cr        
     
-    p = n_   
+    p = n_
+    
     c_count=len(to_add)
     #Leaf                   
     if(c_count==0):
         M.add_node(n_,value=f) #Add new leaf to merge tree
-        M.nodes[n_]['p']=p # Update the parent (THIS IS KIND OF REDUNDANT) 
+        M.nodes[n_]['p']=p # Update the parent (THIS IS KIND OF REDUNDANT)
     #Merge
     elif(c_count>1):
         edges = []
@@ -147,8 +147,8 @@ def add_node(n_, G, M):
         #one of the components to add
         first_on_lvl = True
         for i in range(0, len(to_add)):
-            rep_ = find_p(to_add[i], M) #The "representative parent of the child" before addition
-            if(f_(M.nodes[rep_]) == f): #Found node on level
+            rep_ = find_p(to_add[i], G) #The "representative parent of the child" before addition
+            if(f_(G.nodes[rep_]) == f): #Found node on level
                 first_on_lvl = False
                 p=rep_ #There won't be a new merged node - we found one to connect to
                         
@@ -157,10 +157,16 @@ def add_node(n_, G, M):
 
         #Only create a new node if it'd be the first one on the level
         if(first_on_lvl):
-            M.add_node(n_, value=f, p=n_) #Add new vertex to merge tree
+            M.add_node(n_,value=f, p_rep=n_) #Add new vertex to merge tree
+        #The node is representative of multiple from the original graph
+            
+        #print()
+        #print("n: " + str(n_) + "  F val: " + str(f))
         
         #Calculate the edges
         for i in range(0, len(to_add)):
+            #print("To add: " + str(to_add) + "  F val: " + str(f_(G.nodes[to_add[i]])))
+            
             rep_ = find_p(to_add[i], G) #The "representative parent of the child" before addition
             if(rep_ != p):
                 edges.append( (p, rep_) ) #Add the edge
@@ -170,19 +176,16 @@ def add_node(n_, G, M):
         
         #Update stuff
         for i in range(0, len(to_add)):
-            rep_ = find_p(to_add[i], G)
-            G.nodes[rep_]['p']=p
+            G.nodes[to_add[i]]['p']=p
             G.nodes[to_add[i]]['c']=cr #Update the rep child of the node from the list
         
         #Add the edges
         M.add_edges_from(edges)
-        
         M.nodes[p]['p'] = p #A node is its own parent until otherwise
         
     #Update findings
     G.nodes[p]['c']=cr #Update child rep of the node we connected to
     G.nodes[p]['p']=p
-
     n['c']=cr #Update the child rep of the added node and parent node. This must always be done
     n['p']=p #Update the parent rep of the newly added node
     
@@ -285,10 +288,7 @@ def update_neighbors(G, n1, neighbors, n2):
         if(nei not in neighbors and nei != n1):
             neighbors.append(nei)
     
-def collapse_neighbors(G, n):
-    if(n not in list(G.nodes)):
-        return
-    
+def collapse_neighbors(G, n, processed):
     lvl_neighbors = on_level_neighbors(G, n)
     
     count=0
@@ -301,6 +301,7 @@ def collapse_neighbors(G, n):
         #Collapse the first neighbor
         collapse(G, n, nei)
         lvl_neighbors.remove(nei)
+        processed[nei] = True #Mark the neighbor as processed
         
         count +=1
         
@@ -308,30 +309,34 @@ def collapse_neighbors(G, n):
         
     return count
 
-#Pass in any graph G
+#Collapse all of the on-level nodes in a given graph
 def preprocess(G):
-    nodes = listify_nodes(G)
-    nodes.sort(key=f_)
+    nodes = list(G)
     
-    seen = {}
-    dupes = []
-    # Only collapse if function values actually repeat
-    for x in nodes:
-        if x["value"] not in seen:# If the function value hasn't been seen before
-            seen[x["value"]] = x # Make the node the value for the function value key
-        else: # If the function value has been seen before
-            if seen[x["value"]] not in dupes: 
-                dupes.append(seen[x["value"]]) # add the 1st seen node to dupes
-            dupes.append(x) # add this node to dupes
+    #Stores whether or not a node has been processed already
+    processed = {}
     
-    #Collapse the neighbors of each node
+    #Initialize all the dictionary
+    for n in nodes:
+        processed[n] = False
+    
+    #Process all the nodes
     i=0
-    while(i < len(dupes)):
-        n = dupes[i]['name']
-        c = collapse_neighbors(G, n)
+    while(i < len(nodes)):
+        n = nodes[i]
+        if(processed[n] == False):
+            c = collapse_neighbors(G, n, processed)
+            
+            if(c > 0):
+                print("Collapsed " + str(n))
+            
+            #Mark the node as processed
+            processed[n] = True
         
-        if(i%100 == 0):
-            print(i)
+        #Show progress! 
+        # if(i%100 == 0):
+        #     print(i)
+        
         i+=1
     
     

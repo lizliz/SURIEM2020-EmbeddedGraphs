@@ -4,10 +4,17 @@
 #This program is concerned witht he comparison of merge trees
 import networkx as nx
 from lib.Tools import f_, get_leaves, list_append, listify_nodes
+import time
 
 #MEMOIZATION VARIABLES
 global D
 D={}
+
+global st
+st = 0
+
+global mt
+mt = 0
 
 global matching
 matching={}
@@ -291,8 +298,11 @@ def IsEpsSimilar(A, B, e, costs=None, roots=None, memo=None):
                 update_branching(branching[1], root_B, mB)
                 
                 #Get a list of all the child subtrees of each root-branch
+                global st
+                start = time.time()
                 subtrees_A = get_child_subtrees(root_A, mA, A)
                 subtrees_B = get_child_subtrees(root_B, mB, B)
+                st += time.time()-start
                 
                 #BASE CASE
                 if(len(subtrees_A) == 0 and len(subtrees_B) == 0):
@@ -322,10 +332,15 @@ def IsEpsSimilar(A, B, e, costs=None, roots=None, memo=None):
                 who_you_gonna_call(subtrees_A, subtrees_B, costs_A, costs_B, bip, e)
                 top_nodes = {n for n, d in bip.nodes(data=True) if d['bipartite']==0}
                 
+                global mt
+                start = time.time()
                 matching = nx.algorithms.bipartite.eppstein_matching(bip, top_nodes)
                 
                 if(nx.is_perfect_matching(bip, matching)):
+                    mt += time.time() - start
                     return True
+                mt += time.time() - start
+                
     
     if(root_A in branching[0]):            
         branching[0].pop(root_A)
@@ -343,6 +358,10 @@ def IsEpsSimilar(A, B, e, costs=None, roots=None, memo=None):
 # Takes two merge trees and finds the distance between them
 # within a certain radius of accuracy
 def morozov_distance(T1, T2, radius = 0.05):
+    global st, mt
+    st = 0
+    mt = 0
+    start = time.time()
     
     T1 = T1.copy()
     T2 = T2.copy()
@@ -366,11 +385,11 @@ def morozov_distance(T1, T2, radius = 0.05):
     
     # Placeholder until i understand how IsEpsSimilar works
     #similar = True
-    epsilon = 25000
+    epsilon = maximum
     similar = IsEpsSimilar(T1,T2, epsilon, costs=costs, roots=roots)
     delta = epsilon
     
-    
+
     its = 0
     # Continue the binary search until we get within our desired margin of error for accuracy
     while delta >= radius:
@@ -389,4 +408,5 @@ def morozov_distance(T1, T2, radius = 0.05):
         
     # Pretty print statement for debugging, will remove later
     #print("Morozov Distance:", epsilon, "\nMargin of Error:",radius, "\nIterations:",its)
+    print("Total Time: ", str(time.time() - start), "\n     Matching: ", mt, "\n     Subtrees: ", st,)
     return epsilon

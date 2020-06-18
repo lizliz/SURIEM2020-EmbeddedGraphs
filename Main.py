@@ -14,7 +14,7 @@ import timeit
 import time
 
 
-n = 25
+n = 50
 
 tests = 10000
 i=0
@@ -113,9 +113,9 @@ for i in range(0, tests):
         print("M3 is not reduced")
         errors += "\nM3 is not reduced!!!"
     try:
-        start = time.time()
+        #start = time.time()
         Compare.morozov_distance(M1, M2, 0.1)
-        print("Comparison: " + str(time.time() - start))
+        #print("Comparison: " + str(time.time() - start))
     except KeyError:
         print("Key Error with M1 and M2!!!!!!")
         key_lst.append((M1, M2))
