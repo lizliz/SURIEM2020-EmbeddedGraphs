@@ -245,7 +245,7 @@ def is_merge_tree(M):
 
 #Construct the merge tree given a graph G with function values.
 #Returns a networkx tree with a position dictionary for drawing
-def merge_tree(G):
+def merge_tree(G, normalize=True):
     preprocess(G)
     
     #Get the nodes from the networkx graph
@@ -258,7 +258,28 @@ def merge_tree(G):
         add_node(nodes[i]['name'], G, M)
     
     reduce(M)
+    if(normalize):
+        normalize_f(M)
     return M
+
+def median_f(M):
+    nodes = listify_nodes(M)
+    nodes.sort(key=f_)
+    
+    num = len(nodes)
+    
+    n1 = nodes[math.ceil((num-1)/2)]
+    n2 = nodes[math.floor((num-1)/2)]
+    med = (f_(n1)+f_(n2))/2
+    
+    return med
+    
+def normalize_f(M):
+    median = median_f(M)
+    
+    nodes = listify_nodes(M)
+    for n in nodes:
+        n['value'] = n['value'] - median
 
 def on_level_neighbors(G, n):
     f = f_(G.nodes[n])

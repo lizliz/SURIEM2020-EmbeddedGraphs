@@ -41,6 +41,4 @@ m.calc_values_height_reorient(G2, pos2)
 M2 = m.merge_tree(G2)
 
 print("Starting Comparison...")
-start = time.time()
 v.compare(M1, pos1, M2, pos2)
-print(time.time()-start)

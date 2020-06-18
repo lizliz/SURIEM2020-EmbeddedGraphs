@@ -211,10 +211,11 @@ def compute_subtrees(G, root, subtrees=None):
     des = {}
     
     #Nodes adjacent to the root
-    neighbors = G[root]
-    for nei in neighbors:
-        compute_subtree(G, nei, subtrees, des)
-        
+    nodes = list(G)
+    for n in nodes:
+        if(n != root):
+            compute_subtree(G, n, subtrees, des)
+            
     return subtrees
 
 #Add all the dummy vertices (ghosts) to the bipartite graph
@@ -340,8 +341,6 @@ def IsEpsSimilar(A, B, e, costs=None, roots=None, memo=None, subtrees=None):
     if(subtrees == None):
         print("Computing subtrees!")
         subtrees = [compute_subtrees(A, root_A), compute_subtrees(B, root_B)]
-        print(subtrees[0])
-        print(subtrees[1])
         
 
     #Compute all costs for later ghost-vertex marking
@@ -436,7 +435,8 @@ def IsEpsSimilar(A, B, e, costs=None, roots=None, memo=None, subtrees=None):
 # Takes two merge trees and finds the distance between them
 # within a certain radius of accuracy
 def morozov_distance(T1, T2, radius = 0.05):
-    global st, mt
+    global st
+    global mt
     st = 0
     mt = 0
     start = time.time()
@@ -460,11 +460,11 @@ def morozov_distance(T1, T2, radius = 0.05):
     #print("max: " + str(maximum))
     costs = [{},{}]
     roots = [find_root(T1), find_root(T2)]
-    subtrees = [compute_subtrees(T1, roots[0]),compute_subtrees(T1, roots[1])]
+    subtrees = [compute_subtrees(T1, roots[0]),compute_subtrees(T2, roots[1])]
     
     # Placeholder until i understand how IsEpsSimilar works
     #similar = True
-    epsilon = 200
+    epsilon = maximum
     similar = IsEpsSimilar(T1,T2, epsilon, costs=costs, roots=roots, subtrees=subtrees)
     delta = epsilon
     
