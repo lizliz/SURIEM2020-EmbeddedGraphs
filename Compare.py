@@ -27,7 +27,9 @@ branching = [{},{}]
 def match_cost(U,V, mu,su , mv,sv):
     #m represents the minima
     #s represents the saddle
-    return max(abs(f_(U.nodes[mu])-f_(V.nodes[mv])), abs(f_(U.nodes[su])-f_(V.nodes[sv])))
+    cost = max(abs(f_(U.nodes[mu])-f_(V.nodes[mv])), abs(f_(U.nodes[su])-f_(V.nodes[sv])))
+    #print("Match cost: " + str(cost))
+    return cost
 
 #The associated cost of removing a vertex 
 #from a rooted representation of a branching
@@ -294,7 +296,7 @@ def update_branching(B, saddle, minima):
   
 #Computes whether two subtrees a and b are matchable. Calls IsEpsSimilar
 #    in the case that the computation hasn't yet been computed.
-def compute_matchability(a, b, e, memo, costs, subtrees):
+def compute_matchability(a, b, e, memo, costs, subtrees, mapping):
 
     #These indices always pull the ID and roots because of how the subtrees are
     #constructed in a previous method. Generally, this will NOT work on subtrees not
@@ -313,7 +315,7 @@ def compute_matchability(a, b, e, memo, costs, subtrees):
         if(id_a not in memo):
             memo[id_a] = {}
             
-        memo[id_a][id_b] = IsEpsSimilar(a, b, e, costs=costs, roots=roots, memo=memo, subtrees=subtrees)
+        memo[id_a][id_b] = IsEpsSimilar(a, b, e, costs=costs, roots=roots, memo=memo, subtrees=subtrees, mapping=mapping)
     
     #Return the result (True or False)
     return memo[id_a][id_b]    
@@ -322,7 +324,7 @@ def compute_matchability(a, b, e, memo, costs, subtrees):
 #e is the cost maximum
 #roots is an array containing the roots of A and B
 #The function returns whether or not the two merge trees are matchable within e
-def IsEpsSimilar(A, B, e, costs=None, roots=None, memo=None, subtrees=None):
+def IsEpsSimilar(A, B, e, costs=None, roots=None, memo=None, subtrees=None, mapping=None):
     if(memo==None):
         memo = {}
         
@@ -339,9 +341,21 @@ def IsEpsSimilar(A, B, e, costs=None, roots=None, memo=None, subtrees=None):
         compute_costs(B, root_B, costs[1])
         
     if(subtrees == None):
-        print("Computing subtrees!")
         subtrees = [compute_subtrees(A, root_A), compute_subtrees(B, root_B)]
         
+    if('ID' in A.graph and 'ID' in B.graph):
+        ID = A.graph['ID'] + B.graph['ID']
+    else:
+        ID = str(root_A) + str(root_B)
+        
+    #Mapping is a dictionary that stores two things for each tree-pair
+    # 1. The matched root branches (ID'd by 'root-branch')
+    # 2. The perfect matching that worked (ID'd by 'matching')
+    if(mapping==None):
+        mapping = {}
+    
+    mapping[ID] = {}
+    
 
     #Compute all costs for later ghost-vertex marking
     costs_A = costs[0]
@@ -359,20 +373,18 @@ def IsEpsSimilar(A, B, e, costs=None, roots=None, memo=None, subtrees=None):
     #    bipartite graph with vertices representing the child subtrees. In the
     #    case that a pairing is matchable, an edge will be drawn between the
     #    corresponding vertices in the bipartite representation
-    global branching
-    run = 0
+    
     for mA in minima_A:
         for mB in minima_B:
+                
             #At this point, a root-branch pairing will be specified.
             #Check if the initial cost of matching this pairing is prohibitive.
             #If it isn't check if the rest of the graph is matchable by considering
             #   all of the child subtrees.
             if(match_cost(A,B, mA, root_A, mB, root_B) <= e):
-                update_matching(mA, mB)
-                update_matching(root_A, root_B)
-                
-                update_branching(branching[0], root_A, mA)
-                update_branching(branching[1], root_B, mB)
+                #Set the matched root branch.
+                #List with elements, sA,mA, sB,mB
+                mapping[ID]['root-branch'] = [root_A, mA, root_B, mB]
                 
                 #Get a list of all the child subtrees of each root-branch
                 global st
@@ -397,7 +409,7 @@ def IsEpsSimilar(A, B, e, costs=None, roots=None, memo=None, subtrees=None):
                 #Also, fill in the bipartite edges where applicable
                 for a in subtrees_A:
                     for b in subtrees_B:
-                        if(compute_matchability(a, b, e, memo, costs, subtrees)):
+                        if(compute_matchability(a, b, e, memo, costs, subtrees, mapping)):
                             bip.add_edge(a.graph['ID'], b.graph['ID'])
                 
                 #At this point, we should have a bipartite graph that encodes the
@@ -415,15 +427,13 @@ def IsEpsSimilar(A, B, e, costs=None, roots=None, memo=None, subtrees=None):
                 
                 if(nx.is_perfect_matching(bip, matching)):
                     mt += time.time() - start
+                    mapping[ID]['matching'] = matching
                     return True
                 mt += time.time() - start
-                
     
-    if(root_A in branching[0]):            
-        branching[0].pop(root_A)
-    if(root_B in branching[1]):            
-        branching[1].pop(root_B)
     #No matching was found!
+    mapping[ID]['root-branch'] = 'NONE'
+    mapping[ID]['matching'] = 'NONE'
     return False
 
 ###### I (Candace) added the function below but I'm not sure if it works yet 
@@ -447,8 +457,7 @@ def morozov_distance(T1, T2, radius = 0.05):
     relabel(T1, "*")
     relabel(T2, "~")
     
-    # print(T1.nodes)
-    # print(T2.nodes)
+    mappings = {}
     
     # Find the larger amplitude between the two trees as our starting epsilon
     vals1 = [i[1]["value"]for i in list(T1.nodes.data())] # I feel like there is definitely an easier way to find max/mins than making lists
@@ -462,34 +471,37 @@ def morozov_distance(T1, T2, radius = 0.05):
     roots = [find_root(T1), find_root(T2)]
     subtrees = [compute_subtrees(T1, roots[0]),compute_subtrees(T2, roots[1])]
     
-    # Placeholder until i understand how IsEpsSimilar works
-    #similar = True
-    epsilon = maximum
-    start = time.time()
-    similar = IsEpsSimilar(T1,T2, epsilon, costs=costs, roots=roots, subtrees=subtrees)
-    print(time.time() - start)
+    epsilon = 20
+    similar = IsEpsSimilar(T1,T2, epsilon, costs=costs, roots=roots, subtrees=subtrees, mapping=mappings)
     delta = epsilon
     
-
     its = 0
     # Continue the binary search until we get within our desired margin of error for accuracy
     while delta >= radius:
         its+=1
         delta=delta/2
-        start = time.time()
+        start_ = time.time()
+        mt = 0
+        st = 0
     # Decrease epsilon by half of the size between current epsilon and the lower end of the interval we're convergin on
         if similar == True:
             epsilon = epsilon - delta
-            similar = IsEpsSimilar(T1,T2, epsilon,costs=costs, roots=roots, subtrees=subtrees)
+            similar = IsEpsSimilar(T1,T2, epsilon,costs=costs, roots=roots, subtrees=subtrees, mapping=mappings)
         else:
         # Increase epsilon by half of the size between current epsilon and the upper end of the interval we're convergin on
             epsilon = epsilon+delta
-            similar = IsEpsSimilar(T1,T2, epsilon,costs=costs, roots=roots, subtrees=subtrees)
+            similar = IsEpsSimilar(T1,T2, epsilon,costs=costs, roots=roots, subtrees=subtrees, mapping=mappings)
         # Debug statement, will remove later
-        #print(epsilon)
-        print(time.time()-start)
+        print("Epsilon: ", epsilon)
+        print("Iteration Time: ", str(time.time() - start_), "\n     Matching: ", mt, "\n     Subtrees: ", st,)
+    
+    if (not similar):
+        its+=1
+        epsilon += delta 
+        similar = IsEpsSimilar(T1,T2, epsilon,costs=costs, roots=roots, subtrees=subtrees, mapping=mappings)
         
     # Pretty print statement for debugging, will remove later
-    #print("Morozov Distance:", epsilon, "\nMargin of Error:",radius, "\nIterations:",its)
-    print("Total Time: ", str(time.time() - start), "\n     Matching: ", mt, "\n     Subtrees: ", st,)
+    print("Morozov Distance:", epsilon, "\nMargin of Error:",radius, "\nIterations:",its)
+    print("Total Time: ", str(time.time() - start))
+    print(mappings)
     return epsilon

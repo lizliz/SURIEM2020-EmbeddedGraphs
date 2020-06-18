@@ -14,7 +14,7 @@ import timeit
 import time
 
 
-n = 50
+n = 10
 
 tests = 10000
 i=0
@@ -25,6 +25,8 @@ key_lst = [] # list keeping track of the key error graphs
 key = "" #string keeping track of the key errors
 posk = []
 inputs = []
+counter_lst = []
+posc=[]
 
 for i in range(0, tests):
     if(i % 25 == 0):
@@ -145,21 +147,23 @@ for i in range(0, tests):
         v.compare(M2, pos2, M3, pos3, labels=True, n_size=500)
   
     #v.compare(M1, pos1, M2, pos2, labels=True, n_size=500)
-    #dxy = Compare.morozov_distance(M1, M2, 0.1)
+    dxy = Compare.morozov_distance(M1, M2, 0.1)
     #v.compare(M1, pos1, M3, pos3, labels=True, n_size=500)
-    #dxz = Compare.morozov_distance(M1, M3, 0.1)
+    dxz = Compare.morozov_distance(M1, M3, 0.1)
     #v.compare(M3, pos3, M2, pos2, labels=True, n_size=500)
-    #dzy = Compare.morozov_distance(M3, M2, 0.1)
+    dzy = Compare.morozov_distance(M3, M2, 0.1)
     
-    #dif = min(dxy + dxz - dzy, dxy + dzy - dxz, dxz + dzy - dxy)
+    dif = min(dxy + dxz - dzy, dxy + dzy - dxz, dxz + dzy - dxy)
     #print("dif:" + str(dif))
     x = abs(5 - (i % 10))+1
     print('-' * x)
     
-    #if(dif < -5):        
-        #print("HUZZAH!")
-        #print(pos1)
-        #print(pos2)
-        #print(pos3)
-        #break
+    if(dif < -1):        
+        print("HUZZAH!")
+        counter_lst.append([M1,M2,M3])
+        posc.append([pos1,pos2,pos3])
+        print(pos1)
+        print(pos2)
+        print(pos3)
+        break
 print("All Errors: ", errors)

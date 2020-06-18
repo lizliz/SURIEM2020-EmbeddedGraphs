@@ -273,13 +273,21 @@ def median_f(M):
     med = (f_(n1)+f_(n2))/2
     
     return med
+
+def mean_f(M):
+    nodes = listify_nodes(M)
+    
+    avg = 0
+    for n in nodes:
+        avg += f_(n)
+    return avg / len(nodes)
     
 def normalize_f(M):
-    median = median_f(M)
+    center = mean_f(M)
     
     nodes = listify_nodes(M)
     for n in nodes:
-        n['value'] = n['value'] - median
+        n['value'] = n['value'] - center
 
 def on_level_neighbors(G, n):
     f = f_(G.nodes[n])

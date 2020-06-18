@@ -26,7 +26,7 @@ T1.add_edges_from(edges_t1)
 
 #Visualization.input_output(T1, pos1)
 Merge.calc_values_height(T1, pos1, math.pi / 2)
-M1 = Merge.merge_tree(T1)
+M1 = Merge.merge_tree(T1, normalize=False)
 
 nodes_t2 = ['m3', 'm4', 's3','s4','sk','sl']
 edges_t2 = [('m3','m4'),('s3','m4'),('m4','s4'),('sk','s3'),('sl','s3')]
@@ -44,7 +44,7 @@ T2.add_edges_from(edges_t2)
 
 Visualization.input_output(T2, pos2)
 Merge.calc_values_height(T2, pos2, math.pi / 2)
-M2 = Merge.merge_tree(T2)
+M2 = Merge.merge_tree(T2, normalize=False)
 
 nodes_t3 = ['m5', 'm6', 's5','a','g']
 edges_t3 = [('s5','m5'),('m5','m6'),('a','s5'),('g','s5')]
@@ -61,7 +61,7 @@ T3.add_edges_from(edges_t3)
 
 #Visualization.input_output(T3, pos3)
 Merge.calc_values_height(T3, pos3, math.pi / 2)
-M3 = Merge.merge_tree(T3)
+M3 = Merge.merge_tree(T3, normalize=False)
 
 #print(Compare.descendants(M3, 'm5'))
 #print(Compare.IsEpsSimilar(M1, M2, 1.9999))
