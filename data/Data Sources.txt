@@ -5,3 +5,6 @@ berlin_large_vertices_osm
 chicago_edges_osm
 chicago_vertices_osm
 
+From the Earthworks Stanford library:
+SanJoaquinCounty - https://earthworks.stanford.edu/catalog/stanford-gt667dj5134
+
