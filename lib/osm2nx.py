@@ -143,5 +143,5 @@ def read_osm(filePath, draw = True):
         pos = nx.spring_layout(G,pos=fixed_positions, fixed = fixed_nodes)
         nx.draw_networkx(G,pos, with_labels = False, **options)
     
-    # Returns the graph object
-    return G
+    # Returns the graph object and position dictionary
+    return [G, fixed_positions]
