@@ -351,6 +351,22 @@ def BFS(G, r):
     
     #Retrurn the relevant dictionaries and the root    
     return [nodes, parent, level, r]
+
+# Returns the largest connected component of a graph as a networkx object
+def main_component(G, pos_dict = None, report = True, draw = False):
+    largest_cc = max(nx.connected_components(G), key=len)
+    mainComponent = G.subgraph(largest_cc)
+    
+    if draw == True: # Draw largest component
+        if pos_dict == None: # Drawing requires position dictionary
+            print("Need position dictionary to draw!")
+        else:
+            nx.draw(mainComponent, pos = pos_dict, with_labels = False, node_size = 0)
+    
+    if report == True: # Tell user what percent of the nodes were preserved
+        print("Largest component has ", (len(list(mainComponent.nodes))/len(list(G.nodes)))*100, "% of the nodes")
+
+    return mainComponent
 ###
 #END OF MISC.
 ###
