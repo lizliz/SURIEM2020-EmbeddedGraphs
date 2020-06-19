@@ -282,28 +282,30 @@ def shift_f(T, n, pos, amount):
 ###
 #MISC. METHODS
 ###
-
-# def add_branch(mapping, layer, weight):
     
 
-# #Returns a dictionary of minima matchings
-# def parse_mapping(mapping):
+def get_children(mapping, ID, c):
+    layer = mapping[ID]
     
-#     #Get the top layer of the mapping
-#     top = mapping['top']
+    #Handle the root branch
+    branch = layer['root-branch']
+    min1 = branch[1]
+    min2 = branch[3]
+    c[min1] = min2 #Update the dictionary
     
-#     #We will store the branching for drawing's sake
-#     branching = {}
+    matching = list(layer['matching'])
     
-#     ID = top
-#     branch_weight = 10
-#     layer = mapping[ID]
-#     while(layer['matching'] != 'EMPTY'):
-#         #Add the current root branch
-#         ID ...
+
+#Returns a dictionary of minima matchings
+def parse_mapping_mins(mapping):
+    c={}
+    
+    ID = mapping['top']
         
-#         layer = mapping[ID]    
-
+    get_children(mapping, ID)
+    
+    return c
+    
 #Adds all the elements in L2 to the end of L1, preserving order
 def list_append(L1, L2):
     for i in range(0,len(L2)):
