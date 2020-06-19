@@ -15,3 +15,8 @@ eureka - https://earthworks.stanford.edu/catalog/stanford-rq798pg5939
 sacramento - https://earthworks.stanford.edu/catalog/stanford-rd746hs3254
 somerville2002 - https://earthworks.stanford.edu/catalog/tufts-somervillestreets02
 somerville2015 - https://earthworks.stanford.edu/catalog/tufts-somervillestreets15
+
+From OpenStreeMap.org:
+atlanta - forgot to get link :(
+lancaster - https://www.openstreetmap.org/export#map=15/40.0405/-76.3016
+dc - https://www.openstreetmap.org/export#map=17/38.90790/-77.01960
