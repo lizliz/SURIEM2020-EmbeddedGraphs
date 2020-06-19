@@ -232,7 +232,7 @@ def cool(M1, p1, M2, p2, G2, data, index, savepath=""):
     plt.close()
     
     
-#Big method for real.
-def draw_mapping(M1,pos1, M2,pos2, mapping):
+# #Big method for real.
+# def draw_mapping(M1,pos1, M2,pos2, mapping):
 
-    #Parse the mapping
+#     #Parse the mapping

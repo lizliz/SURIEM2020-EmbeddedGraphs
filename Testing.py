@@ -67,6 +67,6 @@ M3 = Merge.merge_tree(T3, normalize=False)
 #print(Compare.IsEpsSimilar(M1, M2, 1.9999))
 #print(Compare.IsEpsSimilar(M1, M2, 1.99))
 
-Visualization.compare(M1, pos1, M2, pos2, n_size = 500, labels = True, valid=True)
-Visualization.compare(M3, pos3, M2, pos2, n_size = 500, labels = True, valid=True)
+#Visualization.compare(M1, pos1, M2, pos2, n_size = 500, labels = True, valid=True)
+#Visualization.compare(M3, pos3, M2, pos2, n_size = 500, labels = True, valid=True)
 Visualization.compare(M1, pos1, M3, pos3, n_size = 500, labels = True, valid=True)
