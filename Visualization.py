@@ -110,7 +110,7 @@ def animate(G, pos, frames, savepath=""):
 
 
 #Takes two MERGE trees.
-def compare(A, pos_A, B, pos_B, n_size=0, labels=False, pth=""):
+def compare(A, pos_A, B, pos_B, n_size=0, labels=False, pth="", valid=False):
     fig = plt.subplots(1,3,figsize=(15,5))
     
     ax = plt.subplot(131, frameon=False)
@@ -120,7 +120,7 @@ def compare(A, pos_A, B, pos_B, n_size=0, labels=False, pth=""):
     draw(B, pos_B, "Graph B", ax, labels=labels, n_size=n_size)
     
     
-    d = Compare.morozov_distance(A, B, 0.05)
+    d = Compare.morozov_distance(A, B, 0.05, valid=valid)
     ax = plt.subplot(132, frameon=False)
     ax.axis('off')
     ax.title.set_text("DISTANCE = " + str(d))
@@ -201,3 +201,38 @@ def compare_many(A, pos_A, B, pos_B, frames, savepath=""):
         
         
         compare_square(mA, pos_A_copy, r_A, mB, pos_B_copy, r_B, pth)
+        
+def cool(M1, p1, M2, p2, G2, data, index, savepath=""):
+    fig = plt.subplots(1,4,figsize=(20,5))
+        
+    ax = plt.subplot(141, frameon=False)
+    draw(M1, p1, "Merge A", ax)
+    
+    angles = [x[0] for x in data]
+    distances = [x[1] for x in data]
+    
+    point = [angles[index], distances[index]]
+    ax = plt.subplot(142)
+    ax.title.set_text("Distance vs. Angle")
+    ax.plot(angles, distances, '-')
+    ax.scatter(point[0], point[1], marker='o', c='b', s=40)
+    ax.axes.get_xaxis().set_visible(False)
+    
+    ax = plt.subplot(143, frameon=False)
+    draw(M2, p2, "Merge B", ax)
+    
+    ax = plt.subplot(144, frameon=False)
+    draw(G2, p2, "Input B", ax)
+    
+     #Save the image if specified
+    if(savepath != ""):
+        pth = savepath + "/frame" + str(index)
+        plt.savefig(pth)
+        
+    plt.close()
+    
+    
+#Big method for real.
+def draw_mapping(M1,pos1, M2,pos2, mapping):
+
+    #Parse the mapping

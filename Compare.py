@@ -352,10 +352,9 @@ def IsEpsSimilar(A, B, e, costs=None, roots=None, memo=None, subtrees=None, mapp
     # 1. The matched root branches (ID'd by 'root-branch')
     # 2. The perfect matching that worked (ID'd by 'matching')
     if(mapping==None):
-        mapping = {}
+        mapping = {'top' : ID}
     
     mapping[ID] = {}
-    
 
     #Compute all costs for later ghost-vertex marking
     costs_A = costs[0]
@@ -394,7 +393,8 @@ def IsEpsSimilar(A, B, e, costs=None, roots=None, memo=None, subtrees=None, mapp
                 st += time.time()-start
                 
                 #BASE CASE
-                if(len(subtrees_A) == 0 and len(subtrees_B) == 0):
+                if(len(subtrees_A) == 0 and len(subtrees_B) == 0):                    
+                    mapping[ID]['matching'] = 'EMPTY'
                     return True
                 
                 #Create a bipartite graph representating the matchability of
@@ -444,7 +444,7 @@ def IsEpsSimilar(A, B, e, costs=None, roots=None, memo=None, subtrees=None, mapp
 ##### I am also very open to renaming this function I just didn't know what to call it
 # Takes two merge trees and finds the distance between them
 # within a certain radius of accuracy
-def morozov_distance(T1, T2, radius = 0.05):
+def morozov_distance(T1, T2, radius = 0.05, valid=False):
     global st
     global mt
     st = 0
@@ -457,8 +457,6 @@ def morozov_distance(T1, T2, radius = 0.05):
     relabel(T1, "*")
     relabel(T2, "~")
     
-    mappings = {}
-    
     # Find the larger amplitude between the two trees as our starting epsilon
     vals1 = [i[1]["value"]for i in list(T1.nodes.data())] # I feel like there is definitely an easier way to find max/mins than making lists
     amp1 = abs(max(vals1)-min(vals1)) # amplitude for T1
@@ -470,9 +468,11 @@ def morozov_distance(T1, T2, radius = 0.05):
     costs = [{},{}]
     roots = [find_root(T1), find_root(T2)]
     subtrees = [compute_subtrees(T1, roots[0]),compute_subtrees(T2, roots[1])]
+    ID = str(roots[0]) + str(roots[1])
+    mapping = {'top': ID}
     
     epsilon = 20
-    similar = IsEpsSimilar(T1,T2, epsilon, costs=costs, roots=roots, subtrees=subtrees, mapping=mappings)
+    similar = IsEpsSimilar(T1,T2, epsilon, costs=costs, roots=roots, subtrees=subtrees, mapping=mapping)
     delta = epsilon
     
     its = 0
@@ -483,25 +483,29 @@ def morozov_distance(T1, T2, radius = 0.05):
         start_ = time.time()
         mt = 0
         st = 0
-    # Decrease epsilon by half of the size between current epsilon and the lower end of the interval we're convergin on
+        
+        mapping = {'top': ID}
+        # Decrease epsilon by half of the size between current epsilon and the lower end of the interval we're convergin on
         if similar == True:
             epsilon = epsilon - delta
-            similar = IsEpsSimilar(T1,T2, epsilon,costs=costs, roots=roots, subtrees=subtrees, mapping=mappings)
+            similar = IsEpsSimilar(T1,T2, epsilon,costs=costs, roots=roots, subtrees=subtrees, mapping=mapping)
         else:
         # Increase epsilon by half of the size between current epsilon and the upper end of the interval we're convergin on
             epsilon = epsilon+delta
-            similar = IsEpsSimilar(T1,T2, epsilon,costs=costs, roots=roots, subtrees=subtrees, mapping=mappings)
+            similar = IsEpsSimilar(T1,T2, epsilon,costs=costs, roots=roots, subtrees=subtrees, mapping=mapping)
         # Debug statement, will remove later
-        print("Epsilon: ", epsilon)
-        print("Iteration Time: ", str(time.time() - start_), "\n     Matching: ", mt, "\n     Subtrees: ", st,)
+        #print("Epsilon: ", epsilon)
+        #print("Iteration Time: ", str(time.time() - start_), "\n     Matching: ", mt, "\n     Subtrees: ", st,)
     
-    if (not similar):
+    #Actually get a matching lol
+    if (valid and not similar):
+        mapping = {'top': ID}
         its+=1
         epsilon += delta 
-        similar = IsEpsSimilar(T1,T2, epsilon,costs=costs, roots=roots, subtrees=subtrees, mapping=mappings)
+        similar = IsEpsSimilar(T1,T2, epsilon,costs=costs, roots=roots, subtrees=subtrees, mapping=mapping)
         
     # Pretty print statement for debugging, will remove later
-    print("Morozov Distance:", epsilon, "\nMargin of Error:",radius, "\nIterations:",its)
-    print("Total Time: ", str(time.time() - start))
-    print(mappings)
+    #print("Morozov Distance:", epsilon, "\nMargin of Error:",radius, "\nIterations:",its)
+    #print("Total Time: ", str(time.time() - start))
+    print(mapping)
     return epsilon

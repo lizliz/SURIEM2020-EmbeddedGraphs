@@ -283,6 +283,27 @@ def shift_f(T, n, pos, amount):
 #MISC. METHODS
 ###
 
+def add_branch(mapping, layer, weight):
+    
+
+def parse_mapping(mapping):
+    
+    #Get the top layer of the mapping
+    top = mapping['top']
+    
+    #We will store the branching for drawing's sake
+    branching = {}
+    
+    ID = top
+    branch_weight = 10
+    layer = mapping[ID]
+    while(layer['matching'] != 'EMPTY'):
+        #Add the current root branch
+        ID
+        
+        
+        layer = mapping[ID]    
+
 #Adds all the elements in L2 to the end of L1, preserving order
 def list_append(L1, L2):
     for i in range(0,len(L2)):
