@@ -23,7 +23,7 @@ import networkx as nx
 # Function takes a .json file in geoJSON format and outputs a networkx graph
 # in my experience when testing this function, geoJSON files have a
 # .json extension, not .geojson
-def read_json(path, draw = True): 
+def read_json(path, draw = True, nodeSize = 0, labels = False): 
     json_file = open(path, mode = "r") # Open the file
     contents = json_file.read() # Read in all the contents of the file as one long string
     contents_list = contents.split("coordinates") # Split up the string by each group of coordinates
@@ -86,10 +86,9 @@ def read_json(path, draw = True):
     
     # Draw graph if desired
     if draw == True:
-        options = {"node_size":0,"edge_color" : "black"}
         graph_points = point_positions.keys()
         pos = nx.spring_layout(G, pos = point_positions, fixed = graph_points)
-        nx.draw_networkx(G, pos, with_labels = False, **options)
+        nx.draw_networkx(G, pos, node_size = nodeSize, with_labels = labels)
     
-    # Return networkx graph object
+    # Return networkx graph object and position dictionary
     return [G, point_positions]         

@@ -16,17 +16,16 @@ def read_txt_n(name):
 ##
 
 #graphml reading
-def read_graphml(path, draw = False):
-    return graphml.read_graphml(path, draw)
+def read_graphml(path, draw = False, nodeSize = 0, labels = False):
+    return graphml.read_graphml(path, draw, nodeSize, labels)
 ##
 
 #osm reading
-def read_osm(path, draw = False):
-    return osm.read_osm(path, draw)
+def read_osm(path, draw = False, nodeSize = 0, labels = False):
+    return osm.read_osm(path, draw, nodeSize, labels)
 ##
 
 #json
-def read_json(path, draw = False):
-    return json.read_json(path, draw)
-    # returns graph object and position dictionary
+def read_json(path, draw = False, nodeSize = 0, labels = False):
+    return json.read_json(path, draw, nodeSize, labels)
 ##
