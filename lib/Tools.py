@@ -283,8 +283,36 @@ def shift_f(T, n, pos, amount):
 #MISC. METHODS
 ###
     
+def relabel(G, tag):
+    nodes = list(G.nodes)
+    
+    new_names = {}    
+    
+    for n in nodes:
+        new_names[n] = tag + str(n)
+        G.nodes[n]['p'] = tag + str(G.nodes[n]['p'])
+    
+    nx.relabel.relabel_nodes(G, new_names, copy=False)
+    
+def relabel_dict(D, tag):
+    new_D = {}
+    
+    for d in D:
+        new_D[tag + d] = D[d]
+        
+    return new_D
 
-def get_children(mapping, ID, c):
+
+def is_ghost(a):
+    return (isinstance(a, str) and len(a) >= 5 and a[0:5] == "GHOST")
+
+def get_ID(m, val):
+    if(m[0] == '*'):
+        return m + val
+    else:
+        return val + m
+
+def get_connections(mapping, ID, c):
     layer = mapping[ID]
     
     #Handle the root branch
@@ -292,17 +320,33 @@ def get_children(mapping, ID, c):
     min1 = branch[1]
     min2 = branch[3]
     c[min1] = min2 #Update the dictionary
+    saddle1 = branch[0]
+    saddle2 = branch[2]
+    c[saddle1] = saddle2 #Update the dictionary
     
-    matching = list(layer['matching'])
+   
+    #Handle all the matchings
+    matching = layer['matching']
+    if(matching == 'EMPTY'):
+        return c
     
+    for m in matching:
+        #Deleted Vertex
+        val = matching[m]
+        if(val == "GHOST " + str(m)):
+            c[m] = "DELETED"  
+        elif(not is_ghost(val) and not is_ghost(m) and m != "DELETED"):
+            new_ID = get_ID(m, val)
+            get_connections(mapping, new_ID, c)
+            
 
 #Returns a dictionary of minima matchings
-def parse_mapping_mins(mapping):
+def parse_mapping(mapping):
     c={}
     
     ID = mapping['top']
         
-    get_children(mapping, ID)
+    get_connections(mapping, ID, c)
     
     return c
     

@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 import matplotlib.image as mpimg
 from matplotlib.offsetbox import OffsetImage, AnnotationBbox
 from Merge import merge_tree, calc_values_height_reorient, calc_values_height, reduced
-from lib.Tools import get_bounds_and_radius
+from lib.Tools import get_bounds_and_radius, parse_mapping, is_leaf_f, relabel, relabel_dict
 import os
 import math
 import Compare
@@ -262,9 +262,74 @@ def distance_data(G1, pos1, G2, pos2, frames=720, rotate_both=True, accuracy=0.0
     ax.plot(angles, distances, '-')
     
     return data
+  
+#Shifts pos2 next to pos1
+def alter_positions(pos1, pos2):
+    bounds1 = get_bounds_and_radius(pos1)[1]
+    bounds2 = get_bounds_and_radius(pos2)[1]
     
+    right_1 = bounds1[0][1]
+    left_2 = bounds2[0][0]
     
-# #Big method for real.
-# def draw_mapping(M1,pos1, M2,pos2, mapping):
+    x_shift = 5 + right_1-left_2
+    
+    y_avg_1 = sum(bounds1[1])/2
+    y_avg_2 = sum(bounds2[1])/2
+    
+    y_shift = y_avg_1 - y_avg_2
+    
+    #Shift all the points!
+    for p in pos2:
+        new_x = pos2[p][0] + x_shift
+        new_y = pos2[p][1] + y_shift
+        pos2[p] = (new_x, new_y)
+#Big method for real.
+def draw_mapping(M1,pos1, M2,pos2, mapping, distance):
 
-#     #Parse the mapping
+    relabel(M1, '*')
+    relabel(M2, '~')
+    pos1 = relabel_dict(pos1, '*')
+    pos2 = relabel_dict(pos2, '~')
+
+    #Parse the mapping
+    connections = parse_mapping(mapping)
+    
+    #Make the connections graph!
+    match_graph = nx.Graph()
+    del_graph = nx.Graph()
+    del_edges = nx.Graph()
+    for c in connections:
+        val = connections[c]
+        if(c[0] == '~' and val != "DELETED"):
+            c, val = val, c
+        
+        #Deleted node
+        if(val == 'DELETED'):
+            del_graph.add_node(c)
+            
+            if(c[0] == '*'):
+                g = M1
+            else:
+                g = M2
+                
+            del_edges.add_edges_from(g.edges(c))
+        #Matched minima
+        elif(is_leaf_f(M1, c)):
+            match_graph.add_edge(c, val)
+        
+    
+    alter_positions(pos1, pos2)
+    #Grand position matrix!
+    pos = {**pos1, **pos2}
+    
+    fig = plt.subplots(1,1,figsize=(20,10))
+    ax = plt.subplot(111, frameon=False)
+    ax.title.set_text("Distance: " + str(distance))
+    nx.draw(M1, pos1, node_color='blue', node_size=500)
+    nx.draw(M2, pos2, node_color='blue', node_size=500)
+    nx.draw(match_graph, pos, node_color='green', edge_color='green', node_size=500, width= 5)   
+    nx.draw_networkx_edges(del_edges, pos, edge_color='red', width= 3)
+    nx.draw(del_graph, pos, node_color='r', node_size=500)
+    
+    
+    

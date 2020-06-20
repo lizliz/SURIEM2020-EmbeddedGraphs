@@ -34,7 +34,6 @@ def calc_values_height_reorient(G, pos, angle=None):
     if(angle!=None):
         reorient(pos, angle)
         
-        
         #Set all of the function values by height
         for i in range(0, len(n)):
             n[i]['value'] = height(pos[n[i]['name']], math.pi / 2)
@@ -356,8 +355,8 @@ def preprocess(G):
         if(processed[n] == False):
             c = collapse_neighbors(G, n, processed)
             
-            if(c > 0):
-                print("Collapsed " + str(n))
+            # if(c > 0):
+            #     print("Collapsed " + str(n))
             
             #Mark the node as processed
             processed[n] = True

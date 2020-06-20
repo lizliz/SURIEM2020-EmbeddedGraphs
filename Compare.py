@@ -3,7 +3,7 @@
 #
 #This program is concerned witht he comparison of merge trees
 import networkx as nx
-from lib.Tools import f_, get_leaves, list_append, listify_nodes
+from lib.Tools import f_, get_leaves, list_append, listify_nodes, relabel
 import time
 
 #MEMOIZATION VARIABLES
@@ -276,17 +276,6 @@ def find_root(T):
              max_node = n
              
      return max_node['name']
-    
-def relabel(G, tag):
-    nodes = list(G.nodes)
-    
-    new_names = {}    
-    
-    for n in nodes:
-        new_names[n] = tag + str(n)
-        G.nodes[n]['p'] = tag + str(G.nodes[n]['p'])
-    
-    nx.relabel.relabel_nodes(G, new_names, copy=False)
         
 def update_branching(B, saddle, minima):
     if(saddle not in B):
@@ -444,7 +433,7 @@ def IsEpsSimilar(A, B, e, costs=None, roots=None, memo=None, subtrees=None, mapp
 ##### I am also very open to renaming this function I just didn't know what to call it
 # Takes two merge trees and finds the distance between them
 # within a certain radius of accuracy
-def morozov_distance(T1, T2, radius = 0.05, valid=False):
+def morozov_distance(T1, T2, radius = 0.05, valid=False, get_map=False):
     global st
     global mt
     st = 0
@@ -507,5 +496,7 @@ def morozov_distance(T1, T2, radius = 0.05, valid=False):
     # Pretty print statement for debugging, will remove later
     #print("Morozov Distance:", epsilon, "\nMargin of Error:",radius, "\nIterations:",its)
     #print("Total Time: ", str(time.time() - start))
-   # print(mapping)
+    #print(mapping)
+    if(get_map):
+        return [epsilon, mapping]
     return epsilon
