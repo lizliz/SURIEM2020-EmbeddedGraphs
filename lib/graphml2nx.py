@@ -17,7 +17,7 @@ import networkx as nx
 # must be a string
 # By default the function will also draw the graph you give it
 
-def read_graphml(filePath, draw = True):
+def read_graphml(filePath, draw = True, nodeSize = 0, labels = False):
     
     # Open the file and read in its contents as one long string
     file = open(filePath, "r")
@@ -52,7 +52,7 @@ def read_graphml(filePath, draw = True):
         yPosStartIndex = nodeList[i].find("positionY")
         xPosEndIndex = yPosStartIndex - 2
         yPosStartIndex += 11
-        yPosEndIndex = nodeIDStartindex - 7
+        yPosEndIndex = nodeIDStartindex - 6
         xPos = float(nodeList[i][xPosStartIndex:xPosEndIndex]) # Convert strings
         yPos = float(nodeList[i][yPosStartIndex:yPosEndIndex]) # To numbers
         
@@ -77,7 +77,7 @@ def read_graphml(filePath, draw = True):
     if draw == True:
         fixed_nodes = fixed_positions.keys()
         pos = nx.spring_layout(G,pos=fixed_positions, fixed = fixed_nodes)
-        nx.draw_networkx(G,pos)
+        nx.draw_networkx(G,pos, node_size = nodeSize, with_labels = labels)
     
     # Returns the graph object and position dictionary
     return [G,fixed_positions]

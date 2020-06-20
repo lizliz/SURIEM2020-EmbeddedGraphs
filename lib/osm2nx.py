@@ -16,7 +16,7 @@ import networkx as nx
 
 # By default the function will also draw the graph you give it
 
-def read_osm(filePath, draw = True):
+def read_osm(filePath, draw = True, nodeSize = 0, labels = False):
     G = nx.Graph()
     
     # Open the file and read in its contents as one long string
@@ -135,13 +135,9 @@ def read_osm(filePath, draw = True):
     
     # Draw it if desired
     if draw == True:
-        options = {
-            "node_color" : "orange", 
-            "node_size":0,
-            "edge_color" : "black"}
         fixed_nodes = fixed_positions.keys()
         pos = nx.spring_layout(G,pos=fixed_positions, fixed = fixed_nodes)
-        nx.draw_networkx(G,pos, with_labels = False, **options)
+        nx.draw_networkx(G,pos, with_labels = labels, node_size = nodeSize)
     
     # Returns the graph object and position dictionary
     return [G, fixed_positions]
