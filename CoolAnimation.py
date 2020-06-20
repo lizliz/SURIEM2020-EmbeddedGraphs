@@ -50,20 +50,20 @@ pos2 = data[1]
 # data_file.write("]")
 # data_file.close()
 
-data = cd.data
-pth = "./images/cool/"
-for i in range(0, 1441):
-    print(i)
-    p1 = pos1.copy()
-    p2 = pos2.copy()
-    G1c = G1.copy()
-    G2c = G2.copy()
+# data = cd.data
+# pth = "./images/cool/"
+# for i in range(0, 1441):
+#     print(i)
+#     p1 = pos1.copy()
+#     p2 = pos2.copy()
+#     G1c = G1.copy()
+#     G2c = G2.copy()
 
-    m.calc_values_height_reorient(G1c, p1)
-    M1 = m.merge_tree(G1c, normalize=True)
+#     m.calc_values_height_reorient(G1c, p1)
+#     M1 = m.merge_tree(G1c, normalize=True)
     
-    m.calc_values_height_reorient(G2c, p2, math.pi*(1/2 + i/(720)))
-    M2 = m.merge_tree(G2c, normalize=True)
+#     m.calc_values_height_reorient(G2c, p2, math.pi*(1/2 + i/(720)))
+#     M2 = m.merge_tree(G2c, normalize=True)
     
-    v.cool(M1, p1, M2, p2, G2c, data, i, savepath=pth)
+#     v.cool(M1, p1, M2, p2, G2c, data, i, savepath=pth)
 

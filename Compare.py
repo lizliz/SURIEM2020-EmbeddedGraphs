@@ -507,5 +507,5 @@ def morozov_distance(T1, T2, radius = 0.05, valid=False):
     # Pretty print statement for debugging, will remove later
     #print("Morozov Distance:", epsilon, "\nMargin of Error:",radius, "\nIterations:",its)
     #print("Total Time: ", str(time.time() - start))
-    print(mapping)
+   # print(mapping)
     return epsilon
