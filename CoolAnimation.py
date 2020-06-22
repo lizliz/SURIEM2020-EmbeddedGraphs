@@ -8,62 +8,78 @@ import Merge as m
 import Visualization as v
 import Compare as c
 import math
-import lib.CoolData as cd
+import moviepy.editor as mpy
+import lib.Tools as t
+import glob
+from DataCalculations import average_distance
 
 #Make the graphs
-pth = "./data/cool1.graphml"
+pth = "./data/kitty1.graphml"
 data = dr.read_graphml(pth)
-G1 = data[0]
+G1 = t.main_component(data[0])
 pos1 = data[1]
+m.calc_values_height_reorient(G1, pos1)
+M1 = m.merge_tree(G1)
 
-pth = "./data/cool2.graphml"
+pth = "./data/kitty2.graphml"
 data = dr.read_graphml(pth)
-G2 = data[0]
+G2 = t.main_component(data[0])
 pos2 = data[1]
+m.calc_values_height_reorient(G2, pos2)
+M2 = m.merge_tree(G2)
 
-#Let's get the data (distances at many angles.)
+frames=720
 
-
-# data=[]
-# for i in range(0, 1441):
+# pth = "./images/cool"
+# for i in range(0, frames):
 #     print(i)
 #     p1 = pos1.copy()
 #     p2 = pos2.copy()
 #     G1c = G1.copy()
 #     G2c = G2.copy()
 
-#     m.calc_values_height_reorient(G1c, p1)
+#     m.calc_values_height_reorient(G1c, p1, math.pi*(1/2 + 2*i/(frames)))
 #     M1 = m.merge_tree(G1c, normalize=True)
     
-#     m.calc_values_height_reorient(G2c, p2, math.pi*(1/2 + i/(720)))
+#     m.calc_values_height_reorient(G2c, p2, math.pi*(1/2 + 2*i/(frames)))
 #     M2 = m.merge_tree(G2c, normalize=True)
     
-#     dist = c.morozov_distance(M1, M2, 0.000001)
-#     data.append( (i, dist) )
+#     data = c.morozov_distance(M1, M2, radius=0.001, valid=True, get_map=True)
+#     mapping = data[1]
+#     distance = data[0]
+#     v.draw_mapping(M1, p1, M2, p2, mapping, distance, savepath="./images/coolmap", index=i)
 
-# #Save the data.    
-# pth = "./data/cool_data.txt"
-# data_file = open(pth, "w+")
-# data_file.write("data = [ \n")
-# for d in data:
-#     data_file.write("(" + str(d[0]) +  "," + str(d[1]) + "), \n")
-# data_file.write("]")
-# data_file.close()
+# gif_name = 'cat-map'
+# fps = 24
+# file_list = glob.glob('./images/coolmap/*.png') # Get all the pngs in the current directory
+# list.sort(file_list, key=lambda x: int(x.split('_')[1].split('.png')[0])) # Sort the images by #, this may need to be tweaked for your use case
+# clip = mpy.ImageSequenceClip(file_list, fps=fps)
+# clip.write_gif('{}.gif'.format(gif_name), fps=fps)
 
-# data = cd.data
-# pth = "./images/cool/"
-# for i in range(0, 1441):
-#     print(i)
-#     p1 = pos1.copy()
-#     p2 = pos2.copy()
-#     G1c = G1.copy()
-#     G2c = G2.copy()
+# data = c.morozov_distance(M1, M2, radius=0.001, valid=True, get_map=True)
+# mapping = data[1]
+# distance = data[0]
+# v.draw_mapping(M1, pos1, M2, pos2, mapping, distance)
 
-#     m.calc_values_height_reorient(G1c, p1)
-#     M1 = m.merge_tree(G1c, normalize=True)
-    
-#     m.calc_values_height_reorient(G2c, p2, math.pi*(1/2 + i/(720)))
-#     M2 = m.merge_tree(G2c, normalize=True)
-    
-#     v.cool(M1, p1, M2, p2, G2c, data, i, savepath=pth)
+# v.cool_GIF(G1, pos1, G2, pos2, frames=4, fps = 1)
+
+# p1 = pos1.copy()
+# p2 = pos2.copy()
+# G1c = G1.copy()
+# G2c = G2.copy()
+
+# m.calc_values_height_reorient(G1c, p1, math.pi*(1/2 + 2*87/(frames)))
+# M1 = m.merge_tree(G1c, normalize=True)
+
+# m.calc_values_height_reorient(G2c, p2, math.pi*(1/2 + 2*87/(frames)))
+# M2 = m.merge_tree(G2c, normalize=True)
+
+# data = c.morozov_distance(M1, M2, radius=0.001, valid=True, get_map=True)
+# mapping = data[1]
+# distance = data[0]
+# v.draw_mapping(M1, p1, M2, p2, mapping, distance)
+
+print(average_distance(M1, pos1, M2, pos2, frames = 1440))
+
+
 

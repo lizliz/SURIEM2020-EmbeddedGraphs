@@ -3,7 +3,7 @@
 #
 #This program is concerned witht he comparison of merge trees
 import networkx as nx
-from lib.Tools import f_, get_leaves, list_append, listify_nodes, relabel
+from lib.Tools import f_, get_leaves, list_append, listify_nodes, relabel, descendants
 import time
 
 #MEMOIZATION VARIABLES
@@ -160,18 +160,6 @@ def compute_costs(A, root, costs={}):
             
     costs[root] = max_cost
     return costs
-
-#Gets a list including n and all of its descendants, recursively
-def descendants(G, n):
-    neighbors = G[n]
-    
-    d = [n]
-    for nei in neighbors:
-        #Check for child
-        if(f_(G.nodes[nei]) < f_(G.nodes[n])):
-            list_append(d, descendants(G, nei))
-    
-    return d
 
 #Gets a list including n and all of its descendants, recursively
 def descendants_(G, n, des):
@@ -460,7 +448,7 @@ def morozov_distance(T1, T2, radius = 0.05, valid=False, get_map=False):
     ID = str(roots[0]) + str(roots[1])
     mapping = {'top': ID}
     
-    epsilon = 20
+    epsilon = maximum
     similar = IsEpsSimilar(T1,T2, epsilon, costs=costs, roots=roots, subtrees=subtrees, mapping=mapping)
     delta = epsilon
     

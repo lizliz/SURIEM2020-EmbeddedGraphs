@@ -7,10 +7,13 @@ import matplotlib.pyplot as plt
 import matplotlib.image as mpimg
 from matplotlib.offsetbox import OffsetImage, AnnotationBbox
 from Merge import merge_tree, calc_values_height_reorient, calc_values_height, reduced
-from lib.Tools import get_bounds_and_radius, parse_mapping, is_leaf_f, relabel, relabel_dict
+from lib.Tools import get_bounds_and_radius, parse_mapping, is_leaf_f, relabel, relabel_dict, descendants, get_bounds
 import os
 import math
 import Compare
+import glob
+import moviepy.editor as mpy
+from DataCalculations import distance_data
 
 def add_arrow(ax):
     ax.axis('off')
@@ -26,6 +29,20 @@ def draw(G, pos, title, ax, labels=False, n_size=0, n_color="blue"):
     
 def draw_basic(G, pos, n_size=0):
     nx.draw(G, pos, with_labels=False, node_color="blue",node_size=n_size)
+    
+def draw_square(G, pos, title, ax, r, b=None):
+    
+    
+    if(b==None):
+        b = get_bounds(pos)
+    xAvg = (b[0][1]+b[0][0])/2
+    yAvg = (b[1][1]+b[1][0])/2
+        
+    ax.set_xlim(xAvg - r/2, xAvg + r/2)
+    ax.set_ylim(yAvg - r/2, yAvg + r/2)
+    
+    draw(G, pos, title, ax)
+    
       
 def input_output(G, pos, savepath=""):
     fig = plt.subplots(1,3,figsize=(15,5))
@@ -199,59 +216,105 @@ def compare_many(A, pos_A, B, pos_B, frames, savepath=""):
         print("A reduced: " + str(reduced(mA)))
         print("B reduced: " + str(reduced(mB)))
         
-        
         compare_square(mA, pos_A_copy, r_A, mB, pos_B_copy, r_B, pth)
-        
-def cool(M1, p1, M2, p2, G2, data, index, savepath=""):
-    fig = plt.subplots(1,4,figsize=(20,5))
-        
-    ax = plt.subplot(141, frameon=False)
-    draw(M1, p1, "Merge A", ax)
+
+def cool_GIF(G1, pos1, G2, pos2, frames=720, rotate_both=True, gif_name="cool_gif", fps=30, delete_frames=True):
+    data = distance_data(G1, pos1, G2, pos2, frames=frames, rotate_both=rotate_both)
+    pth = "./images/cool"
     
-    angles = [x[0] for x in data]
-    distances = [x[1] for x in data]
+    r1 = get_bounds_and_radius(pos1)[0]
+    r2 = get_bounds_and_radius(pos2)[0]
     
-    point = [angles[index], distances[index]]
-    ax = plt.subplot(142)
-    ax.title.set_text("Distance vs. Angle")
-    ax.plot(angles, distances, '-')
-    ax.scatter(point[0], point[1], marker='o', c='b', s=40)
-    ax.axes.get_xaxis().set_visible(False)
-    
-    ax = plt.subplot(143, frameon=False)
-    draw(M2, p2, "Merge B", ax)
-    
-    ax = plt.subplot(144, frameon=False)
-    draw(G2, p2, "Input B", ax)
-    
-     #Save the image if specified
-    if(savepath != ""):
-        pth = savepath + "/frame" + str(index)
-        plt.savefig(pth)
-        
-    plt.close()
-    
-def distance_data(G1, pos1, G2, pos2, frames=720, rotate_both=True, accuracy=0.0001):
-    data=[]
-    for i in range(0, frames+1):
+    for i in range(0, frames):
         print(i)
         p1 = pos1.copy()
         p2 = pos2.copy()
         G1c = G1.copy()
         G2c = G2.copy()
     
-        if(rotate_both):
-            calc_values_height_reorient(G1c, p1, math.pi*(1/2 + i/( 360 * frames/720 )))
-        else:
-            calc_values_height_reorient(G1c, p1)
+        calc_values_height_reorient(G1c, p1, math.pi*(1/2 + 2*i/(frames)))
         M1 = merge_tree(G1c, normalize=True)
         
-        calc_values_height_reorient(G2c, p2, math.pi*(1/2 + i/( 360 * frames/720 )))
+        calc_values_height_reorient(G2c, p2, math.pi*(1/2 + 2*i/(frames)))
         M2 = merge_tree(G2c, normalize=True)
         
-        dist = Compare.morozov_distance(M1, M2, accuracy)
-        data.append( (i, dist) )
+        cool(M1, p1, M2, p2, G2c, data, i, r1, r2, savepath=pth, rotate_both=True, G1=G1c)
+        
+    file_list = glob.glob('./images/cool/*.png') # Get all the pngs in the current directory
+    list.sort(file_list, key=lambda x: int(x.split('_')[1].split('.png')[0])) # Sort the images by #, this may need to be tweaked for your use case
+    clip = mpy.ImageSequenceClip(file_list, fps=fps)
+    clip.write_gif('{}.gif'.format(gif_name), fps=fps)
     
+    #Delete the frames
+    if(delete_frames):
+        
+        filelist = [ f for f in os.listdir("./images/cool")]
+        for f in filelist:
+            os.remove(os.path.join("./images/cool", f))
+
+def cool(M1, p1, M2, p2, G2, data, index, r1, r2, savepath="", rotate_both=True, G1=None):
+    if(rotate_both):
+        fig = plt.subplots(2,3,figsize=(15,10))
+        
+        b1 = get_bounds(p1)
+        b2 = get_bounds(p2)
+        
+        ax = plt.subplot(231, frameon=False)
+        draw_square(M1, p1, "Merge A", ax, r1, b=b1)
+        
+        angles = [x[0] for x in data]
+        distances = [x[1] for x in data]
+        
+        point = [angles[index], distances[index]]
+        ax = plt.subplot(232)
+        ax.title.set_text("Distance vs. Angle")
+        ax.plot(angles, distances, '-')
+        ax.scatter(point[0], point[1], marker='o', c='b', s=40)
+        ax.axes.get_xaxis().set_visible(False)
+        
+        ax = plt.subplot(233, frameon=False)
+        draw_square(M2, p2, "Merge B", ax, r2, b=b2)
+        
+        ax = plt.subplot(234, frameon=False)
+        draw_square(G1, p1, "Input A", ax, r1, b=b1)
+        
+        ax = plt.subplot(235, frameon=False)
+        ax.axes.get_xaxis().set_visible(False)
+        ax.axes.get_yaxis().set_visible(False)
+        
+        ax = plt.subplot(236, frameon=False)
+        draw_square(G2, p2, "Input B", ax, r2, b=b2)
+    else:
+        fig = plt.subplots(1,4,figsize=(20,5))
+            
+        ax = plt.subplot(141, frameon=False)
+        draw(M1, p1, "Merge A", ax)
+        
+        angles = [x[0] for x in data]
+        distances = [x[1] for x in data]
+        
+        point = [angles[index], distances[index]]
+        ax = plt.subplot(142)
+        ax.title.set_text("Distance vs. Angle")
+        ax.plot(angles, distances, '-')
+        ax.scatter(point[0], point[1], marker='o', c='b', s=40)
+        ax.axes.get_xaxis().set_visible(False)
+        
+        ax = plt.subplot(143, frameon=False)
+        draw(M2, p2, "Merge B", ax)
+        
+        ax = plt.subplot(144, frameon=False)
+        draw(G2, p2, "Input B", ax)
+    
+     #Save the image if specified
+    if(savepath != ""):
+        pth = savepath + "/frame_" + str(index)
+        plt.savefig(pth)
+        
+    plt.close()
+    
+def distance_data(G1, pos1, G2, pos2, frames=720, rotate_both=True, accuracy=0.0001):
+    data=distance_data(G1, pos1, G2, pos2, frames=frames, rotate_both=rotate_both, accuracy=accuracy)
 
     angles = [x[0] for x in data]
     distances = [x[1] for x in data]
@@ -264,7 +327,7 @@ def distance_data(G1, pos1, G2, pos2, frames=720, rotate_both=True, accuracy=0.0
     return data
   
 #Shifts pos2 next to pos1
-def alter_positions(pos1, pos2):
+def alter_positions(pos1, pos2, normalize_y):
     bounds1 = get_bounds_and_radius(pos1)[1]
     bounds2 = get_bounds_and_radius(pos2)[1]
     
@@ -273,10 +336,12 @@ def alter_positions(pos1, pos2):
     
     x_shift = 5 + right_1-left_2
     
-    y_avg_1 = sum(bounds1[1])/2
-    y_avg_2 = sum(bounds2[1])/2
-    
-    y_shift = y_avg_1 - y_avg_2
+    y_shift=0    
+    if(normalize_y):
+        y_avg_1 = sum(bounds1[1])/2
+        y_avg_2 = sum(bounds2[1])/2
+        
+        y_shift = y_avg_1 - y_avg_2
     
     #Shift all the points!
     for p in pos2:
@@ -284,7 +349,7 @@ def alter_positions(pos1, pos2):
         new_y = pos2[p][1] + y_shift
         pos2[p] = (new_x, new_y)
 #Big method for real.
-def draw_mapping(M1,pos1, M2,pos2, mapping, distance):
+def draw_mapping(M1,pos1, M2,pos2, mapping, distance,savepath="", index=None, normalize_y=True):
 
     relabel(M1, '*')
     relabel(M2, '~')
@@ -305,20 +370,21 @@ def draw_mapping(M1,pos1, M2,pos2, mapping, distance):
         
         #Deleted node
         if(val == 'DELETED'):
-            del_graph.add_node(c)
-            
             if(c[0] == '*'):
                 g = M1
             else:
                 g = M2
                 
-            del_edges.add_edges_from(g.edges(c))
+            desc = descendants(g, c)
+                
+            del_graph.add_nodes_from(desc)
+            del_edges.add_edges_from(g.edges(desc))
         #Matched minima
         elif(is_leaf_f(M1, c)):
             match_graph.add_edge(c, val)
         
     
-    alter_positions(pos1, pos2)
+    alter_positions(pos1, pos2, normalize_y)
     #Grand position matrix!
     pos = {**pos1, **pos2}
     
@@ -326,10 +392,19 @@ def draw_mapping(M1,pos1, M2,pos2, mapping, distance):
     ax = plt.subplot(111, frameon=False)
     ax.title.set_text("Distance: " + str(distance))
     nx.draw(M1, pos1, node_color='blue', node_size=500)
-    nx.draw(M2, pos2, node_color='blue', node_size=500)
-    nx.draw(match_graph, pos, node_color='green', edge_color='green', node_size=500, width= 5)   
+    nx.draw(M2, pos2, node_color='blue', node_size=500)   
     nx.draw_networkx_edges(del_edges, pos, edge_color='red', width= 3)
     nx.draw(del_graph, pos, node_color='r', node_size=500)
+    nx.draw(match_graph, pos, node_color='green', edge_color='green', node_size=500, width= 5)
+    
+    if(savepath != ""):
+        pth = savepath + "/frame_" + str(index)
+        plt.savefig(pth)
+    
+    plt.show()
+    
+    plt.close()
+    
     
     
     
