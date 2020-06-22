@@ -11,16 +11,17 @@ import math
 import moviepy.editor as mpy
 import lib.Tools as t
 import glob
+from DataCalculations import average_distance
 
 #Make the graphs
-pth = "./data/brutus.graphml"
+pth = "./data/kitty1.graphml"
 data = dr.read_graphml(pth)
 G1 = t.main_component(data[0])
 pos1 = data[1]
 m.calc_values_height_reorient(G1, pos1)
 M1 = m.merge_tree(G1)
 
-pth = "./data/sofie.graphml"
+pth = "./data/kitty2.graphml"
 data = dr.read_graphml(pth)
 G2 = t.main_component(data[0])
 pos2 = data[1]
@@ -60,7 +61,7 @@ frames=720
 # distance = data[0]
 # v.draw_mapping(M1, pos1, M2, pos2, mapping, distance)
 
-v.cool_GIF(G1, pos1, G2, pos2, frames=360)
+# v.cool_GIF(G1, pos1, G2, pos2, frames=4, fps = 1)
 
 # p1 = pos1.copy()
 # p2 = pos2.copy()
@@ -77,6 +78,8 @@ v.cool_GIF(G1, pos1, G2, pos2, frames=360)
 # mapping = data[1]
 # distance = data[0]
 # v.draw_mapping(M1, p1, M2, p2, mapping, distance)
+
+print(average_distance(M1, pos1, M2, pos2, frames = 1440))
 
 
 

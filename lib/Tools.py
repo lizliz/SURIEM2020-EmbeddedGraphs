@@ -425,6 +425,7 @@ def main_component(G, pos_dict = None, report = True, draw = False):
         print("Largest component has ", (len(list(mainComponent.nodes))/len(list(G.nodes)))*100, "% of the nodes")
 
     return mainComponent
+    
 ###
 #END OF MISC.
 ###
