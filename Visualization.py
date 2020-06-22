@@ -313,7 +313,7 @@ def cool(M1, p1, M2, p2, G2, data, index, r1, r2, savepath="", rotate_both=True,
         
     plt.close()
     
-def distance_data(G1, pos1, G2, pos2, frames=720, rotate_both=True, accuracy=0.0001):
+def distance_data_plot(G1, pos1, G2, pos2, frames=720, rotate_both=True, accuracy=0.0001):
     data=distance_data(G1, pos1, G2, pos2, frames=frames, rotate_both=rotate_both, accuracy=accuracy)
 
     angles = [x[0] for x in data]

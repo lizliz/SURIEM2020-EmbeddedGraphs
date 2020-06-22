@@ -79,7 +79,4 @@ frames=720
 # distance = data[0]
 # v.draw_mapping(M1, p1, M2, p2, mapping, distance)
 
-print(average_distance(M1, pos1, M2, pos2, frames = 1440))
-
-
-
+v.cool_GIF(G1, pos1, G2, pos2, frames=180, fps = 20)
