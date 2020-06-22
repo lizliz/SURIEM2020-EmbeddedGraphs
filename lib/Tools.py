@@ -12,6 +12,18 @@ import math
 #TREE PROPERTIES
 ####
 
+#Gets a list including n and all of its descendants, recursively
+def descendants(G, n):
+    neighbors = G[n]
+    
+    d = [n]
+    for nei in neighbors:
+        #Check for child
+        if(f_(G.nodes[nei]) < f_(G.nodes[n])):
+            list_append(d, descendants(G, nei))
+    
+    return d
+
 #Returns true/false depending on if the input node is a leaf
 def is_leaf(T, node, p):
     #Note: p==node indicates that p is the root of some tree
@@ -401,7 +413,7 @@ def BFS(G, r):
 # Returns the largest connected component of a graph as a networkx object
 def main_component(G, pos_dict = None, report = True, draw = False):
     largest_cc = max(nx.connected_components(G), key=len)
-    mainComponent = G.subgraph(largest_cc)
+    mainComponent = G.subgraph(largest_cc).copy()
     
     if draw == True: # Draw largest component
         if pos_dict == None: # Drawing requires position dictionary
