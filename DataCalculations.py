@@ -69,6 +69,8 @@ def bootstrap(data, samples = 3000, alpha = 0.05, interpretation = False):
     # Create a dictionary so you can access the info you want or print it out nicely
     report = {"Estimated Mean":point_estimate,
               "Margin of Error": moe,
+              "Standard Deviation": statistics.stdev(originalSample),# Standard Deviation of ORIGINAL SAMPLE
+              "Standard Error": standard_error,# Standard deviation of the SAMPLING DISTRIBUTION
               "Confidence Level": confidence_level,
               "Confidence Interval": [point_estimate-moe, point_estimate+moe]} 
     
