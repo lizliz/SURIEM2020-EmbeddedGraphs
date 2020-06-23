@@ -425,7 +425,20 @@ def main_component(G, pos_dict = None, report = True, draw = False):
         print("Largest component has ", (len(list(mainComponent.nodes))/len(list(G.nodes)))*100, "% of the nodes")
 
     return mainComponent
+
+#Gets the positions from node attributes
+def get_pos(G):
+    nodes = list(G)
     
+    pos={}
+    for n in nodes:
+        x = G.nodes[n]['x']
+        y = G.nodes[n]['x']
+        
+        pos[n] = (x,y)
+        
+    return pos
+
 ###
 #END OF MISC.
 ###
