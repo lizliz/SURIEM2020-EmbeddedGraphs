@@ -28,6 +28,20 @@ pos2 = data[1]
 m.calc_values_height_reorient(G2, pos2)
 M2 = m.merge_tree(G2)
 
+pth = "./data/brutus.graphml"
+data = dr.read_graphml(pth)
+G3 = t.main_component(data[0])
+pos3 = data[1]
+m.calc_values_height_reorient(G3, pos3)
+M3 = m.merge_tree(G3)
+
+pth = "./data/sofie.graphml"
+data = dr.read_graphml(pth)
+G4 = t.main_component(data[0])
+pos4 = data[1]
+m.calc_values_height_reorient(G4, pos4)
+M4 = m.merge_tree(G4)
+
 frames=720
 
 # pth = "./images/cool"
@@ -74,9 +88,11 @@ frames=720
 # m.calc_values_height_reorient(G2c, p2, math.pi*(1/2 + 2*87/(frames)))
 # M2 = m.merge_tree(G2c, normalize=True)
 
-# data = c.morozov_distance(M1, M2, radius=0.001, valid=True, get_map=True)
-# mapping = data[1]
-# distance = data[0]
-# v.draw_mapping(M1, p1, M2, p2, mapping, distance)
+data = c.morozov_distance(M1, M1, radius=0.001, valid=True, get_map=True)
+mapping = data[1]
+distance = data[0]
+M1c = M1.copy()
+p1 = pos1.copy()
+v.draw_mapping(M1, pos1, M1c, p1, mapping, distance)
 
-v.cool_GIF(G1, pos1, G2, pos2, frames=180, fps = 20)
+#v.cool_GIF(G1, pos1, G2, pos2, frames=180, fps = 20)
