@@ -10,6 +10,7 @@ import math
 import random
 import statistics
 from scipy import stats
+import pdb
 
 def distance_data(G1, pos1, G2, pos2, frames=720, rotate_both=True, accuracy=0.0001):
     data=[]
@@ -46,6 +47,7 @@ def average_distance(G1, pos1, G2, pos2, frames=360, rotate_both=True, accuracy=
 # alpha: significance level of the confidence interval, complement of confidence level
 #interpretation: whether or not you want to print a generic interpretation of the confidence interval
 def bootstrap(data, samples = 3000, alpha = 0.05, interpretation = False):
+    #breakpoint()
     n = len(data) # size of sample
     originalSample = [data[i][1] for i in range(n)] # list containing only the data points
     point_estimate = statistics.mean(originalSample) # get mean of our sample as the estimate we center our interval around
@@ -53,7 +55,7 @@ def bootstrap(data, samples = 3000, alpha = 0.05, interpretation = False):
     confidence_level = 1-alpha
     
     for j in range(samples):
-        current_sample = random.choices(originalSample, n) # Sample from the original sample with replacement
+        current_sample = random.choices(originalSample, k = n) # Sample from the original sample with replacement
         current_mean = statistics.mean(current_sample) # Find mean of this bootstrap sample
         bootstrap_distribution.append(current_mean) # Add bootstrap mean to the distribution of means
     
