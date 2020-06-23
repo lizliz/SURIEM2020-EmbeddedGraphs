@@ -20,6 +20,7 @@ def draw_dendro(input_list, frames=180, labels=None):
     data = np.zeros(shape=(count,count))
     for i in range(count):
         for j in range(i, count):
+            print("(",i,",",j,")")
             if(i==j):
                 val=0
             else:
@@ -40,8 +41,6 @@ def dendrogram(data, labels=None):
     plt.title("Dendrograms")  
     dend = shc.dendrogram(shc.linkage(data, method='ward'), labels=labels)
     
-    
-    
 if __name__ == '__main__':
     inputs = []
     # for i in range(0, 5):
@@ -49,7 +48,6 @@ if __name__ == '__main__':
      
     pth = "./data/kitty2.graphml"  #0
     inp = dr.read_graphml(pth)
-    inp[0] = t.main_component(inp[0])
     inputs.append(inp)
     
     pth = "./data/kitty1.graphml"  #1
@@ -59,19 +57,20 @@ if __name__ == '__main__':
     
     pth = "./data/kitty2.graphml"  #2
     inp = dr.read_graphml(pth)
-    inp[0] = t.main_component(inp[0])
     inputs.append(inp)
     
     pth = "./data/brutus.graphml"  #3
     inp = dr.read_graphml(pth)
-    inp[0] = t.main_component(inp[0])
     inputs.append(inp)
     
     pth = "./data/sofie.graphml"  #4
     inp = dr.read_graphml(pth)
-    inp[0] = t.main_component(inp[0])
     inputs.append(inp)
     
-    labels = ['Kitty2 (1)', 'Kitty1', 'Kitty2 (2)', 'Brutus', 'Sofie']
+    pth = "./images/cat.png"  #4
+    inp = dr.read_img(pth, draw=True)
+    inputs.append(inp)
     
-    draw_dendro(inputs, frames=10, labels=labels)
+    labels = ['Kitty2 (1)', 'Kitty1', 'Kitty2 (2)', 'Brutus', 'Sofie', 'Cat']
+    
+    draw_dendro(inputs, frames=180, labels=labels)
