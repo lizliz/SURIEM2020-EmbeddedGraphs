@@ -34,6 +34,11 @@ def get_data_point(G1, pos1, G2, pos2, angle, index, data, rotate_both=True, acc
     data.append( (index, dist) ) 
     return (index, dist)
 
+import random
+import statistics
+from scipy import stats
+import pdb
+
 def distance_data(G1, pos1, G2, pos2, frames=720, rotate_both=True, accuracy=0.0001):
     data=[]
     for i in range(0, frames+1):
@@ -61,3 +66,46 @@ def average_distance(G1, pos1, G2, pos2, frames=360, rotate_both=True, accuracy=
     heights = [x[1] for x in data]
     
     return sum(heights)/frames
+
+# data: data returned by the distance_data() funtion
+# samples: size of the sampling distribution you want. 3,000 is usually pretty good
+# alpha: significance level of the confidence interval, complement of confidence level
+#interpretation: whether or not you want to print a generic interpretation of the confidence interval
+def bootstrap(data, samples = 3000, alpha = 0.05, interpretation = False):
+    #breakpoint()
+    n = len(data) # size of sample
+    originalSample = [data[i][1] for i in range(n)] # list containing only the data points
+    point_estimate = statistics.mean(originalSample) # get mean of our sample as the estimate we center our interval around
+    bootstrap_distribution = []
+    confidence_level = 1-alpha
+    
+    for j in range(samples):
+        current_sample = random.choices(originalSample, k = n) # Sample from the original sample with replacement
+        current_mean = statistics.mean(current_sample) # Find mean of this bootstrap sample
+        bootstrap_distribution.append(current_mean) # Add bootstrap mean to the distribution of means
+    
+    # Standard error is the standard deviation of the sampling distribution
+    standard_error = statistics.stdev(bootstrap_distribution)
+    # using a t distribution, find the multiplier for our confidence interval
+    t_multiplier = stats.t.ppf(confidence_level,n)
+    #construct margin of error
+    moe = t_multiplier*standard_error
+    
+    # Create a dictionary so you can access the info you want or print it out nicely
+    report = {"Estimated Mean":point_estimate,
+              "Margin of Error": moe,
+              "Standard Deviation": statistics.stdev(originalSample),# Standard Deviation of ORIGINAL SAMPLE
+              "Standard Error": standard_error,# Standard deviation of the SAMPLING DISTRIBUTION
+              "Confidence Level": confidence_level,
+              "Confidence Interval": [point_estimate-moe, point_estimate+moe]} 
+    
+    # Prints a generic interpretation of confidence intervals
+    if interpretation == True:
+        print("We are ", confidence_level*100, "% confident that the interval from ", point_estimate-moe, "to ", point_estimate+moe, "captures the true population mean.")
+        print("If we were to construct a large number of these confidence intervals, we would expect about ", confidence_level*100, "% of them to capture the true population mean.")
+    
+    # returns the report dictionary
+    return report
+    
+    
+    
