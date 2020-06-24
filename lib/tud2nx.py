@@ -90,15 +90,16 @@ def tud2nx(p, ds):
     e = 0
     while e < len(graphEdgesList):
         node1 = graphEdgesList[e].split(",")[0]
-        breakpoint()
+        # breakpoint()
         if node1 == "":
             print("Empty edge!!")
             break
-        node2 = graphEdgesList[e].split(",")[1][1:]
+        node1 = int(node1)
+        node2 = int(graphEdgesList[e].split(",")[1][1:])
             
         # Acess the graph that this edge belongs to
         edgesGraph = allNodes[node1][1]
-        edgesGraph.add_edge(node1,node2)
+        edgesGraph.add_edge(str(node1),str(node2))
         
         # Each edge is listed twice so we can increment by 2
         e += 2
@@ -110,9 +111,12 @@ def tud2nx(p, ds):
     
     return [graphDict, allGraphs, allNodes]
             
-p = "C:/Users/Candace/Box/Research/REUs/SURIEM/Munch - Embedded Graphs/SURIEM2020-EmbeddedGraphs/data/Letter-high"
-ds = "Letter-high"
+p = "./data/Letter-low"
+ds = "Letter-low"
 z = tud2nx(p,ds)        
+
+def get_z():
+    return z
         
     
     

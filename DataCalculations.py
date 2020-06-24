@@ -65,7 +65,8 @@ def average_distance(G1, pos1, G2, pos2, frames=360, rotate_both=True, accuracy=
     
     heights = [x[1] for x in data]
     
-    return sum(heights)/frames
+    return min(heights)
+    # return sum(heights)/frames
 
 # data: data returned by the distance_data() funtion
 # samples: size of the sampling distribution you want. 3,000 is usually pretty good

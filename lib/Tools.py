@@ -433,7 +433,7 @@ def get_pos(G):
     pos={}
     for n in nodes:
         x = G.nodes[n]['x']
-        y = G.nodes[n]['x']
+        y = G.nodes[n]['y']
         
         pos[n] = (x,y)
         

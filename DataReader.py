@@ -50,3 +50,5 @@ def read_img(path, draw = False, node_size = 0, labels = False, main=True):
     if(main):
         g[0] = main_component(g[0])
     return g
+##
+
