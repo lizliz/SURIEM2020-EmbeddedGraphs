@@ -5,16 +5,15 @@ Created on Tue Jun 23 15:43:00 2020
 @author: Candace Todd
 """
 import networkx as nx
-import pdb
 # p: path to FOLDER containing all the data
 # ds: name of data set i.e. "Letter-high"
 # see https://chrsmrrs.github.io/datasets/docs/format/
-def tud2nx(p, ds):
-    pGen = p + "/" + ds
+
+def tud2nx(path, name):
+    pGen = path + "/" + name
     pEdges = pGen + "_A.txt"
     pGraphLabels = pGen + "_graph_labels.txt"
     pGraphIDs = pGen + "_graph_indicator.txt"
-    #pNodeLabels = pGen + "_node_labels.txt"
     pNodeAtts = pGen + "_node_attributes.txt"
     
     graphDict = {} # Dictionary of graphs, keys are graph labels (NOT graph IDs)
@@ -31,24 +30,23 @@ def tud2nx(p, ds):
     graphLabels = open(pGraphLabels, "r")
     graphLabelsContents = graphLabels.read()
     graphLabelsList = graphLabelsContents.split("\n") # List of all graph labels, line number = a graph id
-    graphLabels.close()
+    graphLabels.close() # Close file
     
     ### Getting all edges
     graphEdges = open(pEdges, "r")
     graphEdgesContents = graphEdges.read()
-    graphEdgesList = graphEdgesContents.split("\n") # Each line is an edge
-    graphEdges.close()
+    graphEdgesList = graphEdgesContents.split("\n") # List of edges; Each line is an edge
+    graphEdges.close() # Close file
         
     ### Getting node attributes
     nodeAtts = open(pNodeAtts, "r")
     nodeAttsContents = nodeAtts.read()
     nodeAttsList = nodeAttsContents.split("\n") # List of all node atts, line number = the node id
-    nodeAtts.close()
+    nodeAtts.close() # Close file
     
     n = 0
     while n < len(nodeAttsList):
         if nodeAttsList[n] == "":
-            print("Nothing node!!!!")
             break
         
         nodeID = n + 1 # since indexing starts at 0 in python
@@ -66,11 +64,9 @@ def tud2nx(p, ds):
             nodesGraph = nx.Graph()
             allGraphs[graphID] = (graphLabel,nodesGraph,[nodeID])
         else:
-            #breakpoint()
             nodesGraph = allGraphs[graphID][1]
             allGraphs[graphID][2].append(nodeID)
         
-        #breakpoint()
         # Add to Node dictionary
         allNodes[nodeID] = (graphLabel,nodesGraph)
         
@@ -91,9 +87,7 @@ def tud2nx(p, ds):
     e = 0
     while e < len(graphEdgesList):
         node1 = graphEdgesList[e].split(",")[0]
-        #breakpoint()
         if node1 == "":
-            print("Empty edge!!")
             break
         node1 = int(node1)
         node2 = int(graphEdgesList[e].split(",")[1][1:])
@@ -110,11 +104,4 @@ def tud2nx(p, ds):
     print("keys are graph IDs and values are (graph label, graph object, node list) tuple,")
     print("keys are node IDs and values are (graph label, graph object) tuple]")
     
-    return [graphDict, allGraphs, allNodes]
-            
-p = "C:/Users/Candace/Box/Research/REUs/SURIEM/Munch - Embedded Graphs/SURIEM2020-EmbeddedGraphs/data/Letter-high"
-ds = "Letter-high"
-z = tud2nx(p,ds)        
-        
-    
-    
+    return [graphDict, allGraphs, allNodes]    
