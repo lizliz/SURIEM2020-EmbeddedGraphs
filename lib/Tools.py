@@ -428,14 +428,15 @@ def main_component(G, pos_dict = None, report = True, draw = False):
 
 #Gets the positions from node attributes
 def get_pos(G):
-    nodes = list(G)
+    #nodes = list(G)
     
-    pos={}
-    for n in nodes:
-        x = G.nodes[n]['x']
-        y = G.nodes[n]['y']
+    pos={}        
+    for n in list(G.nodes.data()):
+        node = n[0]
+        x = n[1]['x']
+        y = n[1]['y']
         
-        pos[n] = (x,y)
+        pos[node] = (x,y)
         
     return pos
 
