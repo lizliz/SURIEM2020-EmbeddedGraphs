@@ -9,7 +9,7 @@ import networkx as nx
 # ds: name of data set i.e. "Letter-high"
 # see https://chrsmrrs.github.io/datasets/docs/format/
 
-def tud2nx(path, name):
+def read_tud(path, name):
     pGen = path + "/" + name + "_"
     pEdges = pGen + "A.txt"
     pGraphLabels = pGen + "graph_labels.txt"
