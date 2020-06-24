@@ -106,4 +106,4 @@ if __name__ == '__main__':
         inputs.append( (G, pos) )
         labels.append("V " + str(i))
     
-    draw_dendro(inputs, frames=90, labels=labels, thresh=2)
+    draw_dendro(inputs, frames=90, labels=labels, thresh=3)

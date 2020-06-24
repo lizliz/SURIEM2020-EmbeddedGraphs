@@ -16,6 +16,9 @@ st = 0
 global mt
 mt = 0
 
+global t
+t=0
+
 global matching
 matching={}
 
@@ -302,6 +305,7 @@ def compute_matchability(a, b, e, memo, costs, subtrees, mapping):
 #roots is an array containing the roots of A and B
 #The function returns whether or not the two merge trees are matchable within e
 def IsEpsSimilar(A, B, e, costs=None, roots=None, memo=None, subtrees=None, mapping=None):
+    start = time.time()
     if(memo==None):
         memo = {}
         
@@ -364,11 +368,13 @@ def IsEpsSimilar(A, B, e, costs=None, roots=None, memo=None, subtrees=None, mapp
                 
                 #Get a list of all the child subtrees of each root-branch
                 global st
+                global mt
                 start = time.time()
                 subtrees_A = get_child_subtrees_(root_A, mA, A, subtrees[0])
                 subtrees_B = get_child_subtrees_(root_B, mB, B, subtrees[1])
                 st += time.time()-start
-                print("ST: ", st)
+                #print("ST: ", st)
+                #print("total~ ", mt+st)
                 
                 #BASE CASE
                 if(len(subtrees_A) == 0 and len(subtrees_B) == 0):                    
@@ -399,17 +405,18 @@ def IsEpsSimilar(A, B, e, costs=None, roots=None, memo=None, subtrees=None, mapp
                 who_you_gonna_call(subtrees_A, subtrees_B, costs_A, costs_B, bip, e)
                 top_nodes = {n for n, d in bip.nodes(data=True) if d['bipartite']==0}
                 
-                global mt
                 start = time.time()
                 matching = nx.algorithms.bipartite.hopcroft_karp_matching(bip, top_nodes)
                 
                 if(len(list(matching)) == 2*(len(list_A)+len(list_B))):
                     mt += time.time() - start
-                    print("MT: ", mt)
+                    #print("MT: ", mt)
+                    #print("total~ ", mt+st)
                     mapping[ID]['matching'] = matching
                     return True
                 mt += time.time() - start
-                print("MT: ", mt)
+                #print("MT: ", mt)
+                #print("total~ ", mt+st)
     
     #No matching was found!
     mapping[ID]['root-branch'] = 'NONE'
@@ -452,6 +459,8 @@ def morozov_distance(T1, T2, radius = 0.05, valid=False, get_map=False):
     mapping = {'top': ID}
     
     epsilon = maximum
+    global t
+    t=0
     similar = IsEpsSimilar(T1,T2, epsilon, costs=costs, roots=roots, subtrees=subtrees, mapping=mapping)
     delta = epsilon
     
@@ -463,6 +472,7 @@ def morozov_distance(T1, T2, radius = 0.05, valid=False, get_map=False):
         start_ = time.time()
         mt = 0
         st = 0
+        t=0
         
         mapping = {'top': ID}
         # Decrease epsilon by half of the size between current epsilon and the lower end of the interval we're convergin on
@@ -474,8 +484,8 @@ def morozov_distance(T1, T2, radius = 0.05, valid=False, get_map=False):
             epsilon = epsilon+delta
             similar = IsEpsSimilar(T1,T2, epsilon,costs=costs, roots=roots, subtrees=subtrees, mapping=mapping)
         # Debug statement, will remove later
-        print("Epsilon: ", epsilon)
-        print("Iteration Time: ", str(time.time() - start_))
+        #print("Epsilon: ", epsilon)
+        #print("Iteration Time: ", str(time.time() - start_))
     
     #Actually get a matching lol
     if (valid and not similar):
