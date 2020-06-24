@@ -10,12 +10,12 @@ import networkx as nx
 # see https://chrsmrrs.github.io/datasets/docs/format/
 
 def tud2nx(path, name):
-    pGen = path + "/" + name
-    pEdges = pGen + "_A.txt"
-    pGraphLabels = pGen + "_graph_labels.txt"
-    pGraphIDs = pGen + "_graph_indicator.txt"
-    pNodeAtts = pGen + "_node_attributes.txt"
-    
+    pGen = path + "/" + name + "_"
+    pEdges = pGen + "A.txt"
+    pGraphLabels = pGen + "graph_labels.txt"
+    pGraphIDs = pGen + "graph_indicator.txt"
+    pNodeAtts = pGen + "node_attributes.txt"
+      
     graphDict = {} # Dictionary of graphs, keys are graph labels (NOT graph IDs)
     allGraphs = {} # Key = graphID, value = label, object, node list tuple
     allNodes = {} # Key = nodeID, value = graph label, graph object tuple
@@ -86,15 +86,20 @@ def tud2nx(path, name):
         
     e = 0
     while e < len(graphEdgesList):
-        node1 = graphEdgesList[e].split(",")[0]
-        if node1 == "":
+        nodeList = graphEdgesList[e].split(",")
+        if nodeList[0] == "":
             break
-        node1 = int(node1)
-        node2 = int(graphEdgesList[e].split(",")[1][1:])
+        
+        # Strip the white spaces
+        for number in range(len(nodeList)):
+            nodeList[number] = nodeList[number].strip()
+            
+        node1 = int(nodeList[0])
+        node2 = int(nodeList[1])
             
         # Acess the graph that this edge belongs to
         edgesGraph = allNodes[node1][1]
-        edgesGraph.add_edge(int(node1),int(node2))
+        edgesGraph.add_edge(node1,node2)
         
         # Each edge is listed twice so we can increment by 2
         e += 2
@@ -106,10 +111,10 @@ def tud2nx(path, name):
 
     return [graphDict, allGraphs, allNodes]
             
-p = "./data/Letter-low"
-ds = "Letter-low"
-z = tud2nx(p,ds)        
+# p = "./data/Letter-low"
+# ds = "Letter-low"
+# z = tud2nx(p,ds)        
 
-def get_z():
-    return z
+# def get_z():
+#     return z
         
