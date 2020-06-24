@@ -51,7 +51,7 @@ def tud2nx(p, ds):
             print("Nothing node!!!!")
             break
         
-        nodeID = n + 1
+        nodeID = n + 1 # since indexing starts at 0 in python
         x = nodeAttsList[n].split(",")[0]
         y = nodeAttsList[n].split(",")[1][1:] # trim white space
         x, y = float(x), float(y)
@@ -70,13 +70,14 @@ def tud2nx(p, ds):
             nodesGraph = allGraphs[graphID][1]
             allGraphs[graphID][2].append(nodeID)
         
+        #breakpoint()
         # Add to Node dictionary
         allNodes[nodeID] = (graphLabel,nodesGraph)
         
         # Add the node to the graph with its attributes
-        nodesGraph.add_node(str(nodeID))
-        nodesGraph.nodes[str(nodeID)]["x"] = x
-        nodesGraph.nodes[str(nodeID)]["y"] = y
+        nodesGraph.add_node(int(nodeID))
+        nodesGraph.nodes[int(nodeID)]["x"] = x
+        nodesGraph.nodes[int(nodeID)]["y"] = y
 
         # Create a spot for graphs of this label if it doesn't already exist        
         if graphLabel not in graphDict:
@@ -90,11 +91,12 @@ def tud2nx(p, ds):
     e = 0
     while e < len(graphEdgesList):
         node1 = graphEdgesList[e].split(",")[0]
-        breakpoint()
+        #breakpoint()
         if node1 == "":
             print("Empty edge!!")
             break
-        node2 = graphEdgesList[e].split(",")[1][1:]
+        node1 = int(node1)
+        node2 = int(graphEdgesList[e].split(",")[1][1:])
             
         # Acess the graph that this edge belongs to
         edgesGraph = allNodes[node1][1]
