@@ -282,7 +282,7 @@ def mean_f(M):
     return avg / len(nodes)
     
 def normalize_f(M):
-    center = mean_f(M)
+    center = median_f(M)
     
     nodes = listify_nodes(M)
     for n in nodes:

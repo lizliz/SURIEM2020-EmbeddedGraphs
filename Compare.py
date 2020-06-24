@@ -368,6 +368,7 @@ def IsEpsSimilar(A, B, e, costs=None, roots=None, memo=None, subtrees=None, mapp
                 subtrees_A = get_child_subtrees_(root_A, mA, A, subtrees[0])
                 subtrees_B = get_child_subtrees_(root_B, mB, B, subtrees[1])
                 st += time.time()-start
+                print("ST: ", st)
                 
                 #BASE CASE
                 if(len(subtrees_A) == 0 and len(subtrees_B) == 0):                    
@@ -400,13 +401,15 @@ def IsEpsSimilar(A, B, e, costs=None, roots=None, memo=None, subtrees=None, mapp
                 
                 global mt
                 start = time.time()
-                matching = nx.algorithms.bipartite.eppstein_matching(bip, top_nodes)
+                matching = nx.algorithms.bipartite.hopcroft_karp_matching(bip, top_nodes)
                 
-                if(nx.is_perfect_matching(bip, matching)):
+                if(len(list(matching)) == 2*(len(list_A)+len(list_B))):
                     mt += time.time() - start
+                    print("MT: ", mt)
                     mapping[ID]['matching'] = matching
                     return True
                 mt += time.time() - start
+                print("MT: ", mt)
     
     #No matching was found!
     mapping[ID]['root-branch'] = 'NONE'
@@ -471,8 +474,8 @@ def morozov_distance(T1, T2, radius = 0.05, valid=False, get_map=False):
             epsilon = epsilon+delta
             similar = IsEpsSimilar(T1,T2, epsilon,costs=costs, roots=roots, subtrees=subtrees, mapping=mapping)
         # Debug statement, will remove later
-        #print("Epsilon: ", epsilon)
-        #print("Iteration Time: ", str(time.time() - start_), "\n     Matching: ", mt, "\n     Subtrees: ", st,)
+        print("Epsilon: ", epsilon)
+        print("Iteration Time: ", str(time.time() - start_))
     
     #Actually get a matching lol
     if (valid and not similar):

@@ -74,6 +74,14 @@ if __name__ == '__main__':
     
     num = 5
     
+    #Get 5 L's
+    # for i in range(num):
+    #     G = z[0]["2"][i]
+    #     pos = get_pos(G)
+        
+    #     inputs.append( (G, pos) )
+    #     labels.append("L " + str(i))
+    
     #Get 5 N's
     for i in range(num):
         G = z[0]["1"][i]
@@ -98,4 +106,4 @@ if __name__ == '__main__':
         inputs.append( (G, pos) )
         labels.append("V " + str(i))
     
-    draw_dendro(inputs, frames=40, labels=labels, thresh=0.75)
+    draw_dendro(inputs, frames=90, labels=labels, thresh=2)
