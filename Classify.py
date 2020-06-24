@@ -3,6 +3,7 @@
 #
 #Dendro
 import scipy.cluster.hierarchy as shc
+import scipy as scp
 import pandas as pd
 import numpy as np
 from sklearn.preprocessing import normalize
@@ -32,15 +33,16 @@ def draw_dendro(input_list, frames=180, labels=None, thresh=None):
                 val=average_distance(G1, pos1, G2, pos2, frames=frames)
                 
             data[i,j] = val
-            data[j, i] = val
-            
+            data[j,i] = val
+    
     dendrogram(data, labels=labels, thresh=thresh)
+    return data
             
 
 def dendrogram(data, labels=None, thresh=None):
     plt.figure(figsize=(10, 7))  
     plt.title("Dendrograms")  
-    dend = shc.dendrogram(shc.linkage(data, method='ward'), labels=labels, color_threshold=thresh)
+    dend = shc.dendrogram(shc.linkage(data, method='single', optimal_ordering=True), labels=labels, color_threshold=thresh)
     if(thresh != None):
         plt.axhline(y=thresh, color='r', linestyle='--')
     
@@ -75,12 +77,12 @@ if __name__ == '__main__':
     num = 5
     
     #Get 5 L's
-    # for i in range(num):
-    #     G = z[0]["2"][i]
-    #     pos = get_pos(G)
+    for i in range(num):
+        G = z[0]["2"][i]
+        pos = get_pos(G)
         
-    #     inputs.append( (G, pos) )
-    #     labels.append("L " + str(i))
+        inputs.append( (G, pos) )
+        labels.append("L " + str(i))
     
     #Get 5 N's
     for i in range(num):
@@ -106,4 +108,4 @@ if __name__ == '__main__':
         inputs.append( (G, pos) )
         labels.append("V " + str(i))
     
-    draw_dendro(inputs, frames=90, labels=labels, thresh=3)
+    data = draw_dendro(inputs, frames=90, labels=labels, thresh=0.95)

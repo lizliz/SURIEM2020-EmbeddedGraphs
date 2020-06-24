@@ -283,6 +283,7 @@ def mean_f(M):
     
 def normalize_f(M):
     center = median_f(M)
+    # center = mean_f(M)
     
     nodes = listify_nodes(M)
     for n in nodes:

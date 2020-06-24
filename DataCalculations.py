@@ -71,7 +71,7 @@ def average_distance(G1, pos1, G2, pos2, frames=360, rotate_both=True, accuracy=
     n2 = heights[math.floor((num-1)/2)]
     med = (n1+n2)/2
     
-    return med
+    # return med
     # return max(heights)
     return sum(heights)/frames
 
