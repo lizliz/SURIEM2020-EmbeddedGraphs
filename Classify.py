@@ -6,7 +6,7 @@ import scipy.cluster.hierarchy as shc
 import scipy.spatial.distance as ssd
 import pandas as pd
 import numpy as np
-#from sympy import Matrix, pprint# old code from confusion matrix days
+from sklearn.manifold import MDS
 from sklearn.preprocessing import normalize
 import matplotlib.pyplot as plt
 from DataCalculations import average_distance
@@ -15,29 +15,15 @@ import random
 import DataReader as dr
 import lib.Tools as t
 import lib.tud2nx as tud
-import Visualization as v
+import matplotlib.colors as colors
+import matplotlib.cm as cmx
+import pdb
+#import Visualization as v
+#from sympy import Matrix, pprint# old code from confusion matrix days
 
 #Input list should be a list of pairs of graphs & positions
 def draw_dendro(input_list, frames=180, labels=None, thresh=None):
-    # count = len(input_list)
-    data = get_data(input_list, frames)    
-    # data = np.zeros(shape=(count,count))
-    # for i in range(count):
-    #     for j in range(i, count):
-    #         print("(",i,",",j,")")
-    #         if(i==j):
-    #             val=0
-    #         else:
-    #             G1 = input_list[i][0]
-    #             pos1 = input_list[i][1]
-    #             G2 = input_list[j][0]
-    #             pos2 = input_list[j][1]
-    #             val=average_distance(G1, pos1, G2, pos2, frames=frames)
-            
-    #         data[i,j] = val
-    #         data[j,i] = val
-    
-    
+    data = get_data(input_list, frames)[0]    
     dendrogram(data, labels=labels, thresh=thresh)
     return data
             
@@ -45,14 +31,13 @@ def draw_dendro(input_list, frames=180, labels=None, thresh=None):
 def dendrogram(data, labels=None, thresh=None):
     plt.figure(figsize=(10, 7))  
     plt.title("Dendrograms")
-    #data = ssd.squareform(data)
+    #data = ssd.squareform(data) ##Don't think we need this? The data it's handed should be passed through get_data first if it's a distance matrix
     lkg = shc.linkage(data, method='single')
     dend = shc.dendrogram(lkg, labels=labels, color_threshold=thresh)
     if(thresh != None):
         plt.axhline(y=thresh, color='r', linestyle='--')
     
-# I made this its own function cause I was gonna use it for the confusion matrix
-# Guess we don't need it anymore but I left it
+# I made this its own function so I could use it in mds
 def get_data(input_list, frames = 180):
     count = len(input_list)
     data = np.zeros(shape=(count,count))
@@ -74,17 +59,126 @@ def get_data(input_list, frames = 180):
             data[i,j] = val
             data[j,i] = val
     
-    data = ssd.squareform(data)
-    return data
+    flattened_data = ssd.squareform(data)
+    return [flattened_data,data]
 
-
+# input_list: ordered list of graphs
+# frames: same as before; number of frames from the rotation
+# target_list: ordered list of the TARGET LABELS for the graphs, for example ["cats","cats","dogs"...] (NOT ["cat1", "cat2","dog1"...])
+# Colorize: whether or not you want to see the graph color coded according to the target labels
+# scheme: see color map options: https://matplotlib.org/3.1.0/tutorials/colors/colormaps.html#qualitative
+# Adapted coloring method from https://stackoverflow.com/questions/8931268/using-colormaps-to-set-color-of-line-in-matplotlib
+# Adapted MDS method from https://jakevdp.github.io/PythonDataScienceHandbook/05.10-manifold-learning.html
+def mds(input_list, target_list, frames=180, colorize = True, scheme = "jet", legend = True):
+    D = get_data(input_list, frames)[1] # Get a distance matrix from the input list
+    model = MDS(n_components=2, dissimilarity='precomputed', random_state=1)
+    coords = model.fit_transform(D) # Outputs an array of the coordinates
     
+    if colorize == False:
+        x = coords[:, 0] # Get the x values
+        y = coords[:, 1] # Get the y values
+        plt.scatter(x, y) # Plot them
+        plt.axis('equal')
     
+    else: 
+        
+        label = {} # Dictionary of target labels
+        for i in range(len(target_list)):# Find all the target labels in the data
+            lbl = target_list[i]
+            
+            if lbl not in label:
+                label[lbl] = []    
+            label[lbl].append(i) # Keep track of the index of each element with this label
+        
+        
+        clusters = [] #List of (label, Xarray, Yarray) tuples
+        for l in label:
+            Xs = []# Keep track of the x and y values of elements with this label
+            Ys = []
+            
+            for index in label[l]: # Get the coordinates of elements with this label
+                Xs.append(coords[:,0][index]) # Get the x value
+                Ys.append(coords[:,1][index]) # Get the y value    
+            clusters.append((l, np.array(Xs), np.array(Ys))) 
+            
+        fig = plt.figure() #initialize figure
+        ax = fig.add_subplot(111) # 1x1 grid, 1st subplot
+        values = range(len(label))
+        jet = cm = plt.get_cmap(scheme) # Use matplotlib's jet color scheme by default
+        cNorm  = colors.Normalize(vmin=0, vmax=values[-1])
+        scalarMap = cmx.ScalarMappable(norm=cNorm, cmap=jet)
+        
+        for j in range(len(clusters)):
+ 
+            colorVal = scalarMap.to_rgba(values[j])
+            colorText = (str(clusters[j][0]))
+            retPoints = plt.scatter(x = clusters[j][1], 
+                                   y = clusters[j][2], 
+                                   c = [colorVal],# Make 'c' a vector to keep long warning message from printing
+                                   label = colorText)
+           
+            if legend == True:
+                handles,labels = ax.get_legend_handles_labels()
+                ax.legend(handles, labels, loc='upper right')
+        
+        plt.axis('equal')
+        plt.show()
+ 
+    return coords    
+        
 if __name__ == '__main__':
     inputs = []
     labels = []
-    #predicted_classes = []# old code from confusion matrix days
+    target = []
      
+    p = "data/Letter-low"
+    ds = "Letter-low"
+    z = tud.read_tud(p,ds)
+    num = 5
+    frames = 10
+
+    #Get 5 Z's
+    for i in range(num):
+        G = z[0]["3"][i]
+        G = t.main_component(G)
+        pos = get_pos(G)
+        
+        inputs.append( (G, pos) )
+        labels.append("Z " + str(i))
+        target.append("Z")
+    
+    #Get 5 L's
+    for i in range(num):
+        G = z[0]["2"][i]
+        G = t.main_component(G)
+        pos = get_pos(G)
+        
+        inputs.append( (G, pos) )
+        labels.append("L " + str(i))
+        target.append("L")
+    
+    #Get 5 N's
+    for i in range(num):
+        G = z[0]["1"][i]
+        G = t.main_component(G)
+        pos = get_pos(G)
+        
+        inputs.append( (G, pos) )
+        labels.append("N " + str(i))
+        target.append("N")
+        
+    #Get 5 V's
+    for i in range(num):
+        G = z[0]["7"][i]
+        pos = get_pos(G)
+        G = t.main_component(G)
+        
+        inputs.append( (G, pos) )
+        labels.append("V " + str(i))
+        target.append("V")
+
+    data = draw_dendro(inputs, frames=10, labels=labels, thresh=0.38)
+    
     # pth = "./data/kitty2.graphml"  #0
     # inp = dr.read_graphml(pth)
     # inputs.append(inp)
@@ -106,60 +200,13 @@ if __name__ == '__main__':
     # inputs.append(inp)
     
     # labels = ["kitty2 (1)","kitty1","kitty2 (2)","Brutus","Sofie"]
-    
-    p = "data/Letter-low"
-    ds = "Letter-low"
-    z = tud.read_tud(p,ds)
-    
-    num = 5
-    
+
     #L0 = z[0]["2"][0]
     #pos1 = get_pos(L0)
     #V1 = z[0]["7"][1]
     #pos2 = get_pos(V1)
     
     #v.cool_GIF(L0, pos1, V1, pos2, frames=180, fps=20)
-    
-    #Get 5 Z's
-    for i in range(num):
-        G = z[0]["3"][i]
-        G = t.main_component(G)
-        pos = get_pos(G)
-        
-        inputs.append( (G, pos) )
-        labels.append("Z " + str(i))
-        #predicted_classes.append("Z")# old code from confusion matrix days
-    
-    #Get 5 L's
-    for i in range(num):
-        G = z[0]["2"][i]
-        G = t.main_component(G)
-        pos = get_pos(G)
-        
-        inputs.append( (G, pos) )
-        labels.append("L " + str(i))
-        #predicted_classes.append("L")# old code from confusion matrix days
-    
-    #Get 5 N's
-    for i in range(num):
-        G = z[0]["1"][i]
-        G = t.main_component(G)
-        pos = get_pos(G)
-        
-        inputs.append( (G, pos) )
-        labels.append("N " + str(i))
-        #predicted_classes.append("N")# old code from confusion matrix days
-
-        
-    #Get 5 V's
-    for i in range(num):
-        G = z[0]["7"][i]
-        pos = get_pos(G)
-        G = t.main_component(G)
-        
-        inputs.append( (G, pos) )
-        labels.append("V " + str(i))
-        #predicted_classes.append("V")# old code from confusion matrix days
     
     # pth = "./data/Binary Images/cat2.png"  #0
     # inp = dr.read_img(pth)
@@ -183,21 +230,18 @@ if __name__ == '__main__':
     
     # labels = ["cat2","cat3","dog1","dog2","dog3"]
 
-    data = draw_dendro(inputs, frames=10, labels=labels, thresh=0.38)
-    
     #labels = ['a','b','c','d']
     #data = np.array( [[0,1,10,7],[1,0,8,9],[10,8,0,2],[7,9,2,0]] )
     #data = np.array([1,10,8,7,9,2])
     #dendrogram(data, labels=labels)
-    
-    
+
 ###############################################################################
 # Old code from back when we thought we were going to use a confusion matrix
 # Didn't wanna throw it away so here it is.
 # It's not at all near complete but this is where I stopped so ¯\_(ツ)_/¯
 
 # def confusion(input_list, labels, thresh, predicted_classes):
-#     data = get_data(input_list)# Get the data in the format we want
+#     data = get_data(input_list)[0]# Get the data in the format we want
 #     lkg = shc.linkage(data, method='single')# Get the linkage
     
 #     # Get the list of all the classes that actually appeared in the data
