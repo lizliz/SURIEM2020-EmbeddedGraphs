@@ -54,6 +54,6 @@ def read_img(path, draw = False, node_size = 0, labels = False, main=True):
 ##
 
 # large groups of graphs from the TUD data set
-def read_tud(path, name):
-    g = tud.read_tud(path, name)
+def read_tud(path, name, reminder = True):
+    g = tud.read_tud(path, name, reminder = reminder)
     return g

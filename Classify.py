@@ -17,7 +17,9 @@ import lib.Tools as t
 import lib.tud2nx as tud
 import matplotlib.colors as colors
 import matplotlib.cm as cmx
-import pdb
+import timeit
+import time
+
 #import Visualization as v
 #from sympy import Matrix, pprint# old code from confusion matrix days
 
@@ -42,7 +44,8 @@ def condense(two_dimension_distance_matrix):
     return ssd.squareform(two_dimension_distance_matrix)
 
 # I made this its own function so I could use it in mds
-def get_data(input_list, frames = 180, p = True):
+def get_data(input_list, frames = 180, p = True, TIME = False):
+    start = time.time()
     count = len(input_list)
     data = np.zeros(shape=(count,count))
     
@@ -65,17 +68,19 @@ def get_data(input_list, frames = 180, p = True):
             data[j,i] = val
     
     flattened = condense(data)
+    if TIME == True:
+        print("Making Distance Matrix: " + str(time.time() - start))
     return [flattened,data]
 
 # input_list: ordered list of graphs
 # frames: same as before; number of frames from the rotation
 # target_list: ordered list of the TARGET LABELS for the graphs, for example ["cats","cats","dogs"...] (NOT ["cat1", "cat2","dog1"...])
 # Colorize: whether or not you want to see the graph color coded according to the target labels
-# scheme: see color map options: https://matplotlib.org/3.1.0/tutorials/colors/colormaps.html#qualitative
+# scheme: see color map options: https://matplotlib.org/3.1.0/tutorials/colors/colormaps.html
 # Adapted coloring method from https://stackoverflow.com/questions/8931268/using-colormaps-to-set-color-of-line-in-matplotlib
 # Adapted MDS method from https://jakevdp.github.io/PythonDataScienceHandbook/05.10-manifold-learning.html
-def mds(input_list, target_list, frames=180, colorize = True, scheme = "jet", legend = True):
-    D = get_data(input_list, frames)[1] # Get a distance matrix from the input list
+def mds(input_list, target_list, frames=180, colorize = True, scheme = "jet", legend = True, alpha = 0.4, TIME = True):
+    D = get_data(input_list, frames, p = False, TIME = TIME)[1] # Get a distance matrix from the input list
     model = MDS(n_components=2, dissimilarity='precomputed', random_state=1)
     coords = model.fit_transform(D) # Outputs an array of the coordinates
     
@@ -119,7 +124,8 @@ def mds(input_list, target_list, frames=180, colorize = True, scheme = "jet", le
             retPoints = plt.scatter(x = clusters[j][1], 
                                    y = clusters[j][2], 
                                    c = [colorVal],# Make 'c' a vector to keep long warning message from printing
-                                   label = colorText)
+                                   label = colorText,
+                                   alpha = alpha)
            
             if legend == True:
                 handles,labels = ax.get_legend_handles_labels()
@@ -129,7 +135,7 @@ def mds(input_list, target_list, frames=180, colorize = True, scheme = "jet", le
         plt.show()
  
     return coords    
-        
+################################## Testing ####################################
 if __name__ == '__main__':
     inputs = []
     labels = []
@@ -137,40 +143,43 @@ if __name__ == '__main__':
      
     p = "data/Letter-low"
     ds = "Letter-low"
-    z = tud.read_tud(p,ds)
-    num = 150
-    frames = 360
+    z = tud.read_tud(p,ds,False)
+    num = 35
+    frames = 10
+    scheme = "nipy_spectral"#"jet"#"rainbow"# some good color choices
+    alpha = 0.6 #Translucency of the points
     letters = { # There are 150 graphs of each letter in letter-low
-        	"0":"K",
-            "1":"N",
-            "2":"L",
-            "3":"Z",
-            "4":"T",
-            "5":"X",
-            "6":"F",
-            "7":"V",
-            "8":"Y",
-            "9":"W",
-            "10":"H",
-            "11":"A",
-            "12":"I",
-            "13":"E",
-            "14":"M"
+        	"K":"0",
+            "N":"1",
+            "L":"2",
+            "Z":"3",
+            "T":"4",
+            "X":"5",
+            "F":"6",
+            "V":"7",
+            "Y":"8",
+            "W":"9",
+            "H":"10",
+            "A":"11",
+            "I":"12",
+            "E":"13",
+            "M":"14"
             }
-
+#"N","M","Z", "L", "W", "V", "E", and "M" get the best results in my opinion
     for letter in letters:
-        #if letter not in ["0","1","3"]: # Only graph the letters you're interested in
-        #    continue
+        # Only graph the letters you're interested in
+        if letter not in ["N","M","Z", "L", "W", "V", "E", "M"]:
+            continue
         for i in range(num):
-            G = z[0][letter][i]
+            G = z[0][letters[letter]][i]
             G = t.main_component(G = G, report = False)
             pos = get_pos(G)
             inputs.append( (G, pos) )
-            labels.append(letters[letter] + str(i))
-            target.append(letters[letter])
+            labels.append(letter + str(i))
+            target.append(letter)
             
- points = mds(inputs, target, frames)
- # data = draw_dendro(inputs, frames=10, labels=labels, thresh=0.38)
+points = mds(inputs,target,frames,True,scheme,True,alpha,True)
+# data = draw_dendro(inputs, frames=10, labels=labels, thresh=0.38)
  
 ########################### Comparing Letters####################################
 
