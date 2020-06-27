@@ -27,25 +27,30 @@ def draw_dendro(input_list, frames=180, labels=None, thresh=None):
     dendrogram(data, labels=labels, thresh=thresh)
     return data
             
-
+# data parameter is a 1-D condensed distance matrix or a 2-D array of observation vectors
+# data parameter is NOT a distance matrix, pass a distance matrix through get_data first
 def dendrogram(data, labels=None, thresh=None):
     plt.figure(figsize=(10, 7))  
     plt.title("Dendrograms")
-    #data = ssd.squareform(data) ##Don't think we need this? The data it's handed should be passed through get_data first if it's a distance matrix
     lkg = shc.linkage(data, method='single')
     dend = shc.dendrogram(lkg, labels=labels, color_threshold=thresh)
     if(thresh != None):
         plt.axhline(y=thresh, color='r', linestyle='--')
     
+# converts 2-D distance matrix to 1-D condensed distance matrix
+def condense(two_dimension_distance_matrix):
+    return ssd.squareform(two_dimension_distance_matrix)
+
 # I made this its own function so I could use it in mds
-def get_data(input_list, frames = 180):
+def get_data(input_list, frames = 180, p = True):
     count = len(input_list)
     data = np.zeros(shape=(count,count))
     
     for i in range(count):
         
         for j in range(i, count):
-            print("(",i,",",j,")")
+            if p == True:
+                print("(",i,",",j,")")
             
             if(i==j):
                 val=0
@@ -59,8 +64,8 @@ def get_data(input_list, frames = 180):
             data[i,j] = val
             data[j,i] = val
     
-    flattened_data = ssd.squareform(data)
-    return [flattened_data,data]
+    flattened = condense(data)
+    return [flattened,data]
 
 # input_list: ordered list of graphs
 # frames: same as before; number of frames from the rotation
@@ -89,7 +94,6 @@ def mds(input_list, target_list, frames=180, colorize = True, scheme = "jet", le
             if lbl not in label:
                 label[lbl] = []    
             label[lbl].append(i) # Keep track of the index of each element with this label
-        
         
         clusters = [] #List of (label, Xarray, Yarray) tuples
         for l in label:
@@ -134,51 +138,84 @@ if __name__ == '__main__':
     p = "data/Letter-low"
     ds = "Letter-low"
     z = tud.read_tud(p,ds)
-    num = 5
-    frames = 10
+    num = 150
+    frames = 360
+    letters = { # There are 150 graphs of each letter in letter-low
+        	"0":"K",
+            "1":"N",
+            "2":"L",
+            "3":"Z",
+            "4":"T",
+            "5":"X",
+            "6":"F",
+            "7":"V",
+            "8":"Y",
+            "9":"W",
+            "10":"H",
+            "11":"A",
+            "12":"I",
+            "13":"E",
+            "14":"M"
+            }
 
-    #Get 5 Z's
-    for i in range(num):
-        G = z[0]["3"][i]
-        G = t.main_component(G)
-        pos = get_pos(G)
-        
-        inputs.append( (G, pos) )
-        labels.append("Z " + str(i))
-        target.append("Z")
-    
-    #Get 5 L's
-    for i in range(num):
-        G = z[0]["2"][i]
-        G = t.main_component(G)
-        pos = get_pos(G)
-        
-        inputs.append( (G, pos) )
-        labels.append("L " + str(i))
-        target.append("L")
-    
-    #Get 5 N's
-    for i in range(num):
-        G = z[0]["1"][i]
-        G = t.main_component(G)
-        pos = get_pos(G)
-        
-        inputs.append( (G, pos) )
-        labels.append("N " + str(i))
-        target.append("N")
-        
-    #Get 5 V's
-    for i in range(num):
-        G = z[0]["7"][i]
-        pos = get_pos(G)
-        G = t.main_component(G)
-        
-        inputs.append( (G, pos) )
-        labels.append("V " + str(i))
-        target.append("V")
+    for letter in letters:
+        #if letter not in ["0","1","3"]: # Only graph the letters you're interested in
+        #    continue
+        for i in range(num):
+            G = z[0][letter][i]
+            G = t.main_component(G = G, report = False)
+            pos = get_pos(G)
+            inputs.append( (G, pos) )
+            labels.append(letters[letter] + str(i))
+            target.append(letters[letter])
+            
+ points = mds(inputs, target, frames)
+ # data = draw_dendro(inputs, frames=10, labels=labels, thresh=0.38)
+ 
+########################### Comparing Letters####################################
 
-    data = draw_dendro(inputs, frames=10, labels=labels, thresh=0.38)
+    # #Get 5 Z's
+    # for i in range(num):
+    #     G = z[0]["3"][i]
+    #     G = t.main_component(G)
+    #     pos = get_pos(G)
+        
+    #     inputs.append( (G, pos) )
+    #     labels.append("Z " + str(i))
+    #     target.append("Z")
     
+    # #Get 5 L's
+    # for i in range(num):
+    #     G = z[0]["2"][i]
+    #     G = t.main_component(G)
+    #     pos = get_pos(G)
+        
+    #     inputs.append( (G, pos) )
+    #     labels.append("L " + str(i))
+    #     target.append("L")
+    
+    # #Get 5 N's
+    # for i in range(num):
+    #     G = z[0]["1"][i]
+    #     G = t.main_component(G)
+    #     pos = get_pos(G)
+        
+    #     inputs.append( (G, pos) )
+    #     labels.append("N " + str(i))
+    #     target.append("N")
+        
+    # #Get 5 V's
+    # for i in range(num):
+    #     G = z[0]["7"][i]
+    #     pos = get_pos(G)
+    #     G = t.main_component(G)
+        
+    #     inputs.append( (G, pos) )
+    #     labels.append("V " + str(i))
+    #     target.append("V")
+   
+####################### Comparing Cat Graphs  #####################################
+
     # pth = "./data/kitty2.graphml"  #0
     # inp = dr.read_graphml(pth)
     # inputs.append(inp)
@@ -201,13 +238,8 @@ if __name__ == '__main__':
     
     # labels = ["kitty2 (1)","kitty1","kitty2 (2)","Brutus","Sofie"]
 
-    #L0 = z[0]["2"][0]
-    #pos1 = get_pos(L0)
-    #V1 = z[0]["7"][1]
-    #pos2 = get_pos(V1)
-    
-    #v.cool_GIF(L0, pos1, V1, pos2, frames=180, fps=20)
-    
+###################### Comparing Cat and Dog images ###########################  
+ 
     # pth = "./data/Binary Images/cat2.png"  #0
     # inp = dr.read_img(pth)
     # inputs.append(inp)
@@ -230,11 +262,21 @@ if __name__ == '__main__':
     
     # labels = ["cat2","cat3","dog1","dog2","dog3"]
 
+################################ Misc? #######################################
+   
     #labels = ['a','b','c','d']
     #data = np.array( [[0,1,10,7],[1,0,8,9],[10,8,0,2],[7,9,2,0]] )
     #data = np.array([1,10,8,7,9,2])
     #dendrogram(data, labels=labels)
 
+
+    #L0 = z[0]["2"][0]
+    #pos1 = get_pos(L0)
+    #V1 = z[0]["7"][1]
+    #pos2 = get_pos(V1)
+    
+    #v.cool_GIF(L0, pos1, V1, pos2, frames=180, fps=20)
+    
 ###############################################################################
 # Old code from back when we thought we were going to use a confusion matrix
 # Didn't wanna throw it away so here it is.
