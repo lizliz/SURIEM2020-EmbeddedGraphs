@@ -11,6 +11,7 @@ import Merge as m
 import Compare as c
 import time
 import networkx as nx
+import lib.Tools as t
 
 
 vert = "./data/athens_small_vertices_osm.txt"
@@ -39,5 +40,6 @@ G2 = G2.subgraph(largest_cc)
 m.calc_values_height_reorient(G2, pos2)
 M2 = m.merge_tree(G2)
 
-print("Starting Comparison...")
-print(c.morozov_distance(M2, M1))
+g = t.random_component(G2, 200, draw=True, pos=pos2)
+g = t.random_component(G2, 200, draw=True, pos=pos2, color='mediumvioletred')
+g = t.random_component(G2, 200, draw=True, pos=pos2, color='blue')

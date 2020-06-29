@@ -6,7 +6,7 @@ import networkx as nx
 import numpy as np
 import random
 import math
-
+import matplotlib.pyplot as plt
 
 ###
 #TREE PROPERTIES
@@ -238,6 +238,47 @@ def random_tree_and_pos(n):
     T = random_tree(n)
     pos = random_positions(n)
     return [T,pos]
+
+#Returns a random subgraph with n nodes
+def random_component(G, n, draw=False, pos=None, color='g'):
+    nodes = list(G)
+    if(n >= len(nodes)):
+        print("There aren't even that many nodes to choose!!")
+        return None
+    
+    #Randomly choose a root
+    index = random.randint(0, len(nodes)-1)
+    root = nodes[index]
+    
+    included_nodes = [root]
+    
+    #Perform a BFS to add nodes until there are n nodes
+    count = 1
+    to_add = list(G[root])
+    while(len(to_add) != 0 and count < n):
+        cur_node = to_add[0]
+        
+        #Include the current node
+        included_nodes.append(cur_node)
+        count += 1
+        
+        #Remove it from the list and add its 'children'
+        to_add.remove(cur_node)
+        neighbors = G[cur_node]
+        for nei in neighbors:
+            if(nei not in included_nodes and nei not in to_add):
+                to_add.append(nei)
+                
+    g = G.subgraph(included_nodes).copy()
+    
+    if(draw):
+        fig = plt.subplots(1,1,figsize=(20,10))
+        ax = plt.subplot(111, frameon=False)
+        ax.title.set_text("Subgraph with " + str(n) + " nodes")
+        nx.draw(G, pos, node_size=0)
+        nx.draw_networkx_edges(g, pos, edge_color=color, width=3)     
+    return g
+
 ###
 #END OF RANDOM GENERATION
 ###
