@@ -19,7 +19,6 @@ import matplotlib.colors as colors
 import matplotlib.cm as cmx
 import timeit
 import time
-
 #import Visualization as v
 #from sympy import Matrix, pprint# old code from confusion matrix days
 
@@ -80,7 +79,7 @@ def get_data(input_list, frames = 180, p = True, TIME = False):
 # Adapted coloring method from https://stackoverflow.com/questions/8931268/using-colormaps-to-set-color-of-line-in-matplotlib
 # Adapted MDS method from https://jakevdp.github.io/PythonDataScienceHandbook/05.10-manifold-learning.html
 def mds(input_list, target_list, frames=180, colorize = True, scheme = "jet", legend = True, alpha = 0.4, TIME = True):
-    D = get_data(input_list, frames, p = False, TIME = TIME)[1] # Get a distance matrix from the input list
+    D = get_data(input_list, frames, p = True, TIME = TIME)[1] # Get a distance matrix from the input list
     model = MDS(n_components=2, dissimilarity='precomputed', random_state=1)
     coords = model.fit_transform(D) # Outputs an array of the coordinates
     
@@ -135,7 +134,7 @@ def mds(input_list, target_list, frames=180, colorize = True, scheme = "jet", le
         plt.show()
  
     return coords    
-################################## Testing ####################################
+################################## Testing Letters ###########################
 if __name__ == '__main__':
     inputs = []
     labels = []
@@ -144,7 +143,7 @@ if __name__ == '__main__':
     p = "data/Letter-low"
     ds = "Letter-low"
     z = tud.read_tud(p,ds,False)
-    num = 35
+    num = 150
     frames = 10
     scheme = "nipy_spectral"#"jet"#"rainbow"# some good color choices
     alpha = 0.6 #Translucency of the points
@@ -168,7 +167,54 @@ if __name__ == '__main__':
 #"N","M","Z", "L", "W", "V", "E", and "M" get the best results in my opinion
     for letter in letters:
         # Only graph the letters you're interested in
-        if letter not in ["N","M","Z", "L", "W", "V", "E", "M"]:
+        if letter not in letters:#["N","M","Z", "L", "W", "V", "E", "M"]:
+            continue
+        for i in range(num):
+            G = z[0][letters[letter]][i]
+            G = t.main_component(G = G, report = False)
+            pos = get_pos(G)
+            inputs.append( (G, pos) )
+            labels.append(letter + str(i))
+            target.append(letter)
+            
+points = mds(inputs,target,frames,True,scheme,True,alpha,True)
+# data = draw_dendro(inputs, frames=10, labels=labels, thresh=0.38)
+
+######################### Testing Subgraphs ####################################
+if __name__ == '__main__':
+    inputs = []
+    labels = []
+    target = []
+     
+    p1 = "data/SanJoaquinCounty.json"
+    p2 = "data/eureka.json"
+    w = tud.read_json(p1,True)
+    x = tud.read_json(p2,True)
+    num = 150 # Number of selections from the graph
+    frames = 10
+    scheme = "nipy_spectral"#"jet"#"rainbow"# some good color choices
+    alpha = 0.6 #Translucency of the points
+    letters = { # There are 150 graphs of each letter in letter-low
+        	"K":"0",
+            "N":"1",
+            "L":"2",
+            "Z":"3",
+            "T":"4",
+            "X":"5",
+            "F":"6",
+            "V":"7",
+            "Y":"8",
+            "W":"9",
+            "H":"10",
+            "A":"11",
+            "I":"12",
+            "E":"13",
+            "M":"14"
+            }
+#"N","M","Z", "L", "W", "V", "E", and "M" get the best results in my opinion
+    for letter in letters:
+        # Only graph the letters you're interested in
+        if letter not in letters:#["N","M","Z", "L", "W", "V", "E", "M"]:
             continue
         for i in range(num):
             G = z[0][letters[letter]][i]
