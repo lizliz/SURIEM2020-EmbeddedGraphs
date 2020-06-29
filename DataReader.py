@@ -5,7 +5,7 @@ import lib.txt2nx as txt
 import lib.graphml2nx as graphml
 import lib.osm2nx as osm
 import lib.json2nx as json
-import lib.img2nx as img
+#import lib.img2nx as img
 import lib.tud2nx as tud
 from lib.Tools import main_component
 
@@ -54,6 +54,6 @@ def read_img(path, draw = False, node_size = 0, labels = False, main=True):
 ##
 
 # large groups of graphs from the TUD data set
-def read_tud(path, name):
-    g = tud.read_tud(path, name)
+def read_tud(path, name, reminder = True):
+    g = tud.read_tud(path, name, reminder = reminder)
     return g

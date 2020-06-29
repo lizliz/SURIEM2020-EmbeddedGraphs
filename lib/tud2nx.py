@@ -9,7 +9,7 @@ import networkx as nx
 # ds: name of data set i.e. "Letter-high"
 # see https://chrsmrrs.github.io/datasets/docs/format/
 
-def tud2nx(path, name):
+def read_tud(path, name, reminder = True):
     pGen = path + "/" + name + "_"
     pEdges = pGen + "A.txt"
     pGraphLabels = pGen + "graph_labels.txt"
@@ -103,11 +103,11 @@ def tud2nx(path, name):
         
         # Each edge is listed twice so we can increment by 2
         e += 2
-
-    print("I'm about to return a list of dictionaries in the following format:")
-    print("[keys are graph labels and values are lists of graph objects,")
-    print("keys are graph IDs and values are (graph label, graph object, node list) tuple,")
-    print("keys are node IDs and values are (graph label, graph object) tuple]")
+    if reminder == True:
+        print("I'm about to return a list of dictionaries in the following format:")
+        print("[keys are graph labels and values are lists of graph objects,")
+        print("keys are graph IDs and values are (graph label, graph object, node list) tuple,")
+        print("keys are node IDs and values are (graph label, graph object) tuple]")
 
     return [graphDict, allGraphs, allNodes]
             

@@ -26,3 +26,8 @@ sofie
 brutus
 kitty1
 kitty2
+
+From the TUD datasets:
+(https://chrsmrrs.github.io/datasets/)
+Letter-high
+Letter-low
