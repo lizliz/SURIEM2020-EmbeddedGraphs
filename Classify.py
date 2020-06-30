@@ -22,19 +22,22 @@ import time
 #import Visualization as v
 #from sympy import Matrix, pprint# old code from confusion matrix days
 
-#Input list should be a list of pairs of graphs & positions
-def draw_dendro(input_list, frames=180, labels=None, thresh=None):
-    data = get_data(input_list, frames)[0]    
+# Input list should be a list of pairs of graphs & positions
+# data should be a 1-D condesed distance matrix if you use it
+# I had to make the default data value 0 instead of None because 
+def draw_dendro(input_list, frames=180, data = None, labels=None, thresh=None):
+    if type(data) == type(None):
+        data = get_data(input_list, frames)[0]    
     dendrogram(data, labels=labels, thresh=thresh)
     return data
             
 # data parameter is a 1-D condensed distance matrix or a 2-D array of observation vectors
-# data parameter is NOT a distance matrix, pass a distance matrix through get_data first
+# data parameter is NOT a 2D distance matrix, pass a 2D distance matrix through get_data first
 def dendrogram(data, labels=None, thresh=None):
     plt.figure(figsize=(10, 7))  
     plt.title("Dendrograms")
     lkg = shc.linkage(data, method='single')
-    dend = shc.dendrogram(lkg, labels=labels, color_threshold=thresh)
+    dend = shc.dendrogram(lkg, leaf_rotation = 90 , labels=labels, color_threshold=thresh)
     if(thresh != None):
         plt.axhline(y=thresh, color='r', linestyle='--')
     
@@ -42,8 +45,8 @@ def dendrogram(data, labels=None, thresh=None):
 def condense(two_dimension_distance_matrix):
     return ssd.squareform(two_dimension_distance_matrix)
 
-# I made this its own function so I could use it in mds
-def get_data(input_list, frames = 180, p = True, TIME = False):
+# Returns a 2D Distance matrix
+def get_matrix(input_list, frames = 180, p = True, TIME = False):
     start = time.time()
     count = len(input_list)
     data = np.zeros(shape=(count,count))
@@ -66,20 +69,29 @@ def get_data(input_list, frames = 180, p = True, TIME = False):
             data[i,j] = val
             data[j,i] = val
     
-    flattened = condense(data)
     if TIME == True:
         print("Making Distance Matrix: " + str(time.time() - start))
-    return [flattened,data]
+    return data
+
+# I made this its own function so I could use it in mds
+def get_data(input_list, frames = 180, p = True, TIME = False):
+    
+    data = get_matrix(input_list, frames = frames, p = p, TIME = TIME)
+    flattened = condense(data)
+    
+    return [flattened, data]
 
 # input_list: ordered list of graphs
 # frames: same as before; number of frames from the rotation
 # target_list: ordered list of the TARGET LABELS for the graphs, for example ["cats","cats","dogs"...] (NOT ["cat1", "cat2","dog1"...])
+# D: 2D Distance matrix
 # Colorize: whether or not you want to see the graph color coded according to the target labels
 # scheme: see color map options: https://matplotlib.org/3.1.0/tutorials/colors/colormaps.html
 # Adapted coloring method from https://stackoverflow.com/questions/8931268/using-colormaps-to-set-color-of-line-in-matplotlib
 # Adapted MDS method from https://jakevdp.github.io/PythonDataScienceHandbook/05.10-manifold-learning.html
-def mds(input_list, target_list, frames=180, colorize = True, scheme = "jet", legend = True, alpha = 0.4, TIME = True):
-    D = get_data(input_list, frames, p = True, TIME = TIME)[1] # Get a distance matrix from the input list
+def mds(input_list, target_list, frames=180, D = None, colorize = True, scheme = "jet", legend = True, alpha = 0.4, TIME = True):
+    if type(D) == type(None):
+        D = get_data(input_list, frames, p = True, TIME = TIME)[1] # Get a distance matrix from the input list
     model = MDS(n_components=2, dissimilarity='precomputed', random_state=1)
     coords = model.fit_transform(D) # Outputs an array of the coordinates
     
@@ -143,7 +155,7 @@ if __name__ == '__main__':
     p = "data/Letter-low"
     ds = "Letter-low"
     z = tud.read_tud(p,ds,False)
-    num = 150
+    num = 5
     frames = 10
     scheme = "nipy_spectral"#"jet"#"rainbow"# some good color choices
     alpha = 0.6 #Translucency of the points
@@ -167,7 +179,7 @@ if __name__ == '__main__':
 #"N","M","Z", "L", "W", "V", "E", and "M" get the best results in my opinion
     for letter in letters:
         # Only graph the letters you're interested in
-        if letter not in letters:#["N","M","Z", "L", "W", "V", "E", "M"]:
+        if letter not in ["N","M","Z", "L", "W", "V", "E", "M"]:
             continue
         for i in range(num):
             G = z[0][letters[letter]][i]
@@ -177,8 +189,10 @@ if __name__ == '__main__':
             labels.append(letter + str(i))
             target.append(letter)
             
-points = mds(inputs,target,frames,True,scheme,True,alpha,True)
-# data = draw_dendro(inputs, frames=10, labels=labels, thresh=0.38)
+matrix = get_matrix(inputs, frames, True, True)
+flat = condense(matrix)
+points = mds(inputs,target,frames,matrix,True,scheme,True,alpha,True)
+data = draw_dendro(inputs, data = flat, frames=frames, labels=labels, thresh=0.38)
 
 ######################### Testing Subgraphs ####################################
 if __name__ == '__main__':
@@ -187,46 +201,48 @@ if __name__ == '__main__':
     target = []
      
     p1 = "data/SanJoaquinCounty.json"
+    w = dr.read_json(p1,False)[0]
+    
     p2 = "data/eureka.json"
-    w = tud.read_json(p1,True)
-    x = tud.read_json(p2,True)
-    num = 150 # Number of selections from the graph
-    frames = 10
-    scheme = "nipy_spectral"#"jet"#"rainbow"# some good color choices
+    x = dr.read_json(p2,False)[0]
+    
+    p3 = "data/atlanta.osm"
+    y = dr.read_osm(p,False)[0]
+    
+    p4 = "data/lancaster.osm"
+    u = dr.read_osm(p,False)[0]
+    
+    p5 = "data/dc.osm"
+    v = dr.read_osm(p,False)[0]
+    
+    num = 5 # Number of selections from the graph
+    nodes = 100 # Number of nodes you want eat random selection to have
+    frames = 45
+    scheme = "jet"#"nipy_spectral"#"rainbow"# some good color choices
     alpha = 0.6 #Translucency of the points
-    letters = { # There are 150 graphs of each letter in letter-low
-        	"K":"0",
-            "N":"1",
-            "L":"2",
-            "Z":"3",
-            "T":"4",
-            "X":"5",
-            "F":"6",
-            "V":"7",
-            "Y":"8",
-            "W":"9",
-            "H":"10",
-            "A":"11",
-            "I":"12",
-            "E":"13",
-            "M":"14"
-            }
-#"N","M","Z", "L", "W", "V", "E", and "M" get the best results in my opinion
-    for letter in letters:
-        # Only graph the letters you're interested in
-        if letter not in letters:#["N","M","Z", "L", "W", "V", "E", "M"]:
+    graphs = {
+        "SanJoaquin":(w,[]),# Tuple with full graph object and list of all the randomly picked subgraphs
+        "Eureka":(x,[]),
+        "Atlanta":(y,[]),
+        "Lancaster":(u,[]),
+        "DC":(v,[])
+              }
+
+    for graph in graphs:
+        if graph not in ["Eureka", "SanJoaquin"]: # Graphs you want
             continue
         for i in range(num):
-            G = z[0][letters[letter]][i]
-            G = t.main_component(G = G, report = False)
+            G = t.random_component(graphs[graph][0], nodes) #Get random subgraph
             pos = get_pos(G)
+            graphs[graph][1].append(G)
             inputs.append( (G, pos) )
-            labels.append(letter + str(i))
-            target.append(letter)
+            labels.append(graph + str(i))
+            target.append(graph)
             
-points = mds(inputs,target,frames,True,scheme,True,alpha,True)
-# data = draw_dendro(inputs, frames=10, labels=labels, thresh=0.38)
- 
+matrix = get_matrix(inputs, frames, True, True)
+flat = condense(matrix)
+points = mds(inputs,target,frames,matrix,True,scheme,True,alpha,True)
+data = draw_dendro(inputs, data = flat, frames=frames, labels=labels, thresh=0.38) 
 ########################### Comparing Letters####################################
 
     # #Get 5 Z's
