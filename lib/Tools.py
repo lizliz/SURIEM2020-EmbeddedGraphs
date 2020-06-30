@@ -458,7 +458,7 @@ def main_component(G, pos_dict = None, report = True, draw = False):
     
     if draw == True: # Draw largest component
         if pos_dict == None: # Drawing requires position dictionary
-            print("Need position dictionary to draw!")
+            print("I'll return the main component, but I need position dictionary to draw!")
         else:
             nx.draw(mainComponent, pos = pos_dict, with_labels = False, node_size = 0)
     
