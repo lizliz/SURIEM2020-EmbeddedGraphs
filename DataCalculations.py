@@ -60,7 +60,7 @@ def distance_data_thread(G1, pos1, G2, pos2, data, frames=360, rotate_both=True,
     print("Total time: ", time.time()-start)
     return data
         
-def average_distance(G1, pos1, G2, pos2, frames=360, rotate_both=True, accuracy=0.005):
+def average_distance(G1, pos1, G2, pos2, frames=360, rotate_both=True, accuracy=0.005, center = "median"):
     data = distance_data(G1, pos1, G2, pos2, frames=frames, rotate_both=rotate_both, accuracy=accuracy)
     
     heights = [x[1] for x in data]
@@ -71,9 +71,15 @@ def average_distance(G1, pos1, G2, pos2, frames=360, rotate_both=True, accuracy=
     n2 = heights[math.floor((num-1)/2)]
     med = (n1+n2)/2
     
-    return med
-    # return max(heights)
-    # return sum(heights)/frames
+    if center == "median":
+        return med
+    elif center == "mean":
+        return sum(heights)/frames
+    elif center == "max":
+        return max(heights)
+    else:
+        print("Invalid center parameter. Valid choices are 'median', 'mean', and 'max'. Returning median.")
+    
 
 # data: data returned by the distance_data() funtion
 # samples: size of the sampling distribution you want. 3,000 is usually pretty good

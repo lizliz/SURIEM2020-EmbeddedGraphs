@@ -45,7 +45,7 @@ def condense(two_dimension_distance_matrix):
     return ssd.squareform(two_dimension_distance_matrix)
 
 # Returns a 2D Distance matrix
-def get_matrix(input_list, frames = 180, p = True, TIME = False):
+def get_matrix(input_list, frames = 180, p = True, TIME = False, center = "median"):
     start = time.time()
     count = len(input_list)
     data = np.zeros(shape=(count,count))
@@ -63,7 +63,7 @@ def get_matrix(input_list, frames = 180, p = True, TIME = False):
                 pos1 = input_list[i][1]
                 G2 = input_list[j][0]
                 pos2 = input_list[j][1]
-                val=average_distance(G1, pos1, G2, pos2, frames=frames)
+                val=average_distance(G1, pos1, G2, pos2, frames=frames, center = center)
             
             data[i,j] = val
             data[j,i] = val
@@ -73,9 +73,9 @@ def get_matrix(input_list, frames = 180, p = True, TIME = False):
     return data
 
 # I made this its own function so I could use it in mds
-def get_data(input_list, frames = 180, p = True, TIME = False):
+def get_data(input_list, frames = 180, p = True, TIME = False, center = "median"):
     
-    data = get_matrix(input_list, frames = frames, p = p, TIME = TIME)
+    data = get_matrix(input_list, frames = frames, p = p, TIME = TIME, center = center)
     flattened = condense(data)
     
     return [flattened, data]
@@ -147,55 +147,55 @@ def mds(input_list, target_list, frames=180, D = None, colorize = True, scheme =
  
     return coords    
 
-######################### Testing Subgraphs ####################################
-if __name__ == '__main__':
-    inputs = []
-    labels = []
-    target = []
+# ######################### Testing Subgraphs ####################################
+# if __name__ == '__main__':
+#     inputs = []
+#     labels = []
+#     target = []
      
-    p1 = "data/SanJoaquinCounty.json"
-    w = dr.read_json(p1,False)[0]
+#     p1 = "data/SanJoaquinCounty.json"
+#     w = dr.read_json(p1,False)[0]
     
-    p2 = "data/eureka.json"
-    x = dr.read_json(p2,False)[0]
+#     p2 = "data/eureka.json"
+#     x = dr.read_json(p2,False)[0]
     
-    p3 = "data/atlanta.osm"
-    y = dr.read_osm(p3,False)[0]
+#     p3 = "data/atlanta.osm"
+#     y = dr.read_osm(p3,False)[0]
     
-    p4 = "data/lancaster.osm"
-    u = dr.read_osm(p4,False)[0]
+#     p4 = "data/lancaster.osm"
+#     u = dr.read_osm(p4,False)[0]
     
-    p5 = "data/dc.osm"
-    v = dr.read_osm(p5,False)[0]
+#     p5 = "data/dc.osm"
+#     v = dr.read_osm(p5,False)[0]
     
-    num = 10 # Number of selections from the graph
-    nodes = 300 # Number of nodes you want eat random selection to have
-    frames = 90
-    scheme = "jet"#"nipy_spectral"#"rainbow"# some good color choices
-    alpha = 0.6 #Translucency of the points
-    graphs = {
-        "SanJoaquin":(w,[]),# Tuple with full graph object and list of all the randomly picked subgraphs
-        "Eureka":(x,[]),
-        "Atlanta":(y,[]),
-        "Lancaster":(u,[]),
-        "DC":(v,[])
-              }
+#     num = 10 # Number of selections from the graph
+#     nodes = 300 # Number of nodes you want eat random selection to have
+#     frames = 90
+#     scheme = "jet"#"nipy_spectral"#"rainbow"# some good color choices
+#     alpha = 0.6 #Translucency of the points
+#     graphs = {
+#         "SanJoaquin":(w,[]),# Tuple with full graph object and list of all the randomly picked subgraphs
+#         "Eureka":(x,[]),
+#         "Atlanta":(y,[]),
+#         "Lancaster":(u,[]),
+#         "DC":(v,[])
+#               }
 
-    for graph in graphs:
-        if graph not in ["Eureka", "SanJoaquin"]: # Graphs you want
-            continue
-        for i in range(num):
-            G = t.random_component(graphs[graph][0], nodes) #Get random subgraph
-            pos = get_pos(G)
-            graphs[graph][1].append(G)
-            inputs.append( (G, pos) )
-            labels.append(graph + str(i))
-            target.append(graph)
+#     for graph in graphs:
+#         if graph not in ["Eureka", "SanJoaquin"]: # Graphs you want
+#             continue
+#         for i in range(num):
+#             G = t.random_component(graphs[graph][0], nodes) #Get random subgraph
+#             pos = get_pos(G)
+#             graphs[graph][1].append(G)
+#             inputs.append( (G, pos) )
+#             labels.append(graph + str(i))
+#             target.append(graph)
             
-matrix = get_matrix(inputs, frames, True, True)
-flat = condense(matrix)
-points = mds(inputs,target,frames,matrix,True,scheme,True,alpha,True)
-data = draw_dendro(inputs, data = flat, frames=frames, labels=labels, thresh=0.03)
+# matrix = get_matrix(inputs, frames, True, True)
+# flat = condense(matrix)
+# points = mds(inputs,target,frames,matrix,True,scheme,True,alpha,True)
+# data = draw_dendro(inputs, data = flat, frames=frames, labels=labels, thresh=0.03)
 
 ################################## Testing Letters ###########################
 if __name__ == '__main__':
@@ -207,9 +207,9 @@ if __name__ == '__main__':
     ds = "Letter-low"
     z = tud.read_tud(p,ds,False)
 
-    num = 20
+    num = 10
     frames = 10
-    scheme = "rainbow"#"nipy_spectral"#"jet"# some good color choices
+    scheme = "jet"#"rainbow"#"nipy_spectral"# some good color choices
     alpha = 0.6 #Translucency of the points
     letters = {"K":"0",# There are 150 graphs of each letter in letter-low
             "N":"1",
@@ -233,20 +233,25 @@ if __name__ == '__main__':
         # Only graph the letters you're interested in
         #if letter not in ["K","M","Z", "L", "W", "V", "E", "M"]:
         #   continue
+        j = 0    
         for i in range(num):
-            if letter + str(i) in outliers:
-                continue
-            G = z[0][letters[letter]][i]
+            while letter + str(j) in outliers:
+                j += 1 
+            if j > 149:
+                print("Not enough", letter + "s")
+                break
+            G = z[0][letters[letter]][j]
             G = t.main_component(G = G, report = False)
             pos = get_pos(G)
             inputs.append( (G, pos) )
-            labels.append(letter + str(i))
+            labels.append(letter + str(j))
             target.append(letter)
+            j += 1
             
-matrix = get_matrix(inputs, frames, True, True)
+matrix = get_matrix(inputs, frames, True, True, center = "mean")
 flat = condense(matrix)
 points = mds(inputs,target,frames,matrix,True,scheme,True,alpha,True)
-data = draw_dendro(inputs, data = flat, frames=frames, labels=labels, thresh=0.38)
+data = draw_dendro(inputs, data = flat, frames=frames, labels=labels, thresh=0.45)
 
  
 ########################### Comparing Letters####################################
