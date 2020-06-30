@@ -21,7 +21,7 @@ def read_img(pth, draw = True, nodeSize = 0, labels = False):
     # print(np.sum(im),im.shape[0]*im.shape[1])
     im = thinning(im);
     
-    # cv2.imshow('',im*255);cv2.waitKey(0)
+    cv2.imshow('',im*255);cv2.waitKey(0)
     
     rects = []
     polys = traceSkeleton(im,0,0,im.shape[1],im.shape[0],10,999,rects)
@@ -31,7 +31,7 @@ def read_img(pth, draw = True, nodeSize = 0, labels = False):
       for i in range(0,len(l)-1):
         cv2.line(im0,(l[i][0],l[i][1]),(l[i+1][0],l[i+1][1]),c)
     
-    #cv2.imshow('',im0);cv2.waitKey(0)
+    cv2.imshow('',im0);cv2.waitKey(0)
 
     G = nx.Graph()
     positions = {}

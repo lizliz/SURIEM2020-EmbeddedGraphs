@@ -5,20 +5,20 @@ import lib.txt2nx as txt
 import lib.graphml2nx as graphml
 import lib.osm2nx as osm
 import lib.json2nx as json
-#import lib.img2nx as img
+import lib.img2nx as img
 import lib.tud2nx as tud
 from lib.Tools import main_component
 
 
 #txt reading
-def read_txt(edge_path, vertex_path, main=True):
-    g = txt.make_graph(edge_path, vertex_path)
-    if(main):
-        g[0] = main_component(g[0])
-    return g
+# def read_txt(edge_path, vertex_path, main=True):
+#     g = txt.make_graph(edge_path, vertex_path)
+#     if(main):
+#         g[0] = main_component(g[0])
+#     return g
 
-def read_txt_n(name):
-    return txt.make(name)
+# def read_txt_n(name):
+#     return txt.make(name)
 ##
 
 #graphml reading
