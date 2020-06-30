@@ -4,10 +4,8 @@
 #Dendro
 import scipy.cluster.hierarchy as shc
 import scipy.spatial.distance as ssd
-import pandas as pd
 import numpy as np
 from sklearn.manifold import MDS
-from sklearn.preprocessing import normalize
 import matplotlib.pyplot as plt
 from DataCalculations import average_distance
 from lib.Tools import random_tree_and_pos, get_pos
@@ -17,7 +15,6 @@ import lib.Tools as t
 import lib.tud2nx as tud
 import matplotlib.colors as colors
 import matplotlib.cm as cmx
-import timeit
 import time
 #import Visualization as v
 #from sympy import Matrix, pprint# old code from confusion matrix days
@@ -40,6 +37,8 @@ def dendrogram(data, labels=None, thresh=None):
     dend = shc.dendrogram(lkg, leaf_rotation = 90, labels=labels, color_threshold=thresh)
     if(thresh != None):
         plt.axhline(y=thresh, color='r', linestyle='--')
+        
+    return dend
     
 # converts 2-D distance matrix to 1-D condensed distance matrix
 def condense(two_dimension_distance_matrix):
@@ -89,6 +88,7 @@ def get_data(input_list, frames = 180, p = True, TIME = False):
 # scheme: see color map options: https://matplotlib.org/3.1.0/tutorials/colors/colormaps.html
 # Adapted coloring method from https://stackoverflow.com/questions/8931268/using-colormaps-to-set-color-of-line-in-matplotlib
 # Adapted MDS method from https://jakevdp.github.io/PythonDataScienceHandbook/05.10-manifold-learning.html
+
 def mds(input_list, target_list, frames=180, D = None, colorize = True, scheme = "jet", legend = True, alpha = 0.4, TIME = True):
     if type(D) == type(None):
         D = get_data(input_list, frames, p = True, TIME = TIME)[1] # Get a distance matrix from the input list
@@ -206,6 +206,7 @@ if __name__ == '__main__':
     p = "data/Letter-low"
     ds = "Letter-low"
     z = tud.read_tud(p,ds,False)
+
     num = 20
     frames = 10
     scheme = "rainbow"#"nipy_spectral"#"jet"# some good color choices
