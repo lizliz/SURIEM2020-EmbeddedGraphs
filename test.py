@@ -43,3 +43,10 @@ M2 = m.merge_tree(G2)
 g = t.random_component(G2, 200, draw=True, pos=pos2)
 g = t.random_component(G2, 200, draw=True, pos=pos2, color='mediumvioletred')
 g = t.random_component(G2, 200, draw=True, pos=pos2, color='blue')
+
+count = 0
+
+for i in range(0, 32):
+    count += 2250 - i
+    
+print(count)

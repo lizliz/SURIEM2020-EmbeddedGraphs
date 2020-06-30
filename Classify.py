@@ -4,10 +4,8 @@
 #Dendro
 import scipy.cluster.hierarchy as shc
 import scipy.spatial.distance as ssd
-import pandas as pd
 import numpy as np
 from sklearn.manifold import MDS
-from sklearn.preprocessing import normalize
 import matplotlib.pyplot as plt
 from DataCalculations import average_distance
 from lib.Tools import random_tree_and_pos, get_pos
@@ -17,7 +15,6 @@ import lib.Tools as t
 import lib.tud2nx as tud
 import matplotlib.colors as colors
 import matplotlib.cm as cmx
-import timeit
 import time
 
 #import Visualization as v
@@ -38,6 +35,8 @@ def dendrogram(data, labels=None, thresh=None):
     dend = shc.dendrogram(lkg, labels=labels, color_threshold=thresh)
     if(thresh != None):
         plt.axhline(y=thresh, color='r', linestyle='--')
+        
+    return dend
     
 # converts 2-D distance matrix to 1-D condensed distance matrix
 def condense(two_dimension_distance_matrix):
@@ -80,7 +79,7 @@ def get_data(input_list, frames = 180, p = True, TIME = False):
 # Adapted coloring method from https://stackoverflow.com/questions/8931268/using-colormaps-to-set-color-of-line-in-matplotlib
 # Adapted MDS method from https://jakevdp.github.io/PythonDataScienceHandbook/05.10-manifold-learning.html
 def mds(input_list, target_list, frames=180, colorize = True, scheme = "jet", legend = True, alpha = 0.4, TIME = True):
-    D = get_data(input_list, frames, p = False, TIME = TIME)[1] # Get a distance matrix from the input list
+    D = get_data(input_list, frames, p = True, TIME = TIME)[1] # Get a distance matrix from the input list
     model = MDS(n_components=2, dissimilarity='precomputed', random_state=1)
     coords = model.fit_transform(D) # Outputs an array of the coordinates
     
@@ -145,7 +144,7 @@ if __name__ == '__main__':
     ds = "Letter-low"
     z = tud.read_tud(p,ds,False)
     num = 35
-    frames = 10
+    frames = 1
     scheme = "nipy_spectral"#"jet"#"rainbow"# some good color choices
     alpha = 0.6 #Translucency of the points
     letters = { # There are 150 graphs of each letter in letter-low
