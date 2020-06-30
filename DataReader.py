@@ -5,7 +5,7 @@ import lib.txt2nx as txt
 import lib.graphml2nx as graphml
 import lib.osm2nx as osm
 import lib.json2nx as json
-#import lib.img2nx as img
+import lib.img2nx as img
 import lib.tud2nx as tud
 from lib.Tools import main_component
 
