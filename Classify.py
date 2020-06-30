@@ -37,7 +37,7 @@ def dendrogram(data, labels=None, thresh=None):
     plt.figure(figsize=(10, 7))  
     plt.title("Dendrograms")
     lkg = shc.linkage(data, method='single')
-    dend = shc.dendrogram(lkg, leaf_rotation = 90 , labels=labels, color_threshold=thresh)
+    dend = shc.dendrogram(lkg, leaf_rotation = 90, labels=labels, color_threshold=thresh)
     if(thresh != None):
         plt.axhline(y=thresh, color='r', linestyle='--')
     
@@ -146,53 +146,6 @@ def mds(input_list, target_list, frames=180, D = None, colorize = True, scheme =
         plt.show()
  
     return coords    
-################################## Testing Letters ###########################
-if __name__ == '__main__':
-    inputs = []
-    labels = []
-    target = []
-     
-    p = "data/Letter-low"
-    ds = "Letter-low"
-    z = tud.read_tud(p,ds,False)
-    num = 5
-    frames = 10
-    scheme = "nipy_spectral"#"jet"#"rainbow"# some good color choices
-    alpha = 0.6 #Translucency of the points
-    letters = { # There are 150 graphs of each letter in letter-low
-        	"K":"0",
-            "N":"1",
-            "L":"2",
-            "Z":"3",
-            "T":"4",
-            "X":"5",
-            "F":"6",
-            "V":"7",
-            "Y":"8",
-            "W":"9",
-            "H":"10",
-            "A":"11",
-            "I":"12",
-            "E":"13",
-            "M":"14"
-            }
-#"N","M","Z", "L", "W", "V", "E", and "M" get the best results in my opinion
-    for letter in letters:
-        # Only graph the letters you're interested in
-        if letter not in ["N","M","Z", "L", "W", "V", "E", "M"]:
-            continue
-        for i in range(num):
-            G = z[0][letters[letter]][i]
-            G = t.main_component(G = G, report = False)
-            pos = get_pos(G)
-            inputs.append( (G, pos) )
-            labels.append(letter + str(i))
-            target.append(letter)
-            
-matrix = get_matrix(inputs, frames, True, True)
-flat = condense(matrix)
-points = mds(inputs,target,frames,matrix,True,scheme,True,alpha,True)
-data = draw_dendro(inputs, data = flat, frames=frames, labels=labels, thresh=0.38)
 
 ######################### Testing Subgraphs ####################################
 if __name__ == '__main__':
@@ -207,17 +160,17 @@ if __name__ == '__main__':
     x = dr.read_json(p2,False)[0]
     
     p3 = "data/atlanta.osm"
-    y = dr.read_osm(p,False)[0]
+    y = dr.read_osm(p3,False)[0]
     
     p4 = "data/lancaster.osm"
-    u = dr.read_osm(p,False)[0]
+    u = dr.read_osm(p4,False)[0]
     
     p5 = "data/dc.osm"
-    v = dr.read_osm(p,False)[0]
+    v = dr.read_osm(p5,False)[0]
     
-    num = 5 # Number of selections from the graph
-    nodes = 100 # Number of nodes you want eat random selection to have
-    frames = 45
+    num = 10 # Number of selections from the graph
+    nodes = 300 # Number of nodes you want eat random selection to have
+    frames = 90
     scheme = "jet"#"nipy_spectral"#"rainbow"# some good color choices
     alpha = 0.6 #Translucency of the points
     graphs = {
@@ -242,7 +195,73 @@ if __name__ == '__main__':
 matrix = get_matrix(inputs, frames, True, True)
 flat = condense(matrix)
 points = mds(inputs,target,frames,matrix,True,scheme,True,alpha,True)
-data = draw_dendro(inputs, data = flat, frames=frames, labels=labels, thresh=0.38) 
+data = draw_dendro(inputs, data = flat, frames=frames, labels=labels, thresh=0.03)
+
+################################## Testing Letters ###########################
+if __name__ == '__main__':
+    inputs = []
+    labels = []
+    target = []
+     
+    p = "data/Letter-low"
+    ds = "Letter-low"
+    z = tud.read_tud(p,ds,False)
+    num = 20
+    frames = 10
+    scheme = "rainbow"#"nipy_spectral"#"jet"# some good color choices
+    alpha = 0.6 #Translucency of the points
+    letters = {"K":"0",# There are 150 graphs of each letter in letter-low
+            "N":"1",
+            "L":"2",
+            "Z":"3",
+            "T":"4",
+            "X":"5",
+            "F":"6",
+            "V":"7",
+            "Y":"8",
+            "W":"9",
+            "H":"10",
+            "A":"11",
+            "I":"12",
+            "E":"13",
+            "M":"14"}
+    inliers = {"K":[],
+            "N":[],
+            "L":[],
+            "Z":[],
+            "T":[],
+            "X":[],
+            "F":[],
+            "V":[],
+            "Y":[],
+            "W":[],
+            "H":[],
+            "A":[],
+            "I":[],
+            "E":[],
+            "M":[]}
+    outliers = [] # see test.py
+#"N","M","Z", "L", "W", "V", "E", and "M" get the best results in my opinion
+    for letter in letters:
+        # Only graph the letters you're interested in
+        if letter not in ["K","M","Z", "L", "W", "V", "E", "M"]:
+            continue
+        for i in range(num):
+            G = z[0][letters[letter]][i]
+            G = t.main_component(G = G, report = False)
+            pos = get_pos(G)
+            if letter + str(i) in outliers:
+                continue
+            inputs.append( (G, pos) )
+            labels.append(letter + str(i))
+            target.append(letter)
+            
+matrix = get_matrix(inputs, frames, True, True)
+flat = condense(matrix)
+points = mds(inputs,target,frames,matrix,True,scheme,True,alpha,True)
+data = draw_dendro(inputs, data = flat, frames=frames, labels=labels, thresh=0.38)
+
+ 
 ########################### Comparing Letters####################################
 
     # #Get 5 Z's
