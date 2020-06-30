@@ -43,31 +43,14 @@ import matplotlib.pyplot as plt
 # g = t.random_component(G2, 200, draw=True, pos=pos2)
 # g = t.random_component(G2, 200, draw=True, pos=pos2, color='mediumvioletred')
 # g = t.random_component(G2, 200, draw=True, pos=pos2, color='blue')
-# count = 0
-
-# for i in range(0, 32):
-#     count += 2250 - i
-    
-# print(count)
 
 ################## Code for picking out outlier letters ######################
-
 key = {"0":"K","1":"N","2":"L","3":"Z","4":"T","5":"X","6":"F","7":"V","8":"Y","9":"W","10":"H","11":"A","12":"I","13":"E","14":"M"}
 letters = {"K":"0","N":"1","L":"2","Z":"3","T":"4","X":"5","F":"6","V":"7","Y":"8","W":"9","H":"10","A":"11","I":"12","E":"13","M":"14"}
 p = "data/Letter-low"
 ds = "Letter-low"
 z = dr.read_tud(p,ds,False)
 
-count = 0
-
-for i in range(0, 32):
-    count += 2250 - i
-    
-print(count)
-outliers = [] # Make sure you comment this out if you stop and try to pick up again
-              # otherwise you'll lose your progress
-              
-num = letters["W"] # Change the N to be the letter you want, then run the script
 outliers = [] # Make sure you comment this out if you stop and try to pick up again
               # otherwise you'll lose your progress
               
