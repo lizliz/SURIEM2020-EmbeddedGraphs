@@ -6,17 +6,85 @@ Created on Tue Jun 30 18:26:11 2020
 """
 import networkx as nx
 # Turns ShapeMatchers XML files into a networkx object that retains the x and y values
-# This will NOT produce a directed and/or weighted graph
+# This will NOT produce directed and/or weighted graphs
 
 # The entire file path, including the file name itself and the file extension,
 # must be a string
 
-# By default the function will also draw the graph you give it
-def read_sm(path, draw = True, nodeSize = 0, labels = False, main=True):
-    G = nx.Graph()
+def read_sm(path):
     file = open(path, "r")
     contents = file.read()
-
-p = "C:/Users/Candace/Downloads/hand.txt"
-read_sm(p,True,10,True,True)
+    graphList = contents.split('<DAG class="ShockGraph" ')
+    g = 1
+    graphDict = {}
+    while g < len(graphList):
+        G = nx.Graph()
+        pos = {}
+        graph = graphList[g]
+        nodeCountStart = 11
+        nodeCountEnd = 11 + graph[11:].find('"')
+        nodeCount = int(graph[nodeCountStart:nodeCountEnd])
+        if nodeCount < 1:
+            g+=1
+            continue
+        objectNameStart = 12 + graph.find("<objectName>")
+        objectNameEnd = objectNameStart + graph[objectNameStart:].find("</object")
+        objectName = graph[objectNameStart:objectNameEnd]
+        if objectName not in graphDict:
+            graphDict[objectName] = []
+        
+        #start finding the nodes
+        wayList = graph.split("<node ")
+        w = 1
+        #initialize the node if it doesnt exits!
+        # if theres more than one, make a way
+        while w < len(wayList):
+            way = wayList[w]
+            pointCount = 12 + way.find('<pointCount>')
+            if int(way[pointCount]) < 1:
+                w += 1
+                continue
+            pointList = way.split("<point ")
+            p = 1
+            lastPoint = None
+            while p < len(pointList):
+                point = pointList[p]
+                
+                xStart = 1 + point.find('"')
+                xEnd = point.find("ycoord") - 2
+                x = point[xStart:xEnd]
+                
+                yStart = xEnd + 10
+                yEnd = point.find("radius") - 2
+                y = point[yStart:yEnd]
+                
+                pointName = x + ",-" + y
+                if pointName not in list(G.nodes):
+                    G.add_node(pointName)
+                    x, y = float(x), float(y)*-1
+                    G.nodes[pointName]['x'] = x
+                    G.nodes[pointName]['y'] = y
+                    pos[pointName] = (x,y)
+                    
+                if p > 1:
+                    G.add_edge(lastPoint, pointName)
+                
+                if p != len(pointList)-1:
+                    lastPoint = pointName
+                    
+                p += 1
+                
+                
+            w += 1
+        
+        
+        graphDict[objectName].append( (G,pos) )
+        
+        g += 1
+        keys = list(graphDict.keys())
+        print("Graph Categories: ", keys)
+        return graphDict
+    
+p = "C:/ShapeMatcher6.0.1beta/1-4"
+g = read_sm(p)
 

@@ -244,7 +244,7 @@ def is_merge_tree(M):
 
 #Construct the merge tree given a graph G with function values.
 #Returns a networkx tree with a position dictionary for drawing
-def merge_tree(G, normalize=True):
+def merge_tree(G, normalize=True, center = "median"):
     preprocess(G)
     
     #Get the nodes from the networkx graph
@@ -258,7 +258,7 @@ def merge_tree(G, normalize=True):
     
     reduce(M)
     if(normalize):
-        normalize_f(M)
+        normalize_f(M, center)
     return M
 
 def median_f(M):
@@ -281,10 +281,15 @@ def mean_f(M):
         avg += f_(n)
     return avg / len(nodes)
     
-def normalize_f(M):
-    center = median_f(M)
-    # center = mean_f(M)
-    
+def normalize_f(M, center = "median"):
+    if center == "median":
+        center = median_f(M)
+    elif center == "mean":
+        center = mean_f(M)
+    else:
+        print("Invalid center parameter. Valid choices are 'median' and 'mean'. Using median for normalization.")
+        center = median_f(M)
+        
     nodes = listify_nodes(M)
     for n in nodes:
         n['value'] = n['value'] - center
