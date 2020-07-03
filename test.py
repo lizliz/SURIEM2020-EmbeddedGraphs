@@ -51,10 +51,6 @@ p = "data/Letter-low"
 ds = "Letter-low"
 z = dr.read_tud(p,ds,False)
 
-g = t.random_component(G2, 200, draw=True, pos=pos2)
-g = t.random_component(G2, 200, draw=True, pos=pos2, color='mediumvioletred')
-g = t.random_component(G2, 200, draw=True, pos=pos2, color='blue')
-
 count = 0
 
 for i in range(0, 32):

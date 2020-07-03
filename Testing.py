@@ -8,6 +8,7 @@ import networkx as nx
 import math
 import Visualization as v
 import lib.Tools as t
+import matplotlib.pyplot as plt
 
 T1 = nx.Graph()
 T2 = nx.Graph()
@@ -94,8 +95,31 @@ T1.add_nodes_from(nodes1)
 T1.add_edges_from(edges1)
 #Visualization.input_output(T1, pos1)
 Merge.calc_values_height_reorient(T1, pos1)
+#t.shift_centroid(M1, pos1)
+t.shift_center(pos1)
 M1 = Merge.merge_tree(T1, normalize=False)
 
+#Rotate M1
+# r = t.get_rad(pos1)
+# for i in range(0, 360):
+#     Merge.calc_values_height_reorient(T1, pos1, math.pi* (1/2 + 1/90))
+#     M1 = Merge.merge_tree(T1, normalize=False)
+    
+#     fig = plt.subplots(1,3,figsize=(20,10))
+
+#     ax = plt.subplot(121)
+#     ax.set_xlim(-1*r, r)
+#     ax.set_ylim(-1*r, r)
+#     nx.draw(T1, pos1, ax, node_size=50)
+    
+#     ax = plt.subplot(122)
+#     ax.set_xlim(-1*r, r)
+#     ax.set_ylim(-1*r, r)
+#     nx.draw(M1, pos1, ax, node_size=50)
+    
+#     plt.show()
+#     plt.close()
+    
 
 nodes2 = ["m6", "m7", "m8", "m9", "m10", "s5", "s6", "s7", "s8"]
 edges2 = [("m6","s5"),("m7","s6"),("m8","s6"),("s6","s5"),("m9","s7"),("s5","s7"),("s7","s8"),("m10","s8")]
@@ -118,12 +142,4 @@ T2.add_edges_from(edges2)
 Merge.calc_values_height_reorient(T2, pos2)
 M2 = Merge.merge_tree(T2, normalize=False)
 
-#print(Compare.descendants(M1, "s1"))
 
-#print(Compare.IsEpsSimilar(M1, M2, 1.9999, ["s4", "s8"]))
-#print(Compare.IsEpsSimilar(M1, M2, 1.99, ["s4", "s8"]))
-#print(Compare.IsEpsSimilar(M2, M1, 1, ["s8", "s4"]))
-data = Compare.morozov_distance(M1, M2, valid=True, get_map=True)
-distance = data[0]
-mapping = data[1]
-v.draw_mapping(M1, pos1, M2, pos2, mapping, distance)

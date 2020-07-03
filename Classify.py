@@ -16,6 +16,7 @@ import lib.tud2nx as tud
 import matplotlib.colors as colors
 import matplotlib.cm as cmx
 import time
+from mpl_toolkits.mplot3d import Axes3D
 #import Visualization as v
 #from sympy import Matrix, pprint# old code from confusion matrix days
 
@@ -92,7 +93,7 @@ def get_data(input_list, frames = 180, p = True, TIME = False):
 def mds(input_list, target_list, frames=180, D = None, colorize = True, scheme = "jet", legend = True, alpha = 0.4, TIME = True):
     if type(D) == type(None):
         D = get_data(input_list, frames, p = True, TIME = TIME)[1] # Get a distance matrix from the input list
-    model = MDS(n_components=2, dissimilarity='precomputed', random_state=1)
+    model = MDS(n_components=3, dissimilarity='precomputed', random_state=1)
     coords = model.fit_transform(D) # Outputs an array of the coordinates
     
     if colorize == False:
@@ -115,25 +116,28 @@ def mds(input_list, target_list, frames=180, D = None, colorize = True, scheme =
         for l in label:
             Xs = []# Keep track of the x and y values of elements with this label
             Ys = []
+            Zs = []
             
             for index in label[l]: # Get the coordinates of elements with this label
                 Xs.append(coords[:,0][index]) # Get the x value
-                Ys.append(coords[:,1][index]) # Get the y value    
-            clusters.append((l, np.array(Xs), np.array(Ys))) 
+                Ys.append(coords[:,1][index]) # Get the y value 
+                Zs.append(coords[:,1][index])
+            clusters.append((l, np.array(Xs), np.array(Ys), np.array(Zs))) 
             
         fig = plt.figure() #initialize figure
         ax = fig.add_subplot(111) # 1x1 grid, 1st subplot
         values = range(len(label))
         jet = cm = plt.get_cmap(scheme) # Use matplotlib's jet color scheme by default
-        cNorm  = colors.Normalize(vmin=0, vmax=values[-1])
+        cNorm  = colors.Normalize(vmin=0, vmax=values[-1]) 
         scalarMap = cmx.ScalarMappable(norm=cNorm, cmap=jet)
-        
+        ax = fig.add_subplot(111, projection='3d')       
         for j in range(len(clusters)):
  
             colorVal = scalarMap.to_rgba(values[j])
             colorText = (str(clusters[j][0]))
-            retPoints = plt.scatter(x = clusters[j][1], 
-                                   y = clusters[j][2], 
+            retPoints = ax.scatter(clusters[j][1], 
+                                   clusters[j][2],
+                                   clusters[j][3],
                                    c = [colorVal],# Make 'c' a vector to keep long warning message from printing
                                    label = colorText,
                                    alpha = alpha)
@@ -148,54 +152,54 @@ def mds(input_list, target_list, frames=180, D = None, colorize = True, scheme =
     return coords    
 
 ######################### Testing Subgraphs ####################################
-if __name__ == '__main__':
-    inputs = []
-    labels = []
-    target = []
+# if __name__ == '__main__':
+#     inputs = []
+#     labels = []
+#     target = []
      
-    p1 = "data/SanJoaquinCounty.json"
-    w = dr.read_json(p1,False)[0]
+#     p1 = "data/SanJoaquinCounty.json"
+#     w = dr.read_json(p1,False)[0]
     
-    p2 = "data/eureka.json"
-    x = dr.read_json(p2,False)[0]
+#     p2 = "data/eureka.json"
+#     x = dr.read_json(p2,False)[0]
     
-    p3 = "data/atlanta.osm"
-    y = dr.read_osm(p3,False)[0]
+#     p3 = "data/atlanta.osm"
+#     y = dr.read_osm(p3,False)[0]
     
-    p4 = "data/lancaster.osm"
-    u = dr.read_osm(p4,False)[0]
+#     p4 = "data/lancaster.osm"
+#     u = dr.read_osm(p4,False)[0]
     
-    p5 = "data/dc.osm"
-    v = dr.read_osm(p5,False)[0]
+#     p5 = "data/dc.osm"
+#     v = dr.read_osm(p5,False)[0]
     
-    num = 10 # Number of selections from the graph
-    nodes = 300 # Number of nodes you want eat random selection to have
-    frames = 90
-    scheme = "jet"#"nipy_spectral"#"rainbow"# some good color choices
-    alpha = 0.6 #Translucency of the points
-    graphs = {
-        "SanJoaquin":(w,[]),# Tuple with full graph object and list of all the randomly picked subgraphs
-        "Eureka":(x,[]),
-        "Atlanta":(y,[]),
-        "Lancaster":(u,[]),
-        "DC":(v,[])
-              }
+#     num = 10 # Number of selections from the graph
+#     nodes = 300 # Number of nodes you want eat random selection to have
+#     frames = 90
+#     scheme = "jet"#"nipy_spectral"#"rainbow"# some good color choices
+#     alpha = 0.6 #Translucency of the points
+#     graphs = {
+#         "SanJoaquin":(w,[]),# Tuple with full graph object and list of all the randomly picked subgraphs
+#         "Eureka":(x,[]),
+#         "Atlanta":(y,[]),
+#         "Lancaster":(u,[]),
+#         "DC":(v,[])
+#               }
 
-    for graph in graphs:
-        if graph not in ["Eureka", "SanJoaquin"]: # Graphs you want
-            continue
-        for i in range(num):
-            G = t.random_component(graphs[graph][0], nodes) #Get random subgraph
-            pos = get_pos(G)
-            graphs[graph][1].append(G)
-            inputs.append( (G, pos) )
-            labels.append(graph + str(i))
-            target.append(graph)
+#     for graph in graphs:
+#         if graph not in ["Eureka", "SanJoaquin"]: # Graphs you want
+#             continue
+#         for i in range(num):
+#             G = t.random_component(graphs[graph][0], nodes) #Get random subgraph
+#             pos = get_pos(G)
+#             graphs[graph][1].append(G)
+#             inputs.append( (G, pos) )
+#             labels.append(graph + str(i))
+#             target.append(graph)
             
-matrix = get_matrix(inputs, frames, True, True)
-flat = condense(matrix)
-points = mds(inputs,target,frames,matrix,True,scheme,True,alpha,True)
-data = draw_dendro(inputs, data = flat, frames=frames, labels=labels, thresh=0.03)
+# matrix = get_matrix(inputs, frames, True, True)
+# flat = condense(matrix)
+# points = mds(inputs,target,frames,matrix,True,scheme,True,alpha,True)
+# data = draw_dendro(inputs, data = flat, frames=frames, labels=labels, thresh=0.03)
 
 ################################## Testing Letters ###########################
 if __name__ == '__main__':
@@ -207,7 +211,7 @@ if __name__ == '__main__':
     ds = "Letter-low"
     z = tud.read_tud(p,ds,False)
 
-    num = 20
+    num = 50
     frames = 10
     scheme = "rainbow"#"nipy_spectral"#"jet"# some good color choices
     alpha = 0.6 #Translucency of the points
@@ -233,15 +237,21 @@ if __name__ == '__main__':
         # Only graph the letters you're interested in
         #if letter not in ["K","M","Z", "L", "W", "V", "E", "M"]:
         #   continue
+        j = 0    
         for i in range(num):
-            if letter + str(i) in outliers:
-                continue
-            G = z[0][letters[letter]][i]
+            while letter + str(j) in outliers:
+                j += 1 
+            if j > num-1:
+                print("Not enough", letter + "s")
+                break
+            G = z[0][letters[letter]][j]
             G = t.main_component(G = G, report = False)
             pos = get_pos(G)
             inputs.append( (G, pos) )
-            labels.append(letter + str(i))
+            labels.append(letter + str(j))
             target.append(letter)
+            j += 1
+            
             
 matrix = get_matrix(inputs, frames, True, True)
 flat = condense(matrix)

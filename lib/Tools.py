@@ -178,6 +178,73 @@ def get_bounds_and_radius(pos):
     
     radius = max(xRange, yRange) * 1.15
     return [radius, bounds]
+
+def get_centroid(G, pos):
+    #This is going to determine the final weightings to divide by
+    xlength = 0
+    ylength = 0
+    
+    nodes = list(G)
+    
+    
+    xTotal = 0
+    yTotal = 0
+    for n in nodes:
+        neighbors = list(G[n])
+        
+        x1 = pos[n][0]
+        y1 = pos[n][1]
+        for nei in neighbors:
+            x2 = pos[nei][0]
+            y2 = pos[nei][1]
+            
+            dx = abs(x2-x1)
+            dy = abs(y2-y1)
+            
+            xTotal += dx*(x1+x2)/2
+            yTotal += dy*(y1+y2)/2
+            
+            xlength += dx
+            ylength += dy
+        
+        xAvg = xTotal / (xlength)
+        yAvg = yTotal / (ylength)
+        
+        return [xAvg, yAvg]
+    
+def shift_centroid(G, pos):
+    centr = get_centroid(G, pos)
+    
+    for p in pos:
+        pos[p] = (pos[p][0] - centr[0], pos[p][1] - centr[1])
+        
+    return pos
+
+def get_center(pos):
+    x = [pos[p][0] for p in pos]
+    y = [pos[p][1] for p in pos]
+    
+    xAvg = (max(x) + min(x)) / 2
+    yAvg = (max(y) + min(y)) / 2
+    
+    return [xAvg, yAvg]
+
+def shift_center(pos):
+    centr = get_center(pos)
+    
+    for p in pos:
+        pos[p] = (pos[p][0] - centr[0], pos[p][1] - centr[1])
+        
+    return pos
+
+def get_rad(pos):
+    x = [pos[p][0] for p in pos]
+    y = [pos[p][1] for p in pos]
+    
+    r = max(abs(min(x)), abs(max(x)), abs(min(y)), abs(max(y))) * 1.1
+    
+    return r
+
 ###
 #END OF GEOMETRY
 ###
