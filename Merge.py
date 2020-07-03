@@ -155,6 +155,7 @@ def is_merge_tree(M):
     
     return acyclic and connected and red
 
+
 def median_f(M):
     nodes = listify_nodes(M)
     nodes.sort(key=f_)
@@ -175,10 +176,15 @@ def mean_f(M):
         avg += f_(n)
     return avg / len(nodes)
     
-def normalize_f(M):
-    center = median_f(M)
-    # center = mean_f(M)
-    
+def normalize_f(M, center = "median"):
+    if center == "median":
+        center = median_f(M)
+    elif center == "mean":
+        center = mean_f(M)
+    else:
+        print("Invalid center parameter. Valid choices are 'median' and 'mean'. Using median for normalization.")
+        center = median_f(M)
+        
     nodes = listify_nodes(M)
     for n in nodes:
         n['value'] = n['value'] - center

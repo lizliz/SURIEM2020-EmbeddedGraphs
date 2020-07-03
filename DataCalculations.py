@@ -60,7 +60,7 @@ def distance_data_thread(G1, pos1, G2, pos2, data, frames=360, rotate_both=True,
     print("Total time: ", time.time()-start)
     return data
         
-def average_distance(G1, pos1, G2, pos2, frames=360, rotate_both=True, accuracy=0.005):
+def average_distance(G1, pos1, G2, pos2, frames=360, rotate_both=True, accuracy=0.005, average = "median"):
     data = distance_data(G1, pos1, G2, pos2, frames=frames, rotate_both=rotate_both, accuracy=accuracy)
     
     heights = [x[1] for x in data]
@@ -71,17 +71,22 @@ def average_distance(G1, pos1, G2, pos2, frames=360, rotate_both=True, accuracy=
     n2 = heights[math.floor((num-1)/2)]
     med = (n1+n2)/2
     
-    return med
-    # return max(heights)
-    # return sum(heights)/frames
+    if average == "median":
+        return med
+    elif average == "mean":
+        return sum(heights)/frames
+    elif average == "max":
+        return max(heights)
+    else:
+        print("Invalid average parameter. Valid choices are 'median', 'mean', and 'max'. Returning median.")
+        return med
 
 # data: data returned by the distance_data() funtion
-# samples: size of the sampling distribution you want. 3,000 is usually pretty good
+# samples: size of the sampling distribution you want. a few thousand is usually pretty good
 # alpha: significance level of the confidence interval, complement of confidence level
 #interpretation: whether or not you want to print a generic interpretation of the confidence interval
 def bootstrap(data, samples = 3000, alpha = 0.05, interpretation = False):
-    #breakpoint()
-    n = len(data) # size of sample
+    n = len(data) # size of original sample
     originalSample = [data[i][1] for i in range(n)] # list containing only the data points
     point_estimate = statistics.mean(originalSample) # get mean of our sample as the estimate we center our interval around
     bootstrap_distribution = []
@@ -102,10 +107,10 @@ def bootstrap(data, samples = 3000, alpha = 0.05, interpretation = False):
     # Create a dictionary so you can access the info you want or print it out nicely
     report = {"Estimated Mean":point_estimate,
               "Margin of Error": moe,
+              "Confidence Interval": [point_estimate-moe, point_estimate+moe],
               "Standard Deviation": statistics.stdev(originalSample),# Standard Deviation of ORIGINAL SAMPLE
               "Standard Error": standard_error,# Standard deviation of the SAMPLING DISTRIBUTION
-              "Confidence Level": confidence_level,
-              "Confidence Interval": [point_estimate-moe, point_estimate+moe]} 
+              "Confidence Level": confidence_level}
     
     # Prints a generic interpretation of confidence intervals
     if interpretation == True:
