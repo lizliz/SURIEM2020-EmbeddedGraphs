@@ -51,6 +51,12 @@ p = "data/Letter-low"
 ds = "Letter-low"
 z = dr.read_tud(p,ds,False)
 
+count = 0
+
+for i in range(0, 32):
+    count += 2250 - i
+    
+print(count)
 outliers = [] # Make sure you comment this out if you stop and try to pick up again
               # otherwise you'll lose your progress
               

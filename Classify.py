@@ -16,6 +16,7 @@ import lib.tud2nx as tud
 import matplotlib.colors as colors
 import matplotlib.cm as cmx
 import time
+from mpl_toolkits.mplot3d import Axes3D
 #import Visualization as v
 #from sympy import Matrix, pprint# old code from confusion matrix days
 
@@ -92,7 +93,7 @@ def get_data(input_list, frames = 180, p = True, TIME = False, average = "median
 def mds(input_list, target_list, frames=180, D = None, colorize = True, scheme = "jet", legend = True, alpha = 0.4, TIME = True):
     if type(D) == type(None):
         D = get_data(input_list, frames, p = True, TIME = TIME)[1] # Get a distance matrix from the input list
-    model = MDS(n_components=2, dissimilarity='precomputed', random_state=1)
+    model = MDS(n_components=3, dissimilarity='precomputed', random_state=1)
     coords = model.fit_transform(D) # Outputs an array of the coordinates
     
     if colorize == False:
@@ -115,25 +116,28 @@ def mds(input_list, target_list, frames=180, D = None, colorize = True, scheme =
         for l in label:
             Xs = []# Keep track of the x and y values of elements with this label
             Ys = []
+            Zs = []
             
             for index in label[l]: # Get the coordinates of elements with this label
                 Xs.append(coords[:,0][index]) # Get the x value
-                Ys.append(coords[:,1][index]) # Get the y value    
-            clusters.append((l, np.array(Xs), np.array(Ys))) 
+                Ys.append(coords[:,1][index]) # Get the y value 
+                Zs.append(coords[:,1][index])
+            clusters.append((l, np.array(Xs), np.array(Ys), np.array(Zs))) 
             
         fig = plt.figure() #initialize figure
         ax = fig.add_subplot(111) # 1x1 grid, 1st subplot
         values = range(len(label))
         jet = cm = plt.get_cmap(scheme) # Use matplotlib's jet color scheme by default
-        cNorm  = colors.Normalize(vmin=0, vmax=values[-1])
+        cNorm  = colors.Normalize(vmin=0, vmax=values[-1]) 
         scalarMap = cmx.ScalarMappable(norm=cNorm, cmap=jet)
-        
+        ax = fig.add_subplot(111, projection='3d')       
         for j in range(len(clusters)):
  
             colorVal = scalarMap.to_rgba(values[j])
             colorText = (str(clusters[j][0]))
-            retPoints = plt.scatter(x = clusters[j][1], 
-                                   y = clusters[j][2], 
+            retPoints = ax.scatter(clusters[j][1], 
+                                   clusters[j][2],
+                                   clusters[j][3],
                                    c = [colorVal],# Make 'c' a vector to keep long warning message from printing
                                    label = colorText,
                                    alpha = alpha)
@@ -146,7 +150,6 @@ def mds(input_list, target_list, frames=180, D = None, colorize = True, scheme =
         plt.show()
  
     return coords    
-
 
 ################################## Testing Letters ###########################
 if __name__ == '__main__':

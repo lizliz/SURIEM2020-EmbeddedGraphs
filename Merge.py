@@ -103,93 +103,6 @@ def interleaving_distances(M):
     
     return (np.matrix(distances), n)   
 
-#Adds a node to the merge tree
-#n_=node name, G=graph, M=merge tree
-def add_node(n_, G, M):
-    #The actual node
-    n = G.nodes[n_] 
-    f = f_(n) #The node's value
-    
-    children = list(G[n_]) #Note: This contains the parent as well.
-    cr=n_ #tentative child rep
-    
-    c_count = 0 #Disconnected child count
-    to_add = []
-    for i in range(0, len(children)):
-        relative = G.nodes[children[i]]
-        #Relative is a child
-        if(f_(relative) < f):
-            #Does this work? idk !!!!!!
-            rel_cr = find_c(children[i], G)
-            
-            #Not already connected to child
-            if(rel_cr != cr):
-                #Add to the list of children to merge
-                to_add.append(rel_cr)
-                
-                #New representative child!
-                if(f_(G.nodes[rel_cr]) < f_(G.nodes[cr])):
-                    cr=rel_cr        
-    
-    p = n_
-    
-    c_count=len(to_add)
-    #Leaf                   
-    if(c_count==0):
-        M.add_node(n_,value=f) #Add new leaf to merge tree
-        M.nodes[n_]['p']=p # Update the parent (THIS IS KIND OF REDUNDANT)
-    #Merge
-    elif(c_count>1):
-        edges = []
-        
-        #Check if there's already a node on this level that is representative of
-        #one of the components to add
-        first_on_lvl = True
-        for i in range(0, len(to_add)):
-            rep_ = find_p(to_add[i], G) #The "representative parent of the child" before addition
-            if(f_(G.nodes[rep_]) == f): #Found node on level
-                first_on_lvl = False
-                p=rep_ #There won't be a new merged node - we found one to connect to
-                        
-        #Update findings
-        G.nodes[p]['c']=cr #Update child rep of the node we connected to
-
-        #Only create a new node if it'd be the first one on the level
-        if(first_on_lvl):
-            M.add_node(n_,value=f, p_rep=n_) #Add new vertex to merge tree
-        #The node is representative of multiple from the original graph
-            
-        #print()
-        #print("n: " + str(n_) + "  F val: " + str(f))
-        
-        #Calculate the edges
-        for i in range(0, len(to_add)):
-            #print("To add: " + str(to_add) + "  F val: " + str(f_(G.nodes[to_add[i]])))
-            
-            rep_ = find_p(to_add[i], G) #The "representative parent of the child" before addition
-            if(rep_ != p):
-                edges.append( (p, rep_) ) #Add the edge
-             
-            #Set the most direct parent of the connected representative
-            M.nodes[rep_]['p'] = p
-        
-        #Update stuff
-        for i in range(0, len(to_add)):
-            G.nodes[to_add[i]]['p']=p
-            G.nodes[to_add[i]]['c']=cr #Update the rep child of the node from the list
-        
-        #Add the edges
-        M.add_edges_from(edges)
-        M.nodes[p]['p'] = p #A node is its own parent until otherwise
-        
-    #Update findings
-    G.nodes[p]['c']=cr #Update child rep of the node we connected to
-    G.nodes[p]['p']=p
-    n['c']=cr #Update the child rep of the added node and parent node. This must always be done
-    n['p']=p #Update the parent rep of the newly added node
-    
-    return p
-
 def find_root(T):
      nodes = listify_nodes(T)
      
@@ -242,24 +155,6 @@ def is_merge_tree(M):
     
     return acyclic and connected and red
 
-#Construct the merge tree given a graph G with function values.
-#Returns a networkx tree with a position dictionary for drawing
-def merge_tree(G, normalize=True, center = "median"):
-    preprocess(G)
-    
-    #Get the nodes from the networkx graph
-    nodes = listify_nodes(G)
-    nodes.sort(key=f_)
-    
-    #The legendary Merge Tree
-    M = nx.Graph()
-    for i in range(0, len(nodes)):
-        add_node(nodes[i]['name'], G, M)
-    
-    reduce(M)
-    if(normalize):
-        normalize_f(M, center)
-    return M
 
 def median_f(M):
     nodes = listify_nodes(M)
@@ -371,6 +266,256 @@ def preprocess(G):
         # if(i%100 == 0):
         #     print(i)
         
-        i+=1
+        i+=1    
+
+#Node on merge tree level connected to roots
+def find_on_level(M, roots, f):
+    for r in roots:
+        p = find_p(r, M)
+        
+        if(f_(M.nodes[p]) == f):
+            return p
+    return None
+
+#Adds a node to the merge tree
+#n_=node name, G=graph, M=merge tree
+def add_node(n_, G, M):
+    #The actual node
+    n = G.nodes[n_] 
+    f = f_(n) #The node's value
+    
+    #Get all the true children
+    neighbors = G[n_]
+    true_children = []
+    for nei in neighbors:
+        if(f_(G.nodes[nei]) < f): #Is true child
+            true_children.append(nei)
+    
+    #No true children => leaf
+    if(len(true_children) == 0):
+        M.add_node(n_) #Create a copy of n in M
+        n['c'] = n_ #Own child
+        M.nodes[n_]['p'] = n_ #Own parent
+        M.nodes[n_]['value'] = f #Function value
+        return
+    
+    #Get the roots of the true children
+    roots = []
+    min_root = find_c(true_children[0], G)
+    for c in true_children:
+        r = find_c(c, G)
+        if(r not in roots): #Add the root if it is new
+            roots.append(r)
+            if(f_(G.nodes[r]) < f_(G.nodes[min_root])): #Update the min root
+                min_root = r
+
+    
+    #1 child => just update child lol
+    if(len(roots) == 1):
+        n['c'] = roots[0]
+        return
+        
+    #2 or MORE children => merge
+    if(len(roots) >= 2):
+        #Check if there is already a connected rep. on the level
+        rep = find_on_level(M, roots, f)
+        if(rep != None):
+            #Add all the edges
+            for r in roots:
+                p = find_p(r, M) #What we connect to
+                if(p != rep): #Add Edge
+                    M.add_edge(p, rep)
+                M.nodes[p]['p'] = rep #Update the parent rep.
+        else: #New node
+            M.add_node(n_) #Create a copy of n in M
+            M.nodes[n_]['p'] = n_ #Own parent
+            M.nodes[n_]['value'] = f #Function value
+            
+            for r in roots:
+                p = find_p(r, M) #What we connect to
+                if(p != n_): #Add Edge
+                    M.add_edge(p, n_)
+                M.nodes[p]['p'] = n_ #Update the parent rep.
+        
+        #set c as the child of n and all other roots
+        n['c'] = min_root
+        for r in roots:
+            G.nodes[r]['c'] = min_root
+        
+ 
+#Construct the merge tree given a graph G with function values.
+#Returns a networkx tree with a position dictionary for drawing
+def merge_tree(G, normalize=True):
+    preprocess(G)
+    
+    #Get the nodes from the networkx graph
+    nodes = listify_nodes(G)
+    nodes.sort(key=f_)
+    
+    #The legendary Merge Tree
+    M = nx.Graph()
+    for i in range(0, len(nodes)):
+        add_node(nodes[i]['name'], G, M)
+    
+    reduce(M)
+    if(normalize):
+        normalize_f(M)
+    return M            
+    
+# def get_value_set(G):
+#     n = list(G)
+#     f_vals = [f_(G.nodes[n[i]]) for i in range(0, len(n))]
+#     f_vals.sort() #Sort the list
+#     f_vals = np.unique(f_vals) #Remove duplicates!
+    
+#     return f_vals
+
+# #Optimized Gamma method
+# #Returns all the relevant gamma end indices
+# #These apply to a sorted nodelist of G
+# def calc_gamma_indices(G, nodes):
+#     end_indices = []
+#     val = f_(nodes[0])
+#     for i in range(0, len(nodes)):
+#         #Set the current node
+#         n = nodes[i]
+        
+#         #Check if a new value has been reached
+#         if(val != f_(n)):
+#             val = f_(n) #Update val
+#             end_indices.append(i) #Append the found end-index
+            
+#     #Account for the trivial last end-index
+#     end_indices.append(len(nodes))
+            
+#     return end_indices   
+
+# #For drawing purposes.
+# def position_rep(S, nodes, a):
+#     for n in nodes:
+#         if(f_(S.nodes[n]) == a):
+#             return n
+        
+#     #Should always return..
+    
+       
+# #Returns the set of mu corresponding to the proper sublevel set
+# def get_gamma(G, labels, index, a):
+#     sublevel_set = G.subgraph(labels[:index])
+    
+#     components = list(nx.connected_components(sublevel_set))
+#     gamma = [] #The second list just contains the pos rep
+#     pos = {}
+#     for c in components:
+#         muu = mu(sublevel_set, c)
+#         gamma.append(muu)
+#         pos[str(muu)] = position_rep(sublevel_set, c, a)
+    
+    
+#     return (gamma, pos)
+
+# #Weak minima
+# def is_minima(G, n):
+#     f = f_(G.nodes[n])
+    
+#     neighbors = G[n]
+#     for nei in neighbors:
+#         if(f_(G.nodes[nei]) < f): #Found a lower neighbor
+#             return False
+        
+#     return True
+
+# #Returns the minima in connected component
+# #S is the sublevel set and nodes is the list of nodes in the connected component
+# def mu(S, nodes):
+#     minima = []
+#     for n in nodes:
+#         if(is_minima(S, n)):
+#             minima.append(n)
+            
+#     return minima
+  
+# #Returns True if arr2 is contained in arr1
+# def is_subset(arr1, arr2):
+#     d = np.setdiff1d(arr2, arr1)
+#     print(d)
+#     return (len(d) == 0)
+
+# #Returns the difference of a set of sets
+# def set_diff(arr1, arr2):
+#     diff = []
+#     for x in arr1:
+#         for y in arr2:
+#             d = np.setdiff1d(x, y)
+#             if(len(d) != 0):
+#                 diff.append(d)
+                
+#     return diff
+
+# #Adds the nodes from the changes at 'a'
+# def add_nodes(G, end_indices, f, i, labels, M, pos):
+#     a = f[i]
+    
+#     gNew = get_gamma(G, labels, end_indices[i], a)
+#     newPos = gNew[1]
+#     print(newPos)
+#     print(pos)
+#     gammaNew = np.array(gNew[0])
+    
+#     gammaOld = []
+#     if(i > 0):
+#         gammaOld = np.array(get_gamma(G, labels, end_indices[i-1], a)[0])
+        
+#     new_nodes = set_diff(gammaNew, gammaOld)
+#     print(new_nodes)
+#     subsets = set_diff(gammaOld, gammaNew)
+    
+#     new_names = [str(n) for n in new_nodes]
+#     #Add the new vertices
+#     M.add_nodes_from(new_names)
+    
+#     #Set the function values
+#     for n in new_names:
+#         M.nodes[n]['value'] = a
+    
+#     #Add the edges and positions
+#     for i in range(0, len(new_nodes)):
+#         v1 = new_nodes[i]
+#         pos_rep=newPos[str(v1)]
+#         print(pos_rep)
+#         pos[str(v1)] = pos[pos_rep] 
+        
+#         j = 0
+#         while(j < len(subsets)):
+#             v2 = subsets[j]
+            
+#             #Check for adjacency
+#             if(is_subset(v1, v2)):
+#                 M.add_edge( (str(v1), str(v2)))
+#                 subsets.remove(v2)
+#             else:
+#                 j+=1            
+
+# def merge_tree_(G, pos, normalize=True):
+#     #Pre-process the tree: Collapse all adjacent nodes on the same level
+#     preprocess(G)
+    
+#     #Get a sorted set of all function values
+#     f_vals = get_value_set(G)
+    
+#     #Calculate the relevant gamma indices
+#     nodes = listify_nodes(G)
+#     nodes.sort(key=f_)
+#     end_indices = calc_gamma_indices(G, nodes)
+    
+#     #Get the node names
+#     names = [n['name'] for n in nodes]
+    
+#     #Go through f_vals to add all the nodes and edges
+#     M = nx.Graph()
+#     for i in range(0, len(f_vals)):
+#         add_nodes(G, end_indices, f_vals, i, names, M, pos)
+        
+#     return M
     
     
