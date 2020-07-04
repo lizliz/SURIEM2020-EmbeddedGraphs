@@ -7,6 +7,8 @@ import lib.osm2nx as osm
 import lib.json2nx as json
 #import lib.img2nx as img
 import lib.tud2nx as tud
+import lib.sm2nx as sm
+import lib.ShapeMatcher as ppm
 from lib.Tools import main_component
 
 
@@ -56,4 +58,14 @@ def read_img(path, draw = False, node_size = 0, labels = False, main=True):
 # large groups of graphs from the TUD data set
 def read_tud(path, name, reminder = True):
     g = tud.read_tud(path, name, reminder = reminder)
+    return 
+
+# large groups of graphs from the ShapeMaker databases, convert from XML to nx
+def read_sm(path):
+    g = sm.read_sm(path)
+    return g
+
+# large groups of graphs from the ShapeMaker databases, convert directly from binary ppm to nx
+def read_ppm(DBname, ppmDir, ppmList = None, SMD = "images/ShapeMatcher"):
+    g = ppm.read_ppm(DBname, ppmDir, ppmList, SMD)
     return g
