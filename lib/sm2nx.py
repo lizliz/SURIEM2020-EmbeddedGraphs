@@ -48,6 +48,7 @@ def read_sm(path):
                 continue
             pointList = way.split("<point ")
             p = 1
+            firstPoint = None
             lastPoint = None
             while p < len(pointList):
                 point = pointList[p]
@@ -62,21 +63,24 @@ def read_sm(path):
                 
                 pointName = x + ",-" + y
                 if pointName not in list(G.nodes):
-                    G.add_node(pointName)
-                    x, y = float(x), float(y)*-1
-                    G.nodes[pointName]['x'] = x
-                    G.nodes[pointName]['y'] = y
-                    pos[pointName] = (x,y)
+                    if p == 1 or p == (len(pointList)-1):
+                        G.add_node(pointName)
+                        x, y = float(x), float(y)*-1
+                        G.nodes[pointName]['x'] = x
+                        G.nodes[pointName]['y'] = y
+                        pos[pointName] = (x,y)
                     
-                if p > 1:
-                    G.add_edge(lastPoint, pointName)
-                
-                if p != len(pointList)-1:
-                    lastPoint = pointName
+                if p ==1:
+                    temp = pointName
+                    firstPoint = temp
+                #if p > 1:
+                    #G.add_edge(lastPoint, pointName)
+                #if p != len(pointList)-1:
+                    #lastPoint = pointName
                     
                 p += 1
                 
-                
+            G.add_edge(firstPoint, pointName)
             w += 1
         
         
@@ -84,7 +88,7 @@ def read_sm(path):
         
         g += 1
     keys = list(graphDict.keys())
-    print("Graph Categories: ", keys)
+    print("\nGraph Categories: ", keys)
     print("I am returning a dictionary of graph categories.")
     print("Each value in the dictionary is a LIST of (Graph, Position Dictionary) tuples.")
     return graphDict
