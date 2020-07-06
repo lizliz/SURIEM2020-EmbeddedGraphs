@@ -279,27 +279,30 @@ def find_on_level(M, roots, f):
 
 #Adds a node to the merge tree
 #n_=node name, G=graph, M=merge tree
+#
+#NOTE: In our paper, we describe "superior" and "inferior" pointers.
+#      Here, those correspond to node attributes ['p'] and ['c'], respectively.
 def add_node(n_, G, M):
     #The actual node
     n = G.nodes[n_] 
     f = f_(n) #The node's value
     
-    #Get all the true children
+    #Get all the children
     neighbors = G[n_]
     true_children = []
     for nei in neighbors:
-        if(f_(G.nodes[nei]) < f): #Is true child
+        if(f_(G.nodes[nei]) < f): #Is child
             true_children.append(nei)
     
-    #No true children => leaf
+    #No children => leaf
     if(len(true_children) == 0):
         M.add_node(n_) #Create a copy of n in M
-        n['c'] = n_ #Own child
-        M.nodes[n_]['p'] = n_ #Own parent
+        n['c'] = n_ #Own inferior
+        M.nodes[n_]['p'] = n_ #Own superior
         M.nodes[n_]['value'] = f #Function value
         return
     
-    #Get the roots of the true children
+    #Get the roots of the children
     roots = []
     min_root = find_c(true_children[0], G)
     for c in true_children:
@@ -310,7 +313,7 @@ def add_node(n_, G, M):
                 min_root = r
 
     
-    #1 child => just update child lol
+    #1 child => just update inferior
     if(len(roots) == 1):
         n['c'] = roots[0]
         return
@@ -325,7 +328,7 @@ def add_node(n_, G, M):
                 p = find_p(r, M) #What we connect to
                 if(p != rep): #Add Edge
                     M.add_edge(p, rep)
-                M.nodes[p]['p'] = rep #Update the parent rep.
+                M.nodes[p]['p'] = rep #Update the superior
         else: #New node
             M.add_node(n_) #Create a copy of n in M
             M.nodes[n_]['p'] = n_ #Own parent
@@ -335,9 +338,9 @@ def add_node(n_, G, M):
                 p = find_p(r, M) #What we connect to
                 if(p != n_): #Add Edge
                     M.add_edge(p, n_)
-                M.nodes[p]['p'] = n_ #Update the parent rep.
+                M.nodes[p]['p'] = n_ #Update the superior
         
-        #set c as the child of n and all other roots
+        #set c as the inferior of n and all other roots
         n['c'] = min_root
         for r in roots:
             G.nodes[r]['c'] = min_root

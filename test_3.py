@@ -7,6 +7,7 @@ Created on Thu Jul  2 20:18:29 2020
 import networkx as nx
 import Merge as m
 import DataReader as dr
+import lib.Tools as t
 
 
 nodes = [1,2,3,4,5,6,7]
@@ -26,6 +27,8 @@ pos = {1: (1,0),
 m.calc_values_height_reorient(G, pos)
 M = m.merge_tree(G)
 
+# vert = "./data/athens_small_vertices_osm.txt"
+# edge = "./data/athens_small_edges_osm.txt"
 vert = "./data/chicago_vertices_osm.txt"
 edge = "./data/chicago_edges_osm.txt"
 
@@ -33,5 +36,4 @@ graph = dr.read_txt(edge, vert)
 G2 = graph[0] #nx graph
 pos2 = graph[1] #position dic
 
-m.calc_values_height_reorient(G2, pos2)
-M2 = m.merge_tree(G2)
+t.random_component(G2, 1000, draw=True, pos=pos2, color="g")
