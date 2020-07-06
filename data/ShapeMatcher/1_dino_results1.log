@@ -1,0 +1,21 @@
+
+Current parameter values:
+
+match = 1, view = , nnview = , multiDBMatch = 1, compare = 1, matrix = matrix.m, train = matrix.m, toXML = 1, splitdb = 50, incRandomDBSplit = 3, getNeig = 180, verbose = 0, tsvSimWeight = 0.3, simMassWeight = 0.7, relMassWeight = 0.5, matchAlgorithm = 0, nodeDistFunc = 3, sibRelPen = 0.2, presAncRel = 1, useNewVWF = 1, useMOOVC = 1, matDB = 0, modelSimWeight = 0.5, idxRange = 0.4, kBest = 101, idxTau = 0.3, matchTau = 0.1, stats = 0, asyncCompu = 0, showResults = 1, saveResults = 1, objName = , iterations = 1, maxDags = -1, imgStep = 1, from = 0, to = -1, maxOcclRate = 0, saveSubsamplingInfo = 0, splitByObject = 1, bumpSize = 0, notchSize = 0, outDir = ./NoisyImgs/, xpos = 0, ypos = 0, useDirNameAsObjName = 1, shaperep = 1, timeout = 800, split3s = 0, minslope = 0.05, minerror = 2, maxydiff = 0.1, maxaccelchg = 0.5, smoothIter = 0, maxCumBAR = 0.75, maxRadRatio = 0.9, specializeBones = 0, ignoreLigature = 0, subtractLigatureAtCrossings = 1, subtractLigatureAtJunctions = 0, showDependencies = 0, showGSG = 0, skelcode = 3, minLinearError = 2, minBezierError = 8, maxLineSegments = 8, maxBezierSegments = 4, fluxStep = 1, fluxTau = 2.5, fluxResolution = 16, afmmTau1 = 0, afmmTau2 = 20, bndryWeight = 500, strucWeight = 500, doExtSimp = 1, doIntSimp = 0, doCompleteSimp = 0
+
+Choosen graph: DINO0007.ppm
+DAG ID: 1
+
+INDEXING RESULTS
+
+Rank    DAG ID         Object Name              View #    Similarity
+
+0       1              DINO                     7         1         
+1       0              dino                     1         0.306653  
+
+MATCHING RESULTS
+
+Rank    DAG ID         Object Name              View #    Similarity
+
+0       1              DINO                     7         0.986918  
+1       0              dino                     1         0.192142  

@@ -5,6 +5,7 @@ Created on Tue Jun 30 18:26:11 2020
 @author: Candace Todd
 """
 import networkx as nx
+import pdb
 # Turns ShapeMatchers XML files into a networkx object that retains the x and y values
 # This will NOT produce directed and/or weighted graphs
 
@@ -15,6 +16,7 @@ def read_sm(path):
     file = open(path, "r")
     contents = file.read()
     graphList = contents.split('<DAG class="ShockGraph" ')
+    #breakpoint()
     g = 1
     graphDict = {}
     while g < len(graphList):
@@ -81,10 +83,12 @@ def read_sm(path):
         graphDict[objectName].append( (G,pos) )
         
         g += 1
-        keys = list(graphDict.keys())
-        print("Graph Categories: ", keys)
-        return graphDict
+    keys = list(graphDict.keys())
+    print("Graph Categories: ", keys)
+    print("I am returning a dictionary of graph categories.")
+    print("Each value in the dictionary is a LIST of (Graph, Position Dictionary) tuples.")
+    return graphDict
     
-p = "C:/ShapeMatcher6.0.1beta/1-4"
-g = read_sm(p)
+#p = "C:/ShapeMatcher6.0.1beta/1-4"
+#g = read_sm(p)
 
