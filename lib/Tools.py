@@ -339,9 +339,9 @@ def random_component(G, n, draw=False, pos=None, color='g'):
     g = G.subgraph(included_nodes).copy()
     
     if(draw):
-        fig = plt.subplots(1,1,figsize=(15,10))
+        fig = plt.subplots(1,1,figsize=(20,10))
         ax = plt.subplot(111, frameon=False)
-        #ax.title.set_text("Subgraph with " + str(n) + " nodes")
+        ax.title.set_text("Subgraph with " + str(n) + " nodes")
         nx.draw(G, pos, node_size=0)
         nx.draw_networkx_edges(g, pos, edge_color=color, width=3)     
     return g
@@ -547,6 +547,10 @@ def get_pos(G):
         pos[node] = (x,y)
         
     return pos
+
+#renames a dictionary key
+def rename_key(myDict, oldKey, newKey):
+    myDict[newKey] = myDict.pop(oldKey)
 
 ###
 #END OF MISC.
