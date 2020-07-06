@@ -92,10 +92,10 @@ def get_data(input_list, frames = 180, p = True, TIME = False, average = "median
 # Adapted coloring method from https://stackoverflow.com/questions/8931268/using-colormaps-to-set-color-of-line-in-matplotlib
 # Adapted MDS method from https://jakevdp.github.io/PythonDataScienceHandbook/05.10-manifold-learning.html
 
-def mds(input_list, target_list, frames=180, D = None, colorize = True, scheme = "jet", legend = True, alpha = 0.4, TIME = True):
+def mds(input_list, target_list, frames=180, D = None, colorize = True, scheme = "jet", legend = True, legend_position = "upper right", alpha = 0.4, TIME = True):
     if type(D) == type(None):
         D = get_data(input_list, frames, p = True, TIME = TIME)[1] # Get a distance matrix from the input list
-    model = MDS(n_components=3, dissimilarity='precomputed', random_state=1)
+    model = MDS(n_components=2, dissimilarity='precomputed', random_state=1)
     coords = model.fit_transform(D) # Outputs an array of the coordinates
     
     if colorize == False:
@@ -118,89 +118,37 @@ def mds(input_list, target_list, frames=180, D = None, colorize = True, scheme =
         for l in label:
             Xs = []# Keep track of the x and y values of elements with this label
             Ys = []
-            Zs = []
             
             for index in label[l]: # Get the coordinates of elements with this label
                 Xs.append(coords[:,0][index]) # Get the x value
-                Ys.append(coords[:,1][index]) # Get the y value 
-                Zs.append(coords[:,1][index])
-            clusters.append((l, np.array(Xs), np.array(Ys), np.array(Zs))) 
+                Ys.append(coords[:,1][index]) # Get the y value    
+            clusters.append((l, np.array(Xs), np.array(Ys))) 
             
         fig = plt.figure() #initialize figure
         ax = fig.add_subplot(111) # 1x1 grid, 1st subplot
         values = range(len(label))
         jet = cm = plt.get_cmap(scheme) # Use matplotlib's jet color scheme by default
-        cNorm  = colors.Normalize(vmin=0, vmax=values[-1]) 
+        cNorm  = colors.Normalize(vmin=0, vmax=values[-1])
         scalarMap = cmx.ScalarMappable(norm=cNorm, cmap=jet)
-        ax = fig.add_subplot(111, projection='3d')       
+        
         for j in range(len(clusters)):
  
             colorVal = scalarMap.to_rgba(values[j])
             colorText = (str(clusters[j][0]))
-            retPoints = ax.scatter(clusters[j][1], 
-                                   clusters[j][2],
-                                   clusters[j][3],
+            retPoints = plt.scatter(x = clusters[j][1], 
+                                   y = clusters[j][2], 
                                    c = [colorVal],# Make 'c' a vector to keep long warning message from printing
                                    label = colorText,
                                    alpha = alpha)
            
             if legend == True:
                 handles,labels = ax.get_legend_handles_labels()
-                ax.legend(handles, labels, loc='upper right')
+                ax.legend(handles, labels, loc=legend_position)
         
         plt.axis('equal')
         plt.show()
- 
-    return coords    
 
-if __name__ == '__main__':
-    inputs = [] # list of (Graph, Position Dict tuples)
-    labels = []
-    target = []
-     
-###################### Testing ShapeMatcher ##################################
-    alienDict = dr.read_sm("data/ALIEN.xml")
-    t.rename_key(alienDict, oldKey = "models/ALIEN/ALIEN", newKey = "alien")#renaming keys
-
-    dinoDict = dr.read_sm("data/DINO.xml")
-    t.rename_key(dinoDict, oldKey = "models/DINO/DINO", newKey = "dino")
-
-    eagleDict = dr.read_sm("data/eagle.xml")
-    t.rename_key(eagleDict, oldKey = "models/eagle/eagle", newKey = "eagle")
-
-    kangaDict = dr.read_sm("data/KANGAROO.xml")
-    t.rename_key(kangaDict, oldKey = "models/KANGAROO/KANGAROO", newKey = "kangaroo")
-    
-    dictList = [(alienDict, "alien"), 
-                (dinoDict, "dino"), 
-                (eagleDict, "eagle"), 
-                (kangaDict, "kangaroo")]
-    #breakpoint()  
-    num = 3
-    frames = 5
-    alpha = 0.6
-    scheme = "jet"
-    for Dict in dictList:
-        tuples = Dict[0][Dict[1]] # List of (graph, posdict) tuples
-        tuples = tuples[:num]
-        #breakpoint()
-        #Get main components
-        i = 0
-        lst = [None for n in range(num)]
-        for tup in tuples:
-            lst[i] = (t.main_component(G = tup[0], report = False), tup[1])
-            #if len(list(t.main_component(G = tup[0], report = False).nodes)) >25:
-            #    continue
-            i+=1
-            
-        inputs.extend(lst)
-        labels.extend([Dict[1] + str(n) for n in range(num)])
-        target.extend([Dict[1] for n in range(num)])
-            
-matrix = get_matrix(inputs, frames, True, True, average = "median")
-flat = condense(matrix)
-points = mds(inputs,target,frames,matrix,True,scheme,True,alpha,True)
-data = draw_dendro(inputs, data = flat, frames=frames, labels=labels, thresh=0.45)
+    return coords
 
 ################################## Testing Letters ###########################
      
