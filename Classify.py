@@ -248,7 +248,16 @@ data = draw_dendro(inputs, data = flat, frames=frames, labels=labels, thresh=0.4
             
 # matrix = get_matrix(inputs, frames, True, True, average = "median")
 # flat = condense(matrix)
-# points = mds(inputs,target,frames,matrix,True,scheme,True,alpha,True)
+# points = mds(input_list = inputs,
+#               target_list = target,
+#               frames = frames,
+#               D = matrix,
+#               colorize = True,
+#               scheme = scheme,
+#               legend = True,
+#               legend_position = "upper left",
+#               alpha = alpha,
+#               TIME = True)
 # data = draw_dendro(inputs, data = flat, frames=frames, labels=labels, thresh=0.45)
 
 ########################### Comparing Letters####################################
@@ -336,7 +345,15 @@ data = draw_dendro(inputs, data = flat, frames=frames, labels=labels, thresh=0.4
             
 # matrix = get_matrix(inputs, frames, True, True)
 # flat = condense(matrix)
-# points = mds(inputs,target,frames,matrix,True,scheme,True,alpha,True)
+# points = mds(input_list = inputs,
+#               target_list = target,
+#               frames = frames,
+#               D = matrix,
+#               colorize = True,
+#               scheme = scheme,
+#               legend = True,
+#               legend_position = "upper left",
+#               alpha = alpha,
 # data = draw_dendro(inputs, data = flat, frames=frames, labels=labels, thresh=0.03)
 
 ####################### Comparing Cat Graphs  #####################################
