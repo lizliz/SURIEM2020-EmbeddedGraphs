@@ -150,6 +150,10 @@ def mds(input_list, target_list, frames=180, D = None, colorize = True, scheme =
 
     return coords
 
+inputs = []
+target = []
+labels = []
+
 ################################## Testing Letters ###########################
      
     # p = "data/Letter-low"
@@ -197,44 +201,44 @@ def mds(input_list, target_list, frames=180, D = None, colorize = True, scheme =
     #         target.append(letter)
     #         j += 1
     
-    alienDict = dr.read_sm("data/ALIEN.xml")
-    t.rename_key(alienDict, oldKey = "models/ALIEN/ALIEN", newKey = "alien")#renaming keys
+alienDict = dr.read_sm("data/ALIEN.xml")
+t.rename_key(alienDict, oldKey = "models/ALIEN/ALIEN", newKey = "alien")#renaming keys
 
-    dinoDict = dr.read_sm("data/DINO.xml")
-    t.rename_key(dinoDict, oldKey = "models/DINO/DINO", newKey = "dino")
+dinoDict = dr.read_sm("data/DINO.xml")
+t.rename_key(dinoDict, oldKey = "models/DINO/DINO", newKey = "dino")
 
-    eagleDict = dr.read_sm("data/eagle.xml")
-    t.rename_key(eagleDict, oldKey = "models/eagle/eagle", newKey = "eagle")
+eagleDict = dr.read_sm("data/eagle.xml")
+t.rename_key(eagleDict, oldKey = "models/eagle/eagle", newKey = "eagle")
 
-    kangaDict = dr.read_sm("data/KANGAROO.xml")
-    t.rename_key(kangaDict, oldKey = "models/KANGAROO/KANGAROO", newKey = "kangaroo")
-    
-    dictList = [(alienDict, "alien"), 
-                (dinoDict, "dino"), 
-                (eagleDict, "eagle"), 
-                (kangaDict, "kangaroo")]
-    #breakpoint()  
-    num = 3
-    frames = 5
-    alpha = 0.6
-    sheme = "jet"
-    
-    for Dict in dictList:
-        tuples = Dict[0][Dict[1]] # List of (graph, posdict) tuples
-        tuples = tuples[:num]
-        #breakpoint()
-        #Get main components
-        i = 0
-        lst = [None for n in range(num)]
-        for tup in tuples:
-            lst[i] = (t.main_component(G = tup[0], report = False), tup[1])
-            #if len(list(t.main_component(G = tup[0], report = False).nodes)) >25:
-            #    continue
-            i+=1
-            
-        inputs.extend(lst)
-        labels.extend([Dict[1] + str(n) for n in range(num)])
-        target.extend([Dict[1] for n in range(num)])
+kangaDict = dr.read_sm("data/KANGAROO.xml")
+t.rename_key(kangaDict, oldKey = "models/KANGAROO/KANGAROO", newKey = "kangaroo")
+
+dictList = [(alienDict, "alien"), 
+            (dinoDict, "dino"), 
+            (eagleDict, "eagle"), 
+            (kangaDict, "kangaroo")]
+#breakpoint()  
+num = 3
+frames = 5
+alpha = 0.6
+sheme = "jet"
+
+for Dict in dictList:
+    tuples = Dict[0][Dict[1]] # List of (graph, posdict) tuples
+    tuples = tuples[:num]
+    #breakpoint()
+    #Get main components
+    i = 0
+    lst = [None for n in range(num)]
+    for tup in tuples:
+        lst[i] = (t.main_component(G = tup[0], report = False), tup[1])
+        #if len(list(t.main_component(G = tup[0], report = False).nodes)) >25:
+        #    continue
+        i+=1
+        
+    inputs.extend(lst)
+    labels.extend([Dict[1] + str(n) for n in range(num)])
+    target.extend([Dict[1] for n in range(num)])
             
 matrix = get_matrix(inputs, frames, True, True, average = "median")
 flat = condense(matrix)

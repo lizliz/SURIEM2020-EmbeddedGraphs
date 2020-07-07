@@ -240,6 +240,11 @@ def collapse_neighbors(G, n, processed):
 
 #Collapse all of the on-level nodes in a given graph
 def preprocess(G):
+    #Purge all self-loops
+    for e in list(G.edges):
+        if(e[0] == e[1]):
+            G.remove_edge(e[0], e[1])
+            
     nodes = list(G)
     
     #Stores whether or not a node has been processed already
