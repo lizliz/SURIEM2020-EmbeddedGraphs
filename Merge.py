@@ -305,7 +305,6 @@ def add_node(n_, G, M):
     #No children => leaf
     if(len(true_children) == 0):
         M.add_node(n_) #Create a copy of n in M
-        # print("Made a new node " + str(n_))
         n['c'] = n_ #Own inferior
         M.nodes[n_]['p'] = n_ #Own superior
         M.nodes[n_]['value'] = f #Function value
@@ -332,7 +331,6 @@ def add_node(n_, G, M):
         #Check if there is already a connected rep. on the level
         rep = find_on_level(M, roots, f)
         if(rep != None):
-            #print("Found rep on level: " + str(rep))
             #Add all the edges
             for r in roots:
                 p = find_p(r, M) #What we connect to
@@ -343,7 +341,6 @@ def add_node(n_, G, M):
                         processed = {}
                         collapse_neighbors(M, rep, processed, merge=True)
         else: #New node
-            #print("Made a new node " + str(n_))
             M.add_node(n_) #Create a copy of n in M
             M.nodes[n_]['p'] = n_ #Own parent
             M.nodes[n_]['value'] = f #Function value
