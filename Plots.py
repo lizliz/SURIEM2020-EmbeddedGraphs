@@ -66,13 +66,8 @@ labels = []
 
 #### Note to self to probably come back and fix the kangaroo and alien databases!!!
 
-<<<<<<< HEAD
-num = 45
-frames = 10
-=======
 num = 10
 frames = 5
->>>>>>> 90c86a2f3d12aaefc03042f769011dccae0b81b9
 alpha = 0.6
 scheme = "jet"
 message = ""
