@@ -9,6 +9,7 @@ from sklearn.manifold import MDS
 import matplotlib.pyplot as plt
 from DataCalculations import average_distance
 from lib.Tools import random_tree_and_pos, get_pos
+import lib.Tools as t
 import random
 import DataReader as dr
 import lib.Tools as t
@@ -228,24 +229,6 @@ labels = []
 # frames = 45
 # alpha = 0.6
 # scheme = "jet"
-
-# for Dict in dictList:
-#     tuples = Dict[0][Dict[1]] # List of (graph, posdict) tuples
-#     tuples = tuples[:num]
-#     #breakpoint()
-#     #Get main components
-#     i = 0
-#     lst = [None for n in range(num)]
-#     for tup in tuples:
-#         lst[i] = (t.main_component(G = tup[0], report = False), tup[1])
-#         #if len(list(t.main_component(G = tup[0], report = False).nodes)) >25:
-#         #    continue
-#         i+=1
-        
-#     inputs.extend(lst)
-#     labels.extend([Dict[1] + str(n) for n in range(num)])
-#     target.extend([Dict[1] for n in range(num)])
-            
             
 # matrix = get_matrix(inputs, frames, True, True, average = "median")
 # flat = condense(matrix)
@@ -260,7 +243,6 @@ labels = []
 #               alpha = alpha,
 #               TIME = True)
 # data = draw_dendro(inputs, data = flat, frames=frames, labels=labels, thresh=0.45)
-
 
    
 # ######################### Testing Subgraphs ####################################

@@ -31,8 +31,6 @@ def draw_basic(G, pos, n_size=0):
     nx.draw(G, pos, with_labels=False, node_color="blue",node_size=n_size)
     
 def draw_square(G, pos, title, ax, r, b=None):
-    
-    
     if(b==None):
         b = get_bounds(pos)
     xAvg = (b[0][1]+b[0][0])/2
@@ -41,7 +39,7 @@ def draw_square(G, pos, title, ax, r, b=None):
     ax.set_xlim(xAvg - r/2, xAvg + r/2)
     ax.set_ylim(yAvg - r/2, yAvg + r/2)
     
-    draw(G, pos, title, ax)
+    draw(G, pos, title, ax, n_size = 100)
     
       
 def input_output(G, pos, savepath=""):
