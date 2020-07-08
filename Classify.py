@@ -9,6 +9,7 @@ from sklearn.manifold import MDS
 import matplotlib.pyplot as plt
 from DataCalculations import average_distance
 from lib.Tools import random_tree_and_pos, get_pos
+import lib.Tools as t
 import random
 import DataReader as dr
 import lib.Tools as t
@@ -201,49 +202,49 @@ labels = []
     #         target.append(letter)
     #         j += 1
     
-alienDict = dr.read_sm("data/ALIEN.xml")
-t.rename_key(alienDict, oldKey = "models/ALIEN/ALIEN", newKey = "alien")#renaming keys
+# alienDict = dr.read_sm("data/ALIEN.xml")
+# t.rename_key(alienDict, oldKey = "models/ALIEN/ALIEN", newKey = "alien")#renaming keys
 
-dinoDict = dr.read_sm("data/DINO.xml")
-t.rename_key(dinoDict, oldKey = "models/DINO/DINO", newKey = "dino")
+# dinoDict = dr.read_sm("data/DINO.xml")
+# t.rename_key(dinoDict, oldKey = "models/DINO/DINO", newKey = "dino")
 
-eagleDict = dr.read_sm("data/eagle.xml")
-t.rename_key(eagleDict, oldKey = "models/eagle/eagle", newKey = "eagle")
+# eagleDict = dr.read_sm("data/eagle.xml")
+# t.rename_key(eagleDict, oldKey = "models/eagle/eagle", newKey = "eagle")
 
-kangaDict = dr.read_sm("data/KANGAROO.xml")
-t.rename_key(kangaDict, oldKey = "models/KANGAROO/KANGAROO", newKey = "kangaroo")
+# kangaDict = dr.read_sm("data/KANGAROO.xml")
+# t.rename_key(kangaDict, oldKey = "models/KANGAROO/KANGAROO", newKey = "kangaroo")
 
-dictList = [(alienDict, "alien"), 
-            (dinoDict, "dino"), 
-            (eagleDict, "eagle"), 
-            (kangaDict, "kangaroo")]
-#breakpoint()  
-num = 3
-frames = 5
-alpha = 0.6
-sheme = "jet"
+# dictList = [(alienDict, "alien"), 
+#             (dinoDict, "dino"), 
+#             (eagleDict, "eagle"), 
+#             (kangaDict, "kangaroo")]
+# #breakpoint()  
+# num = 3
+# frames = 5
+# alpha = 0.6
+# sheme = "jet"
 
-for Dict in dictList:
-    tuples = Dict[0][Dict[1]] # List of (graph, posdict) tuples
-    tuples = tuples[:num]
-    #breakpoint()
-    #Get main components
-    i = 0
-    lst = [None for n in range(num)]
-    for tup in tuples:
-        lst[i] = (t.main_component(G = tup[0], report = False), tup[1])
-        #if len(list(t.main_component(G = tup[0], report = False).nodes)) >25:
-        #    continue
-        i+=1
+# for Dict in dictList:
+#     tuples = Dict[0][Dict[1]] # List of (graph, posdict) tuples
+#     tuples = tuples[:num]
+#     #breakpoint()
+#     #Get main components
+#     i = 0
+#     lst = [None for n in range(num)]
+#     for tup in tuples:
+#         lst[i] = (t.main_component(G = tup[0], report = False), tup[1])
+#         #if len(list(t.main_component(G = tup[0], report = False).nodes)) >25:
+#         #    continue
+#         i+=1
         
-    inputs.extend(lst)
-    labels.extend([Dict[1] + str(n) for n in range(num)])
-    target.extend([Dict[1] for n in range(num)])
+#     inputs.extend(lst)
+#     labels.extend([Dict[1] + str(n) for n in range(num)])
+#     target.extend([Dict[1] for n in range(num)])
             
-matrix = get_matrix(inputs, frames, True, True, average = "median")
-flat = condense(matrix)
-points = mds(inputs,target,frames,matrix,True,sheme,True,alpha,True)
-data = draw_dendro(inputs, data = flat, frames=frames, labels=labels, thresh=0.45)
+# matrix = get_matrix(inputs, frames, True, True, average = "median")
+# flat = condense(matrix)
+# points = mds(inputs,target,frames,matrix,True,sheme,True,alpha,True)
+# data = draw_dendro(inputs, data = flat, frames=frames, labels=labels, thresh=0.45)
 
             
 # matrix = get_matrix(inputs, frames, True, True, average = "median")
@@ -253,45 +254,45 @@ data = draw_dendro(inputs, data = flat, frames=frames, labels=labels, thresh=0.4
 
 ########################### Comparing Letters####################################
 
-    # #Get 5 Z's
-    # for i in range(num):
-    #     G = z[0]["3"][i]
-    #     G = t.main_component(G)
-    #     pos = get_pos(G)
-        
-    #     inputs.append( (G, pos) )
-    #     labels.append("Z " + str(i))
-    #     target.append("Z")
+    #Get 5 Z's
+for i in range(num):
+    G = z[0]["3"][i]
+    G = t.main_component(G)
+    pos = get_pos(G)
     
-    # #Get 5 L's
-    # for i in range(num):
-    #     G = z[0]["2"][i]
-    #     G = t.main_component(G)
-    #     pos = get_pos(G)
-        
-    #     inputs.append( (G, pos) )
-    #     labels.append("L " + str(i))
-    #     target.append("L")
+    inputs.append( (G, pos) )
+    labels.append("Z " + str(i))
+    target.append("Z")
+
+#Get 5 L's
+for i in range(num):
+    G = z[0]["2"][i]
+    G = t.main_component(G)
+    pos = get_pos(G)
     
-    # #Get 5 N's
-    # for i in range(num):
-    #     G = z[0]["1"][i]
-    #     G = t.main_component(G)
-    #     pos = get_pos(G)
-        
-    #     inputs.append( (G, pos) )
-    #     labels.append("N " + str(i))
-    #     target.append("N")
-        
-    # #Get 5 V's
-    # for i in range(num):
-    #     G = z[0]["7"][i]
-    #     pos = get_pos(G)
-    #     G = t.main_component(G)
-        
-    #     inputs.append( (G, pos) )
-    #     labels.append("V " + str(i))
-    #     target.append("V")
+    inputs.append( (G, pos) )
+    labels.append("L " + str(i))
+    target.append("L")
+
+#Get 5 N's
+for i in range(num):
+    G = z[0]["1"][i]
+    G = t.main_component(G)
+    pos = get_pos(G)
+    
+    inputs.append( (G, pos) )
+    labels.append("N " + str(i))
+    target.append("N")
+    
+#Get 5 V's
+for i in range(num):
+    G = z[0]["7"][i]
+    pos = get_pos(G)
+    G = t.main_component(G)
+    
+    inputs.append( (G, pos) )
+    labels.append("V " + str(i))
+    target.append("V")
    
 # ######################### Testing Subgraphs ####################################
     
