@@ -4,25 +4,11 @@ Created on Tue Jul  7 21:18:16 2020
 
 @author: Candace Todd
 """
-# import scipy.cluster.hierarchy as shc
-# import scipy.spatial.distance as ssd
-# import numpy as np
-# from sklearn.manifold import MDS
-# import matplotlib.pyplot as plt
-# from DataCalculations import average_distance
-# from lib.Tools import random_tree_and_pos, get_pos
-# import random
 import DataReader as dr
 import lib.Tools as t
-# import lib.tud2nx as tud
-# import matplotlib.colors as colors
-# import matplotlib.cm as cmx
-# import time
 import Classify as classify
-# from mpl_toolkits.mplot3d import Axes3D
-# import pdb
 
-######################## Binary Images ########################################
+######################## Binary ShapeMatcher Images ###########################
 
 alienDict = dr.read_sm("data/Shape-Matcher-models/ALIEN.xml")
 t.rename_key(alienDict, oldKey = "models/ALIEN/ALIEN", newKey = "alien")
@@ -67,8 +53,8 @@ labels = []
 
 #### Note to self to probably come back and fix the kangaroo and alien databases!!!
 
-num = 5
-frames = 5
+num = 1
+frames = 1
 alpha = 0.6
 scheme = "jet"
 message = ""
@@ -97,45 +83,7 @@ for Dict in dictList:
         labels.append(Dict[1] + str(j))
         target.append(Dict[1])
         j += 1
-    
-    """
-    # #j = 0
-    # #for pair in tuples:
-    # #    if ( Dict[1] + str(j) ) in Dict[2]:# if it's in the biased list
-               
-    # tuples = tuples[:num]
-    # #breakpoint()
-    # #Get main components
-    # i = 0
-    # # Check if we actually have the number of graphs that we want
-    # unbiased = len(Dict[0][Dict[1]]) - len(Dict[2])
-    # if num <= unbiased:
-    #     lst = [None for n in range(num)]    
-        
-    #     for tup in tuples:
-    #         lst[i] = (t.main_component(G = tup[0], report = False), tup[1])
-        
-    #         #if len(list(t.main_component(G = tup[0], report = False).nodes)) >25:
-    #             #    continue
-    #         i+=1
-    # else:
-    #     lst = [None for n in range(unbiased)]
-    #     warning = "\nNot enough " + Dict[1] + "s: "+ str(unbiased)
-    #     print(warning)
-    #     message += warning
-        
-    #     for tup in tuples:
-    #         lst[i] = (t.main_component(G = tup[0], report = False), tup[1])
-        
-    #         #if len(list(t.main_component(G = tup[0], report = False).nodes)) >25:
-    #             #    continue
-    #         i+=1
-        
-    # inputs.extend(lst)
-    # labels.extend([Dict[1] + str(n) for n in range(num)])
-    # target.extend([Dict[1] for n in range(num)])
-    """
-            
+
 matrix = classify.get_matrix(inputs, frames, True, True, average = "median")
 flat = classify.condense(matrix)
 points = classify.mds(input_list = inputs,
