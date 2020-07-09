@@ -12,3 +12,4 @@ Some of the data used for this project was too big for GitHub. A comprehensive c
 - scikitlearn  
 - matplotlib  
 - time  
+- networkx
