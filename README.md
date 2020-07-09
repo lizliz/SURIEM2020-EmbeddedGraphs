@@ -20,4 +20,4 @@ Some of the data used for this project was too big for GitHub. A comprehensive c
 - statistics? NOTE TO SELF: pretty sure we can eliminate this, I think other packages provide silimar functionalities
 - concurrent.futures (what actually is this?)  
 - itertools? (this too)  
-%- multiprocessing? (and this)
+- multiprocessing? (and this)
