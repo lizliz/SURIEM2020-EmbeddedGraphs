@@ -1,6 +1,7 @@
 #Levent Batakci
 #6/23/2020
 
+# This program uses clustering techniques to display the results of ABD
 import scipy.cluster.hierarchy as shc
 import scipy.spatial.distance as ssd
 import numpy as np
@@ -28,8 +29,10 @@ from sklearn.manifold import MDS
 # Draws a dendrogram ????
 # returns 1-D condensed distance matrix as numpy array
 def draw_dendro(input_list, frames=180, data = None, labels=None, thresh=None):
+    
     if type(data) == type(None):
         data = get_data(input_list, frames)[0]    
+    
     dendrogram(data, labels=labels, thresh=thresh)
     return data
 
@@ -41,6 +44,7 @@ def dendrogram(data, labels=None, thresh=None):
     plt.title("Dendrograms")
     lkg = shc.linkage(data, method='single')
     dend = shc.dendrogram(lkg, leaf_rotation = 90, labels=labels, color_threshold=thresh)
+    
     if(thresh != None):
         plt.axhline(y=thresh, color='r', linestyle='--')
         
@@ -118,6 +122,7 @@ def mds(input_list, target_list, frames=180, D = None, colorize = True, scheme =
             
             if lbl not in label:
                 label[lbl] = []    
+            
             label[lbl].append(i) # Keep track of the index of each element with this label
         
         clusters = [] #List of (label, Xarray, Yarray) tuples
@@ -128,6 +133,7 @@ def mds(input_list, target_list, frames=180, D = None, colorize = True, scheme =
             for index in label[l]: # Get the coordinates of elements with this label
                 Xs.append(coords[:,0][index]) # Get the x value
                 Ys.append(coords[:,1][index]) # Get the y value    
+            
             clusters.append((l, np.array(Xs), np.array(Ys))) 
             
         fig = plt.figure() #initialize figure
