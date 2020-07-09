@@ -60,11 +60,12 @@ dictList = [(alienDict, "alien", biasedAliens),
             (eagleDict, "eagle", biasedEagles), 
             (kangaDict, "kangaroo", biasedKangas)]
 
-#### Note to self to probably come back and fix the kangaroo and alien databases!!!
 
 inputs = []
 target = []
 labels = []
+
+#### Note to self to probably come back and fix the kangaroo and alien databases!!!
 
 num = 5
 frames = 5
@@ -91,6 +92,7 @@ for Dict in dictList:
         G = t.main_component(G = G, report = False)
         pos = tuples[j][1]
         #pos = t.get_pos(G)
+        pos = t.get_pos(G)
         inputs.append( (G, pos) )
         labels.append(Dict[1] + str(j))
         target.append(Dict[1])
@@ -149,7 +151,7 @@ points = classify.mds(input_list = inputs,
 data = classify.draw_dendro(inputs, data = flat, frames=frames, labels=labels, thresh=0.45)
 print(message)
 
-# ########################### Comparing Letters####################################
+########################### Comparing Letters####################################
 
 # inputs = []
 # target = []

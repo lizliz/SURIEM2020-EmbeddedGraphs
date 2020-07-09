@@ -139,9 +139,11 @@ def node_list(subtrees):
 
 #Compute all the removal costs at and below a root
 #Return the resulting cost dictionary
-def compute_costs(A, root, costs={}):
-    if(root in costs):
-        return costs
+def compute_costs(A, root, costs=None):
+    # print("---------")
+    # print("Computing ", root)
+    if(costs==None):
+        costs = {}
     
     #Base removal cost
     #print("Saddle and Minima in tree: " + str(root in A and A.nodes[root]['p'] in A))
@@ -151,10 +153,19 @@ def compute_costs(A, root, costs={}):
     #Use memoization to speed things up
     f = f_(A.nodes[root])
     neighbors = A[root]
+    
+    if('175,-110' in neighbors):
+        print("Found it!")
+    
     max_cost = c
     for nei in neighbors:
+        if(nei == '175,-110'):
+            print('Root: ' + root)
+            print("Identified as a neighbor!")
         #If nei is a child but its cost hasn't been computed...
         if(f_(A.nodes[nei]) < f):
+            if(nei == '175,-110'):
+                print("Is a child!")
             if(nei not in costs):
                 costs[nei] = compute_costs(A, nei, costs)[nei]
             

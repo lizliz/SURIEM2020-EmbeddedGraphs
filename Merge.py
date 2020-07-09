@@ -201,13 +201,16 @@ def on_level_neighbors(G, n):
     return on_lvl
 
 #Collapse n2 into n1
-def collapse(G, n1, n2):
+def collapse(G, n1, n2, merge=False):
     n2_neighbors = G[n2]
     
     for nei in n2_neighbors:
         if(nei != n1):
             G.add_edge(n1, nei)
-            
+            #Update the parent
+            if(merge):
+                G.nodes[nei]['p'] = n1
+                
     G.remove_node(n2)
     
 def update_neighbors(G, n1, neighbors, n2):
@@ -217,7 +220,7 @@ def update_neighbors(G, n1, neighbors, n2):
         if(nei not in neighbors and nei != n1):
             neighbors.append(nei)
     
-def collapse_neighbors(G, n, processed):
+def collapse_neighbors(G, n, processed, merge=False):
     lvl_neighbors = on_level_neighbors(G, n)
     
     count=0
@@ -228,7 +231,7 @@ def collapse_neighbors(G, n, processed):
         update_neighbors(G, n, lvl_neighbors, nei)
         
         #Collapse the first neighbor
-        collapse(G, n, nei)
+        collapse(G, n, nei, merge=merge)
         lvl_neighbors.remove(nei)
         processed[nei] = True #Mark the neighbor as processed
         
@@ -333,7 +336,10 @@ def add_node(n_, G, M):
                 p = find_p(r, M) #What we connect to
                 if(p != rep): #Add Edge
                     M.add_edge(p, rep)
-                M.nodes[p]['p'] = rep #Update the superior
+                    M.nodes[p]['p'] = rep #Update the superior
+                    if(f_(M.nodes[p]) == f):
+                        processed = {}
+                        collapse_neighbors(M, rep, processed, merge=True)
         else: #New node
             M.add_node(n_) #Create a copy of n in M
             M.nodes[n_]['p'] = n_ #Own parent
@@ -368,4 +374,5 @@ def merge_tree(G, normalize=True):
     reduce(M)
     if(normalize):
         normalize_f(M)
+        
     return M            
