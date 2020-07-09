@@ -8,8 +8,9 @@ Some of the data used for this project was too big for GitHub. A comprehensive c
 
 ## Dependencies
 ### Classify.py:
-scipy
-numpy
-scikitlearn
-matplotlib
-time
+
+- scipy  
+- numpy  
+- scikitlearn  
+- matplotlib  
+- time  
