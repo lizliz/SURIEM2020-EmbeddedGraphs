@@ -4,16 +4,12 @@ Created on Tue Jul  7 19:36:23 2020
 
 @author: Candace Todd
 """
+# Script recording our data cleaning methodology
+
 import DataReader as dr
-#import math
-#import Merge as m
-#import Compare as c
-#import time
 import networkx as nx
 import lib.Tools as t
 import matplotlib.pyplot as plt
-
-# Script for our data cleaning methods
 
 ################## Code for picking out outlier binary ########################
 alienDict = dr.read_sm("data/Shape-Matcher-models/ALIEN.xml")
@@ -24,6 +20,7 @@ t.rename_key(childDict, oldKey = "models/m_chld/m_chld", newKey = "child")
 
 camelDict = dr.read_sm("data/Shape-Matcher-models/camel.xml")
 t.rename_key(camelDict, oldKey = "models/camel/camel", newKey = "camel")
+#17
 
 horseDict = dr.read_sm("data/Shape-Matcher-models/HORSE.xml")
 t.rename_key(horseDict, oldKey = "models/HORSE/HORSE", newKey = "horse")
@@ -70,7 +67,7 @@ for tup in pictDict[pict]:
 #['eagle16', 'eagle21', 'eagle22', 'eagle30', 'eagle47', 'eagle53', 'eagle54', 'eagle68', 'eagle88', 'eagle89', 'eagle90', 'eagle92', 'eagle99', 'eagle106', 'eagle107', 'eagle127']
 #['kangaroo117','kangaroo5', 'kangaroo6', 'kangaroo7', 'kangaroo8', 'kangaroo13', 'kangaroo14', 'kangaroo15', 'kangaroo20', 'kangaroo21', 'kangaroo22', 'kangaroo23', 'kangaroo24', 'kangaroo29', 'kangaroo30', 'kangaroo31', 'kangaroo37', 'kangaroo38', 'kangaroo39', 'kangaroo40', 'kangaroo44', 'kangaroo45', 'kangaroo46', 'kangaroo47', 'kangaroo53', 'kangaroo54', 'kangaroo55', 'kangaroo56', 'kangaroo58', 'kangaroo59', 'kangaroo61', 'kangaroo62', 'kangaroo63', 'kangaroo69', 'kangaroo70', 'kangaroo71', 'kangaroo72', 'kangaroo77', 'kangaroo78', 'kangaroo79', 'kangaroo85', 'kangaroo86', 'kangaroo87', 'kangaroo88', 'kangaroo92', 'kangaroo93', 'kangaroo94', 'kangaroo95', 'kangaroo100', 'kangaroo101', 'kangaroo102', 'kangaroo103', 'kangaroo104', 'kangaroo109', 'kangaroo110', 'kangaroo111', 'kangaroo118', 'kangaroo119', 'kangaroo120', 'kangaroo124', 'kangaroo125', 'kangaroo126', 'kangaroo127', 'kangaroo132', 'kangaroo133', 'kangaroo134', 'kangaroo135', 'kangaroo136', 'kangaroo137', 'kangaroo138', 'kangaroo139', 'kangaroo141', 'kangaroo142', 'kangaroo143', 'kangaroo148', 'kangaroo149', 'kangaroo150', 'kangaroo151', 'kangaroo152', 'kangaroo153', 'kangaroo157', 'kangaroo158', 'kangaroo159']
 
-################## Code for picking out letters ######################
+##################### Code for picking out letters ############################
 key = {"0":"K","1":"N","2":"L","3":"Z","4":"T","5":"X","6":"F","7":"V","8":"Y","9":"W","10":"H","11":"A","12":"I","13":"E","14":"M"}
 letters = {"K":"0","N":"1","L":"2","Z":"3","T":"4","X":"5","F":"6","V":"7","Y":"8","W":"9","H":"10","A":"11","I":"12","E":"13","M":"14"}
 p = "data/Letter-low"

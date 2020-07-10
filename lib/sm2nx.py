@@ -48,7 +48,7 @@ def read_sm(path):
                 continue
             pointList = way.split("<point ")
             p = 1
-            #firstPoint = None
+            firstPoint = None
             lastPoint = None
             while p < len(pointList):
                 point = pointList[p]
@@ -65,24 +65,24 @@ def read_sm(path):
                 #if pointName == "153,-143":
                     #breakpoint()
                 if pointName not in list(G.nodes):
-                    #if p == 1 or p == (len(pointList)-1):
-                    G.add_node(pointName)
-                    x, y = float(x), float(y)*-1
-                    G.nodes[pointName]['x'] = x
-                    G.nodes[pointName]['y'] = y
-                    pos[pointName] = (x,y)
+                    if p == 1 or p == (len(pointList)-1):
+                        G.add_node(pointName)
+                        x, y = float(x), float(y)*-1
+                        G.nodes[pointName]['x'] = x
+                        G.nodes[pointName]['y'] = y
+                        pos[pointName] = (x,y)
                     
-                #if p ==1:
-                #    temp = pointName
-                #    firstPoint = temp
-                if p > 1:
-                    G.add_edge(lastPoint, pointName)
+                if p ==1:
+                    temp = pointName
+                    firstPoint = temp
+                #if p > 1:
+                #    G.add_edge(lastPoint, pointName)
                 if p != len(pointList)-1:
                     lastPoint = pointName
                     
                 p += 1
                 
-            #G.add_edge(firstPoint, pointName)
+            G.add_edge(firstPoint, pointName)
             w += 1
         
         

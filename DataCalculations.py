@@ -17,13 +17,13 @@ import statistics
 from scipy import stats
 
 ########################## Universal Parameters ###############################
-# G1, G2: NetworkX Graphs
-# pos1, pos2: dictionaries, 
-# angle: how do you describe this?
+# G1, G2: NetworkX Graph objects
+# pos1, pos2: dict, position dictionaries for nodes of the respective graphs 
+# angle: ?
 # index: ?
-# data: list(right?), data returned by the distance_data() funtion
-# rotate_both: boolean,
-# accuracy: float or int,
+# data: list(right?), data returned by the distance_data() funtion (better description?)
+# rotate_both: boolean, whether you want to rotate G1 in addition to G2
+# accuracy: float or int, value returned will be within this radius of accuracy
 # frames: int,
 ###############################################################################
 

@@ -426,10 +426,10 @@ def IsEpsSimilar(A, B, e, costs=None, roots=None, memo=None, subtrees=None, mapp
 
 # returns distance between 2 merge trees within a margin of error
 # T1, T2: networkx graphs, merge trees returned by Merge.merge_tree()
-# radius: float, distance returned will be withing this radius of accuracy
+# accuracy: int or float, distance returned will be withing this radius of accuracy
 # valid: ????
 # get_map: boolean, whether you want to return the mapping between trees that yields the returned epsilon value
-def branching_distance(T1, T2, radius = 0.05, valid=False, get_map=False):
+def branching_distance(T1, T2, accuracy = 0.05, valid=False, get_map=False):
     global st
     global mt
     st = 0
@@ -463,7 +463,7 @@ def branching_distance(T1, T2, radius = 0.05, valid=False, get_map=False):
     
     its = 0
     # Continue the binary search until we get within our desired margin of error for accuracy
-    while delta >= radius:
+    while delta >= accuracy:
         its+=1
         delta=delta/2
         start_ = time.time()
