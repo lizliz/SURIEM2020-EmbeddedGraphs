@@ -19,8 +19,8 @@ from scipy import stats
 ########################## Universal Parameters ###############################
 # G1, G2: NetworkX Graph objects
 # pos1, pos2: dict, position dictionaries for nodes of the respective graphs 
-# angle: ?
-# index: ?
+# angle: The angle to calculate the merge tree from when getting data
+# index: The index of the angle. Used to create scatterplots.
 # data: list(right?), data returned by the distance_data() funtion (better description?)
 # rotate_both: boolean, whether you want to rotate G1 in addition to G2
 # accuracy: float or int, value returned will be within this radius of accuracy
