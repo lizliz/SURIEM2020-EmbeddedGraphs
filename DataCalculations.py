@@ -2,7 +2,7 @@
 """
 Created on Mon Jun 22 19:15:49 2020
 
-@author: Leven
+@author: Levent
 """
 from Merge import merge_tree, calc_values_height_reorient
 import Compare
@@ -12,9 +12,23 @@ import time
 import concurrent.futures
 from itertools import repeat
 from multiprocessing import cpu_count
+import random
+import statistics
+from scipy import stats
+
+########################## Universal Parameters ###############################
+# G1, G2: NetworkX Graph objects
+# pos1, pos2: dict, position dictionaries for nodes of the respective graphs 
+# angle: ?
+# index: ?
+# data: list(right?), data returned by the distance_data() funtion (better description?)
+# rotate_both: boolean, whether you want to rotate G1 in addition to G2
+# accuracy: float or int, value returned will be within this radius of accuracy
+# frames: int,
+###############################################################################
+
 
 def get_data_point(G1, pos1, G2, pos2, angle, index, data, rotate_both=True, accuracy=0.0001):
-    #print(index)
     
     p1 = pos1.copy()
     p2 = pos2.copy()
@@ -25,28 +39,26 @@ def get_data_point(G1, pos1, G2, pos2, angle, index, data, rotate_both=True, acc
         calc_values_height_reorient(G1c, p1, angle)
     else:
         calc_values_height_reorient(G1c, p1)
+ 
     M1 = merge_tree(G1c, normalize=True)
     
     calc_values_height_reorient(G2c, p2, angle)
     M2 = merge_tree(G2c, normalize=True)
     
-    dist = Compare.morozov_distance(M1, M2, accuracy)
+    dist = Compare.branching_distance(M1, M2, accuracy)
     data.append( (index, dist) ) 
     return (index, dist)
 
-import random
-import statistics
-from scipy import stats
-import pdb
 
-def distance_data(G1, pos1, G2, pos2, frames=720, rotate_both=True, accuracy=0.0001):
+
+def distance_data(G1, pos1, G2, pos2, frames=180, rotate_both=True, accuracy=0.0001):
     data=[]
     for i in range(0, frames+1):
         angle = math.pi*(1/2 + 2*i/frames)
         get_data_point(G1, pos1, G2, pos2, angle, i, data, rotate_both=rotate_both, accuracy=accuracy)
     return data
 
-def distance_data_thread(G1, pos1, G2, pos2, data, frames=360, rotate_both=True, accuracy=0.0001):    
+def distance_data_thread(G1, pos1, G2, pos2, data, frames=180, rotate_both=True, accuracy=0.0001):    
     angles = [math.pi*(1/2 + 2*i/frames) for i in range(0, frames)]
     indices = [i for i in range(0, frames)]
     
@@ -60,7 +72,7 @@ def distance_data_thread(G1, pos1, G2, pos2, data, frames=360, rotate_both=True,
     print("Total time: ", time.time()-start)
     return data
         
-def average_distance(G1, pos1, G2, pos2, frames=360, rotate_both=True, accuracy=0.005, average = "median"):
+def average_distance(G1, pos1, G2, pos2, frames=180, rotate_both=True, accuracy=0.005, average = "median"):
     data = distance_data(G1, pos1, G2, pos2, frames=frames, rotate_both=rotate_both, accuracy=accuracy)
     
     heights = [x[1] for x in data]
@@ -81,10 +93,9 @@ def average_distance(G1, pos1, G2, pos2, frames=360, rotate_both=True, accuracy=
         print("Invalid average parameter. Valid choices are 'median', 'mean', and 'max'. Returning median.")
         return med
 
-# data: data returned by the distance_data() funtion
-# samples: size of the sampling distribution you want. a few thousand is usually pretty good
-# alpha: significance level of the confidence interval, complement of confidence level
-#interpretation: whether or not you want to print a generic interpretation of the confidence interval
+# samples: int, size of the sampling distribution you want. a few thousand is usually pretty good
+# alpha: float (0,1) significance level of the confidence interval, complement of confidence level
+# interpretation: boolean, whether or not you want to print a generic interpretation of the confidence interval
 def bootstrap(data, samples = 3000, alpha = 0.05, interpretation = False):
     n = len(data) # size of original sample
     originalSample = [data[i][1] for i in range(n)] # list containing only the data points

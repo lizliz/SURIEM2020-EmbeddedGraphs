@@ -4,148 +4,100 @@ Created on Tue Jul  7 21:18:16 2020
 
 @author: Candace Todd
 """
-import scipy.cluster.hierarchy as shc
-import scipy.spatial.distance as ssd
-import numpy as np
-from sklearn.manifold import MDS
-import matplotlib.pyplot as plt
-from DataCalculations import average_distance
-from lib.Tools import random_tree_and_pos, get_pos
-import random
 import DataReader as dr
 import lib.Tools as t
-import lib.tud2nx as tud
-import matplotlib.colors as colors
-import matplotlib.cm as cmx
-import time
 import Classify as classify
-from mpl_toolkits.mplot3d import Axes3D
-import pdb
 
-######################## Binary Images ########################################
+######################## Binary ShapeMatcher Models ###########################
 
-alienDict = dr.read_sm("data/Shape-Matcher-models/ALIEN.xml")
-t.rename_key(alienDict, oldKey = "models/ALIEN/ALIEN", newKey = "alien")
+# alienDict = dr.read_sm("data/Shape-Matcher-models/ALIEN.xml")
+# t.rename_key(alienDict, oldKey = "models/ALIEN/ALIEN", newKey = "alien")
 
-childDict = dr.read_sm("data/Shape-Matcher-models/m_chld.xml")
-t.rename_key(childDict, oldKey = "models/m_chld/m_chld", newKey = "child")
+# #childDict = dr.read_sm("data/Shape-Matcher-models/m_chld.xml")
+# #t.rename_key(childDict, oldKey = "models/m_chld/m_chld", newKey = "child")
 
-camelDict = dr.read_sm("data/Shape-Matcher-models/camel.xml")
-t.rename_key(camelDict, oldKey = "models/camel/camel", newKey = "camel")
+# camelDict = dr.read_sm("data/Shape-Matcher-models/camel.xml")
+# t.rename_key(camelDict, oldKey = "models/camel/camel", newKey = "camel")
 
-horseDict = dr.read_sm("data/Shape-Matcher-models/HORSE.xml")
-t.rename_key(horseDict, oldKey = "models/HORSE/HORSE", newKey = "horse")
-#52
+# horseDict = dr.read_sm("data/Shape-Matcher-models/HORSE.xml")
+# t.rename_key(horseDict, oldKey = "models/HORSE/HORSE", newKey = "horse")
+# #52
 
-eagleDict = dr.read_sm("data/Shape-Matcher-models/eagle.xml")
-t.rename_key(eagleDict, oldKey = "models/eagle/eagle", newKey = "eagle")
-#35
+# eagleDict = dr.read_sm("data/Shape-Matcher-models/eagle.xml")
+# t.rename_key(eagleDict, oldKey = "models/eagle/eagle", newKey = "eagle")
+# #35
 
-kangaDict = dr.read_sm("data/Shape-Matcher-models/KANGAROO.xml")
-t.rename_key(kangaDict, oldKey = "models/KANGAROO/KANGAROO", newKey = "kangaroo")
-#1
+# kangaDict = dr.read_sm("data/Shape-Matcher-models/KANGAROO.xml")
+# t.rename_key(kangaDict, oldKey = "models/KANGAROO/KANGAROO", newKey = "kangaroo")
+# #1
 
-# see DataCleaning.py for how we picked outliers
-biasedAliens = ['alien67','alien0', 'alien1', 'alien2', 'alien4', 'alien5', 'alien6', 'alien9', 'alien16', 'alien18', 'alien19', 'alien27', 'alien28', 'alien30', 'alien31', 'alien32', 'alien33', 'alien34', 'alien36', 'alien37', 'alien38', 'alien39', 'alien40', 'alien41', 'alien43', 'alien44', 'alien45', 'alien48', 'alien55', 'alien57', 'alien58', 'alien66', 'alien68', 'alien69', 'alien70', 'alien71', 'alien72', 'alien73', 'alien75', 'alien76', 'alien77', 'alien78', 'alien80', 'alien87', 'alien89', 'alien90', 'alien98', 'alien99', 'alien101', 'alien102', 'alien103', 'alien105', 'alien106']
-biasedChildren = ['child0', 'child1', 'child2', 'child4', 'child5', 'child6', 'child7', 'child9', 'child16', 'child18', 'child19', 'child27', 'child28', 'child29', 'child30', 'child31', 'child32', 'child33', 'child34', 'child36', 'child37', 'child38', 'child39', 'child40', 'child41', 'child42', 'child48', 'child50', 'child51', 'child58', 'child59', 'child60', 'child61', 'child62', 'child63', 'child64', 'child66', 'child67', 'child75', 'child76', 'child77', 'child78', 'child79', 'child80', 'child81', 'child82', 'child84', 'child85', 'child86', 'child87', 'child89', 'child90', 'child96', 'child98', 'child99', 'child104', 'child107', 'child108', 'child109', 'child110', 'child111', 'child112', 'child113', 'child114', 'child116', 'child117', 'child118', 'child119', 'child120', 'child121', 'child122']
-biasedCamels = ['camel0', 'camel1', 'camel4', 'camel5', 'camel6', 'camel16', 'camel18', 'camel19', 'camel24', 'camel28', 'camel30', 'camel31', 'camel32', 'camel33', 'camel34', 'camel36', 'camel37', 'camel38', 'camel39', 'camel48', 'camel51', 'camel60', 'camel62', 'camel63', 'camel64', 'camel67', 'camel76', 'camel78', 'camel79', 'camel80', 'camel81', 'camel82', 'camel84', 'camel85', 'camel86', 'camel89', 'camel96', 'camel97', 'camel98', 'camel99', 'camel107', 'camel108', 'camel109', 'camel110', 'camel111', 'camel112', 'camel113', 'camel114', 'camel116', 'camel117', 'camel118', 'camel121', 'camel123']
-biasedHorses = ['horse0', 'horse1', 'horse2', 'horse4', 'horse5', 'horse6', 'horse16', 'horse18', 'horse19', 'horse27', 'horse28', 'horse31', 'horse32', 'horse33', 'horse34', 'horse36', 'horse37', 'horse38', 'horse39', 'horse40', 'horse41', 'horse48', 'horse49', 'horse50', 'horse51', 'horse58', 'horse59', 'horse60', 'horse62', 'horse63', 'horse64', 'horse66', 'horse67', 'horse75', 'horse76', 'horse79', 'horse80', 'horse81', 'horse82', 'horse83', 'horse84', 'horse85', 'horse86', 'horse87', 'horse88', 'horse89', 'horse90', 'horse96', 'horse98', 'horse99', 'horse108', 'horse110', 'horse111', 'horse112', 'horse113', 'horse114', 'horse116', 'horse117', 'horse118', 'horse121'] 
-biasedEagles = ['eagle16', 'eagle21', 'eagle22', 'eagle30', 'eagle47', 'eagle53', 'eagle54', 'eagle68', 'eagle88', 'eagle89', 'eagle90', 'eagle92', 'eagle99', 'eagle106', 'eagle107', 'eagle127']
-biasedKangas = ['kangaroo117','kangaroo5', 'kangaroo6', 'kangaroo7', 'kangaroo8', 'kangaroo13', 'kangaroo14', 'kangaroo15', 'kangaroo20', 'kangaroo21', 'kangaroo22', 'kangaroo23', 'kangaroo24', 'kangaroo29', 'kangaroo30', 'kangaroo31', 'kangaroo37', 'kangaroo38', 'kangaroo39', 'kangaroo40', 'kangaroo44', 'kangaroo45', 'kangaroo46', 'kangaroo47', 'kangaroo53', 'kangaroo54', 'kangaroo55', 'kangaroo56', 'kangaroo58', 'kangaroo59', 'kangaroo61', 'kangaroo62', 'kangaroo63', 'kangaroo69', 'kangaroo70', 'kangaroo71', 'kangaroo72', 'kangaroo77', 'kangaroo78', 'kangaroo79', 'kangaroo85', 'kangaroo86', 'kangaroo87', 'kangaroo88', 'kangaroo92', 'kangaroo93', 'kangaroo94', 'kangaroo95', 'kangaroo100', 'kangaroo101', 'kangaroo102', 'kangaroo103', 'kangaroo104', 'kangaroo109', 'kangaroo110', 'kangaroo111', 'kangaroo118', 'kangaroo119', 'kangaroo120', 'kangaroo124', 'kangaroo125', 'kangaroo126', 'kangaroo127', 'kangaroo132', 'kangaroo133', 'kangaroo134', 'kangaroo135', 'kangaroo136', 'kangaroo137', 'kangaroo138', 'kangaroo139', 'kangaroo141', 'kangaroo142', 'kangaroo143', 'kangaroo148', 'kangaroo149', 'kangaroo150', 'kangaroo151', 'kangaroo152', 'kangaroo153', 'kangaroo157', 'kangaroo158', 'kangaroo159']
+# # see DataCleaning.py for how we picked outliers
+# biasedAliens = ['alien67','alien0', 'alien1', 'alien2', 'alien4', 'alien5', 'alien6', 'alien9', 'alien16', 'alien18', 'alien19', 'alien27', 'alien28', 'alien30', 'alien31', 'alien32', 'alien33', 'alien34', 'alien36', 'alien37', 'alien38', 'alien39', 'alien40', 'alien41', 'alien43', 'alien44', 'alien45', 'alien48', 'alien55', 'alien57', 'alien58', 'alien66', 'alien68', 'alien69', 'alien70', 'alien71', 'alien72', 'alien73', 'alien75', 'alien76', 'alien77', 'alien78', 'alien80', 'alien87', 'alien89', 'alien90', 'alien98', 'alien99', 'alien101', 'alien102', 'alien103', 'alien105', 'alien106']
+# #biasedChildren = ['child0', 'child1', 'child2', 'child4', 'child5', 'child6', 'child7', 'child9', 'child16', 'child18', 'child19', 'child27', 'child28', 'child29', 'child30', 'child31', 'child32', 'child33', 'child34', 'child36', 'child37', 'child38', 'child39', 'child40', 'child41', 'child42', 'child48', 'child50', 'child51', 'child58', 'child59', 'child60', 'child61', 'child62', 'child63', 'child64', 'child66', 'child67', 'child75', 'child76', 'child77', 'child78', 'child79', 'child80', 'child81', 'child82', 'child84', 'child85', 'child86', 'child87', 'child89', 'child90', 'child96', 'child98', 'child99', 'child104', 'child107', 'child108', 'child109', 'child110', 'child111', 'child112', 'child113', 'child114', 'child116', 'child117', 'child118', 'child119', 'child120', 'child121', 'child122']
+# biasedCamels = ['camel0', 'camel1', 'camel4', 'camel5', 'camel6', 'camel16', 'camel18', 'camel19', 'camel24', 'camel28', 'camel30', 'camel31', 'camel32', 'camel33', 'camel34', 'camel36', 'camel37', 'camel38', 'camel39', 'camel48', 'camel51', 'camel60', 'camel62', 'camel63', 'camel64', 'camel67', 'camel76', 'camel78', 'camel79', 'camel80', 'camel81', 'camel82', 'camel84', 'camel85', 'camel86', 'camel89', 'camel96', 'camel97', 'camel98', 'camel99', 'camel107', 'camel108', 'camel109', 'camel110', 'camel111', 'camel112', 'camel113', 'camel114', 'camel116', 'camel117', 'camel118', 'camel121', 'camel123']
+# #biasedHorses = ['horse0', 'horse1', 'horse2', 'horse4', 'horse5', 'horse6', 'horse16', 'horse18', 'horse19', 'horse27', 'horse28', 'horse31', 'horse32', 'horse33', 'horse34', 'horse36', 'horse37', 'horse38', 'horse39', 'horse40', 'horse41', 'horse48', 'horse49', 'horse50', 'horse51', 'horse58', 'horse59', 'horse60', 'horse62', 'horse63', 'horse64', 'horse66', 'horse67', 'horse75', 'horse76', 'horse79', 'horse80', 'horse81', 'horse82', 'horse83', 'horse84', 'horse85', 'horse86', 'horse87', 'horse88', 'horse89', 'horse90', 'horse96', 'horse98', 'horse99', 'horse108', 'horse110', 'horse111', 'horse112', 'horse113', 'horse114', 'horse116', 'horse117', 'horse118', 'horse121'] 
+# biasedEagles = ['eagle16', 'eagle21', 'eagle22', 'eagle30', 'eagle47', 'eagle53', 'eagle54', 'eagle68', 'eagle88', 'eagle89', 'eagle90', 'eagle92', 'eagle99', 'eagle106', 'eagle107', 'eagle127']
+# biasedKangas = ['kangaroo117','kangaroo5', 'kangaroo6', 'kangaroo7', 'kangaroo8', 'kangaroo13', 'kangaroo14', 'kangaroo15', 'kangaroo20', 'kangaroo21', 'kangaroo22', 'kangaroo23', 'kangaroo24', 'kangaroo29', 'kangaroo30', 'kangaroo31', 'kangaroo37', 'kangaroo38', 'kangaroo39', 'kangaroo40', 'kangaroo44', 'kangaroo45', 'kangaroo46', 'kangaroo47', 'kangaroo53', 'kangaroo54', 'kangaroo55', 'kangaroo56', 'kangaroo58', 'kangaroo59', 'kangaroo61', 'kangaroo62', 'kangaroo63', 'kangaroo69', 'kangaroo70', 'kangaroo71', 'kangaroo72', 'kangaroo77', 'kangaroo78', 'kangaroo79', 'kangaroo85', 'kangaroo86', 'kangaroo87', 'kangaroo88', 'kangaroo92', 'kangaroo93', 'kangaroo94', 'kangaroo95', 'kangaroo100', 'kangaroo101', 'kangaroo102', 'kangaroo103', 'kangaroo104', 'kangaroo109', 'kangaroo110', 'kangaroo111', 'kangaroo118', 'kangaroo119', 'kangaroo120', 'kangaroo124', 'kangaroo125', 'kangaroo126', 'kangaroo127', 'kangaroo132', 'kangaroo133', 'kangaroo134', 'kangaroo135', 'kangaroo136', 'kangaroo137', 'kangaroo138', 'kangaroo139', 'kangaroo141', 'kangaroo142', 'kangaroo143', 'kangaroo148', 'kangaroo149', 'kangaroo150', 'kangaroo151', 'kangaroo152', 'kangaroo153', 'kangaroo157', 'kangaroo158', 'kangaroo159']
 
-dictList = [(alienDict, "alien", biasedAliens),
-            (childDict, "child", biasedChildren),
-            (camelDict, "camel", biasedCamels),
-            (horseDict, "horse", biasedHorses), 
-            (eagleDict, "eagle", biasedEagles), 
-            (kangaDict, "kangaroo", biasedKangas)]
+# dictList = [(alienDict, "alien", biasedAliens),
+#             #(childDict, "child", biasedChildren),
+#             (camelDict, "camel", biasedCamels),
+#             #(horseDict, "horse", biasedHorses), 
+#             (eagleDict, "eagle", biasedEagles), 
+#             (kangaDict, "kangaroo", biasedKangas)]
 
-inputs = []
-target = []
-labels = []
 
-#### Note to self to probably come back and fix the kangaroo and alien databases!!!
+# inputs = []
+# target = []
+# labels = []
 
-num = 10
-frames = 5
-alpha = 0.6
-scheme = "jet"
-message = ""
+# #### Note to self to probably come back and fix the kangaroo and alien databases!!!
 
-for Dict in dictList:
-    tuples = Dict[0][Dict[1]] # List of (graph, posdict) tuples
+# num = 20
+# frames = 10
+# alpha = 0.6
+# scheme = "jet"
+# message = ""
+
+# for Dict in dictList:
+#     tuples = Dict[0][Dict[1]] # List of (graph, posdict) tuples
     
-    j = 0
-    for i in range(num):
-        while ( Dict[1] + str(j) ) in Dict[2]:
-            j+=1
-        if j > len(tuples)-1:
-            #breakpoint()
-            warning = "\nNot enough " + Dict[1] + "s: "+ str(j)
-            print(warning)
-            message += warning
-            break
+#     j = 0
+#     for i in range(num):
+#         while ( Dict[1] + str(j) ) in Dict[2]:
+#             j+=1
+#         if j > len(tuples)-1:
+#             unbiased = len(tuples)-len(Dict[2])
+#             warning = "\nNot enough " + Dict[1] + "s, only "+ str(unbiased)
+#             print("j =", j)
+#             print(warning)
+#             message += warning
+#             break
     
-        G = tuples[j][0]
-        G = t.main_component(G = G, report = False)
-        pos = t.get_pos(G)
-        inputs.append( (G, pos) )
-        labels.append(Dict[1] + str(j))
-        target.append(Dict[1])
-        j += 1
-    
-    """
-    # #j = 0
-    # #for pair in tuples:
-    # #    if ( Dict[1] + str(j) ) in Dict[2]:# if it's in the biased list
-               
-    # tuples = tuples[:num]
-    # #breakpoint()
-    # #Get main components
-    # i = 0
-    # # Check if we actually have the number of graphs that we want
-    # unbiased = len(Dict[0][Dict[1]]) - len(Dict[2])
-    # if num <= unbiased:
-    #     lst = [None for n in range(num)]    
-        
-    #     for tup in tuples:
-    #         lst[i] = (t.main_component(G = tup[0], report = False), tup[1])
-        
-    #         #if len(list(t.main_component(G = tup[0], report = False).nodes)) >25:
-    #             #    continue
-    #         i+=1
-    # else:
-    #     lst = [None for n in range(unbiased)]
-    #     warning = "\nNot enough " + Dict[1] + "s: "+ str(unbiased)
-    #     print(warning)
-    #     message += warning
-        
-    #     for tup in tuples:
-    #         lst[i] = (t.main_component(G = tup[0], report = False), tup[1])
-        
-    #         #if len(list(t.main_component(G = tup[0], report = False).nodes)) >25:
-    #             #    continue
-    #         i+=1
-        
-    # inputs.extend(lst)
-    # labels.extend([Dict[1] + str(n) for n in range(num)])
-    # target.extend([Dict[1] for n in range(num)])
-    """
-            
-matrix = classify.get_matrix(inputs, frames, True, True, average = "median")
-flat = classify.condense(matrix)
-points = classify.mds(input_list = inputs,
-              target_list = target,
-              frames = frames,
-              D = matrix,
-              colorize = True,
-              scheme = scheme,
-              legend = True,
-              legend_position = "upper left",
-              alpha = alpha,
-              TIME = True)
-data = classify.draw_dendro(inputs, data = flat, frames=frames, labels=labels, thresh=0.45)
-print(message)
+#         G = tuples[j][0]
+#         G = t.main_component(G = G, report = False)
+#         pos = tuples[j][1]
+#         #pos = t.get_pos(G)
+#         pos = t.get_pos(G)
+#         inputs.append( (G, pos) )
+#         labels.append(Dict[1] + str(j))
+#         target.append(Dict[1])
+#         j += 1
+
+# matrix = classify.get_matrix(inputs, frames, True, True, average = "median")
+# flat = classify.condense(matrix)
+# points = classify.mds(input_list = inputs,
+#               target_list = target,
+#               frames = frames,
+#               D = matrix,
+#               colorize = True,
+#               scheme = "nipy_spectral",
+#               legend = True,
+#               legend_position = "upper left",
+#               alpha = alpha,
+#               TIME = True)
+# data = classify.draw_dendro(inputs, data = flat, frames=frames, labels=labels, thresh=0.45)
+# print(message)
 
 ########################### Comparing Letters####################################
 
@@ -188,7 +140,7 @@ print(message)
 #     for i in range(num):
 #         while letter + str(j) in outliers:
 #             j += 1 
-#         if j > 49:#num-1:
+#         if j > num-1:
 #             warning = "\nNot enough " + letter + "s: "+ str(j)
 #             print(warning)
 #             message += warning
@@ -200,13 +152,6 @@ print(message)
 #         labels.append(letter + str(j))
 #         target.append(letter)
 #         j += 1
-
-# import Visualization as v
-# G1 = z[0]["1"][0]
-# pos1 = get_pos(G1)
-# G2 = z[0]["9"][0]
-# pos2 = get_pos(G2)
-# v.cool_GIF(G1, pos1, G2, pos2, frames=720)
 
 # matrix = classify.get_matrix(inputs, frames, True, True, average = "median")
 # flat = classify.condense(matrix)
@@ -221,4 +166,12 @@ print(message)
 #               alpha = alpha,
 #               TIME = True)
 # data = classify.draw_dendro(inputs, data = flat, frames=frames, labels=labels, thresh=0.3)
-print(message)
+# print(message)
+
+### Makes an ABD gif between an N and W
+# import Visualization as v
+# G1 = z[0]["1"][0]
+# pos1 = get_pos(G1)
+# G2 = z[0]["9"][0]
+# pos2 = get_pos(G2)
+# v.cool_GIF(G1, pos1, G2, pos2, frames=720)
