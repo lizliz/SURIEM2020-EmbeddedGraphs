@@ -98,7 +98,17 @@ def get_data(input_list, frames = 180, p = True, TIME = False, average = "median
 # scheme: color scheme for color-coded clusters when plotted
 #         see color map options: https://matplotlib.org/3.1.0/tutorials/colors/colormaps.html
 # legend: boolean, whether you want legend to appear on plot
-# legend_positions: string, upper or lower left or right
+# legend_positions: string, one of [best
+# 	upper right,
+# 	upper left,
+# 	lower left,
+# 	lower right,
+# 	right,
+# 	center left,
+# 	center right,
+# 	lower center,
+# 	upper center,
+# 	center]
 # alpha: float (0,1], opacity of points on scatter plot
 # xRange, yRange: 2-tuples or lists, range of x and y values you want to show on the plot
 # Adapted coloring method from https://stackoverflow.com/questions/8931268/using-colormaps-to-set-color-of-line-in-matplotlib
