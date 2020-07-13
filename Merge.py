@@ -176,13 +176,13 @@ def mean_f(M):
         avg += f_(n)
     return avg / len(nodes)
     
-def normalize_f(M, center = "median"):
+def shift_f(M, center = "median"):
     if center == "median":
         center = median_f(M)
     elif center == "mean":
         center = mean_f(M)
     else:
-        print("Invalid center parameter. Valid choices are 'median' and 'mean'. Using median for normalization.")
+        print("Invalid center parameter. Valid choices are 'median' and 'mean'. Using median for shifting.")
         center = median_f(M)
         
     nodes = listify_nodes(M)
@@ -241,7 +241,7 @@ def collapse_neighbors(G, n, processed, merge=False):
         
     return count
 
-#Collapse all of the on-level nodes in a given graph
+#Collapse all of the on-level neighbors in a given graph
 def preprocess(G):
     #Purge all self-loops
     for e in list(G.edges):
@@ -288,7 +288,7 @@ def find_on_level(M, roots, f):
 #Adds a node to the merge tree
 #n_=node name, G=graph, M=merge tree
 #
-#NOTE: In our paper, we describe "superior" and "inferior" pointers.
+#NOTE: In our paper, we describe "parent" and "child" pointers.
 #      Here, those correspond to node attributes ['p'] and ['c'], respectively.
 def add_node(n_, G, M):
     #The actual node
@@ -349,7 +349,9 @@ def add_node(n_, G, M):
  
 #Construct the merge tree given a graph G with function values.
 #Returns a networkx tree with a position dictionary for drawing
-def merge_tree(G, normalize=True):
+#G: NetworkX Graph
+#shift: Boolean, whether you want to shift the function values by the average
+def merge_tree(G, shift=True):
     preprocess(G)
     
     #Get the nodes from the networkx graph
@@ -362,7 +364,7 @@ def merge_tree(G, normalize=True):
         add_node(nodes[i]['name'], G, M)
     
     reduce(M)
-    if(normalize):
-        normalize_f(M)
+    if(shift):
+        shift_f(M)
         
     return M            

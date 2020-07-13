@@ -24,7 +24,7 @@ from scipy import stats
 # data: list(right?), data returned by the distance_data() funtion (better description?)
 # rotate_both: boolean, whether you want to rotate G1 in addition to G2
 # accuracy: float or int, value returned will be within this radius of accuracy
-# frames: int,
+# frames: int, number of times you want to rotate a tree for average branching distance
 ###############################################################################
 
 
@@ -40,10 +40,10 @@ def get_data_point(G1, pos1, G2, pos2, angle, index, data, rotate_both=True, acc
     else:
         calc_values_height_reorient(G1c, p1)
  
-    M1 = merge_tree(G1c, normalize=True)
+    M1 = merge_tree(G1c, shift=True)
     
     calc_values_height_reorient(G2c, p2, angle)
-    M2 = merge_tree(G2c, normalize=True)
+    M2 = merge_tree(G2c, shift=True)
     
     dist = Compare.branching_distance(M1, M2, accuracy)
     data.append( (index, dist) ) 

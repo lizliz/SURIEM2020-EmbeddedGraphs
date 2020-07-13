@@ -5,13 +5,14 @@ Created on Tue Jul  7 19:36:23 2020
 @author: Candace Todd
 """
 # Script recording our data cleaning methodology
+# Note: this is an interactive program
 
 import DataReader as dr
 import networkx as nx
 import lib.Tools as t
 import matplotlib.pyplot as plt
 
-################## Code for picking out outlier binary ########################
+################## Code for picking out outlier binary images ########################
 alienDict = dr.read_sm("data/Shape-Matcher-models/ALIEN.xml")
 t.rename_key(alienDict, oldKey = "models/ALIEN/ALIEN", newKey = "alien")
 
@@ -20,24 +21,24 @@ t.rename_key(childDict, oldKey = "models/m_chld/m_chld", newKey = "child")
 
 camelDict = dr.read_sm("data/Shape-Matcher-models/camel.xml")
 t.rename_key(camelDict, oldKey = "models/camel/camel", newKey = "camel")
-#17
+# 17 is a good camel model
 
 horseDict = dr.read_sm("data/Shape-Matcher-models/HORSE.xml")
 t.rename_key(horseDict, oldKey = "models/HORSE/HORSE", newKey = "horse")
-#52
+# 52 isa good horse model
 
 eagleDict = dr.read_sm("data/Shape-Matcher-models/eagle.xml")
 t.rename_key(eagleDict, oldKey = "models/eagle/eagle", newKey = "eagle")
-#35
+# 35 is a good eagle model
 
 kangaDict = dr.read_sm("data/Shape-Matcher-models/KANGAROO.xml")
 t.rename_key(kangaDict, oldKey = "models/KANGAROO/KANGAROO", newKey = "kangaroo")
-#1
+# 1 is a good kangaroo model
 
 pictDict = kangaDict # Name of the dictionary
 pict = "kangaroo" # Name of the key
 num = len(pictDict[pict]) # Shouldn't need to change anything else 
-outliers = ['kangaroo5', 'kangaroo6', 'kangaroo7', 'kangaroo8', 'kangaroo13', 'kangaroo14', 'kangaroo15', 'kangaroo20', 'kangaroo21', 'kangaroo22', 'kangaroo23', 'kangaroo24', 'kangaroo29', 'kangaroo30', 'kangaroo31', 'kangaroo37', 'kangaroo38', 'kangaroo39', 'kangaroo40', 'kangaroo44', 'kangaroo45', 'kangaroo46', 'kangaroo47', 'kangaroo53', 'kangaroo54', 'kangaroo55', 'kangaroo56', 'kangaroo58', 'kangaroo59', 'kangaroo61', 'kangaroo62', 'kangaroo63', 'kangaroo69', 'kangaroo70', 'kangaroo71', 'kangaroo72', 'kangaroo77', 'kangaroo78', 'kangaroo79']
+outliers = []
 
 i = 0
 print("Notice the number at the top of the plot.")
