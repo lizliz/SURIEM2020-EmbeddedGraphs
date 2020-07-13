@@ -427,7 +427,7 @@ def IsEpsSimilar(A, B, e, costs=None, roots=None, memo=None, subtrees=None, mapp
 # returns distance between 2 merge trees within a margin of error
 # T1, T2: networkx graphs, merge trees returned by Merge.merge_tree()
 # accuracy: int or float, distance returned will be withing this radius of accuracy
-# valid: ????
+# valid: Setting this to true will ensure that the last iteration is one where a valid matching is found.
 # get_map: boolean, whether you want to return the mapping between trees that yields the returned epsilon value
 def branching_distance(T1, T2, accuracy = 0.05, valid=False, get_map=False):
     global st

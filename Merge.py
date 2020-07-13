@@ -328,28 +328,18 @@ def add_node(n_, G, M):
         
     #2 or MORE children => merge
     if(len(roots) >= 2):
-        #Check if there is already a connected rep. on the level
-        rep = find_on_level(M, roots, f)
-        if(rep != None):
-            #Add all the edges
-            for r in roots:
-                p = find_p(r, M) #What we connect to
-                if(p != rep): #Add Edge
-                    M.add_edge(p, rep)
-                    M.nodes[p]['p'] = rep #Update the superior
-                    if(f_(M.nodes[p]) == f):
-                        processed = {}
-                        collapse_neighbors(M, rep, processed, merge=True)
-        else: #New node
-            M.add_node(n_) #Create a copy of n in M
-            M.nodes[n_]['p'] = n_ #Own parent
-            M.nodes[n_]['value'] = f #Function value
-            
-            for r in roots:
-                p = find_p(r, M) #What we connect to
-                if(p != n_): #Add Edge
-                    M.add_edge(p, n_)
+        M.add_node(n_) #Create a copy of n in M
+        M.nodes[n_]['p'] = n_ #Own parent
+        M.nodes[n_]['value'] = f #Function value
+        
+        for r in roots:
+            p = find_p(r, M) #What we connect to
+            if(p != n_): #Add Edge
+                M.add_edge(p, n_)    
                 M.nodes[p]['p'] = n_ #Update the superior
+                if(f_(M.nodes[p]) == f):
+                    processed = {}
+                    collapse_neighbors(M, n_, processed, merge=True)
         
         #set c as the inferior of n and all other roots
         n['c'] = min_root
