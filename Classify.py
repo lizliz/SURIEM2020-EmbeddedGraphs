@@ -102,7 +102,7 @@ def get_data(input_list, frames = 180, p = True, TIME = False, average = "median
 # alpha: float (0,1], opacity of points on scatter plot
 # Adapted coloring method from https://stackoverflow.com/questions/8931268/using-colormaps-to-set-color-of-line-in-matplotlib
 # Adapted MDS method from https://jakevdp.github.io/PythonDataScienceHandbook/05.10-manifold-learning.html
-def mds(input_list, target_list, frames=180, D = None, colorize = True, scheme = "jet", legend = True, legend_position = "upper right", alpha = 0.4, TIME = True):
+def mds(input_list, target_list, frames=180, D = None, colorize = True, scheme = "jet", legend = True, legend_position = "upper right", alpha = 0.4, TIME = True, xRange = None, yRange = None):
     if type(D) == type(None):
         D = get_data(input_list, frames, p = True, TIME = TIME)[1] # Get a distance matrix from the input list
     model = MDS(n_components=2, dissimilarity='precomputed', random_state=1)
@@ -156,8 +156,15 @@ def mds(input_list, target_list, frames=180, D = None, colorize = True, scheme =
             if legend == True:
                 handles,labels = ax.get_legend_handles_labels()
                 ax.legend(handles, labels, loc=legend_position)
-        
-        plt.axis('equal')
+            
+        # #plt.xlim(xmin, xmax)
+        # #plt.ylim(ymin, ymax)
+        if xRange != None and yRange != None:
+            xmin, xmax = xRange[0], xRange[1]
+            ymin, ymax = yRange[0], yRange[1]    
+            ax.set(xlim=(xmin, xmax), ylim=(ymin, ymax))
+        else:
+            plt.axis('equal')
         plt.show()
 
     return coords

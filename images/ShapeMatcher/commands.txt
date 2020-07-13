@@ -1,0 +1,147 @@
+Usage:
+        sm [option (val)]* db-file-name file1 file2 ...
+
+Options:
+        -d or -debug                 Generate a number of log files
+        -c or -create                Create database of shock graphs
+        -a or -add                   Add DAG to DB
+        -l or -list                  List DAGs in the database
+        -s or -size                  Shows the database size in num. of views
+        -i or -createIndex           Explicitly creates the DB index
+        -m or -match [val]           Match DAG [DAG ID]
+        -p or -plot                  Plot DAG node info
+        -v or -view [val]            Visualize a DAG from ID or name (eg, objNN)
+        -w or -mview                 Visualize a DAGs. Use with -from ID and -to ID
+        -nnview [val]                Visualize a DAG (from ID) and its 9 neighbors
+        -S or -selfDBMatch           Match each database against itself
+        -M or -multiDBMatch [val]    Match a target database against all other databases
+        -cluster                     Cluster shapes and find prototypes
+        -nodeMatch                   Match node v1 in graph G1 to v2 in G2
+        -compare [val]               Compares DAGs without using indexing
+        -matrix [val]                Outputs similarity matrix to file [val] for all the models in the database
+        -train [val]                 Create database using some training techinque (experimental)
+        -toXML [val]                 Saves the graphs from '-from ID' to '-to ID' in XML format
+        -checkSGGrammar              Checks the shock graph grammar of all graphs
+        -delete                      Delete DAGs from database
+        -extract                     Extract DAGs from database
+        -updatedb                    Read in the db and write it back
+        -recompute                   Recomputes all graphs an saves them in a new DB
+        -splitdb [val]               Split database in random pieces of sizes N% and (100-N)% of the total size (see splitByObject) [N]
+        -incObjDBSplit               Incremental split of database in subdatabases with decreasing number of objects
+        -incRandomDBSplit [val]      Incremental split of database in N subdatabases with decreasing number of views per object [N] {-iterations}
+        -mergedb                     Merge databases (dest src1 src2 ...)
+        -test                        Test all the object in the DB
+        -objNames                    List object names in the database
+        -delObjects                  Removes all dags of given objects
+        -clos3NeigList               List the 3 closest neighbours of each view
+        -clos9NeigList               List the 9 closest neighbours of each view
+        -getNeig [val]               List the neighbours withing a given range in deg.
+        -verbose [val]               Execute in verbose mode
+        -h or -help                  Display a man page for this program
+        -tsvSimWeight [val]          TSV similarity weight
+        -simMassWeight [val]         Similarity vs Mass weight
+        -relMassWeight [val]         Relative mass of the query vs. tot model
+        -matchAlgorithm [val]        Matching algorithm ID
+        -nodeDistFunc [val]          Node distance function ID
+        -sibRelPen [val]             Penalty term for breaking sibling's relationship (1=max)
+        -presAncRel [val]            Preserve ancestor relationships when matching
+        -useNewVWF [val]             Use new vote weighting function
+        -useMOOVC [val]              Use multiple one-to-one vote counting
+        -matDB [val]                 Index of associate database for matching
+        -modelSimWeight [val]        Model similarity weight
+        -idxRange [val]              Index range
+        -kBest [val]                 Match only k best from index
+        -idxTau [val]                Index similarity threshold
+        -matchTau [val]              Matcher similarity threshold
+        -stats [val]                 Compute view statistics
+        -asyncCompu [val]            Compute SG's in async mode (see timeout)
+        -showResults [val]           Show matching results
+        -saveResults [val]           Save matching results
+        -o or -objName [val]         Set object name
+        -iterations [val]            Parameter for the SG computation
+        -maxDags [val]               Maximum number of DAGs to process
+        -imgStep [val]               Image step
+        -from [val]                  Match DAGs from ID N
+        -to [val]                    Match DAGs up to ID M
+        -maxOcclRate [val]           Maximum occlusion rate
+        -saveSubsamplingInfo [val]   Save info to split DB when matching
+        -splitByObject [val]         Split DB maintaining equal object proportions
+        -bumpSize [val]              Size of noise bumps
+        -notchSize [val]             Size of noise notches
+        -outDir [val]                Sets the output directory for noisy images
+        -xpos [val]                  Window x-coord position
+        -ypos [val]                  Window y-coord position
+        -useDirNameAsObjName [val]   Use the (sub)directory name (if given) as the object name
+        -shaperep [val]              Shape representation: ShockGraph = 1, GestureGraph = 2, BoneGraph = 3
+        -timeout [val]               SG computation Timeout in seconds
+        -split3s [val]               Should split 3s into left and right 3s
+        -minslope [val]              Slope that is to be considered as zero
+        -minerror [val]              #Pts/'value' defines least-square error tolerated
+        -maxydiff [val]              Maximum difference in y-coord discontinuity
+        -maxaccelchg [val]           Max acceleration chage tolerated
+        -smoothIter [val]            Boundary smoothing interations = 0,...,5 (for AFMM only)
+        -maxCumBAR [val]             Maximum cumulative bar for a ligature segment
+        -maxRadRatio [val]           Maximum radius ratio for a ligature segment
+        -specializeBones [val]       Partitions bones according to some criteria
+        -ignoreLigature [val]        Testing: ignores ligature information
+        -subtractLigatureAtCrossings [val]Testing: subtracts ligature rooted at crossings
+        -subtractLigatureAtJunctions [val]Testing: subtracts ligature at junctions
+        -showDependencies [val]      Show junction point dependencies
+        -showGSG [val]               Show generalized skeletal graph
+        -skelcode [val]              Use skeletonization code number = {1, 2, 3}
+        -minLinearError [val]        #Pts/'value' defines linear skeleton approximation error
+        -minBezierError [val]        #Pts/'value' defines cubic Bezier skeleton approximation error
+        -maxLineSegments [val]       Max number of line segments per skeleton branch
+        -maxBezierSegments [val]     Max number of cubic Beziers per skeleton branch
+        -fluxStep [val]              1/'value' defines the sampling step for Flux skeletons
+        -fluxTau [val]               Flux branch threshold for minimum angle angle
+        -fluxResolution [val]        Flux value resolution
+        -afmmTau1 [val]              AFMM skeleton threshold 1 (deprecated)
+        -afmmTau2 [val]              AFMM branch threshold for minimum radius
+        -bndryWeight [val]           Boundary reconstruction error weight
+        -strucWeight [val]           Structural reconstruction error weight
+        -doExtSimp [val]             Perform the external branch simplification on the skeleton
+        -doIntSimp [val]             Perform the internal branch simplification on the skeleton
+        -doCompleteSimp [val]        Perform the external and internal branch simplification
+
+Current parameter values:
+
+match = , view = from, nnview = from, multiDBMatch = , compare = , matrix = matrix.m, train = matrix.m, toXML = , splitdb = 50, incRandomDBSplit = 3, getNeig = 180, verbose = 0, tsvSimWeight = 0.3, simMassWeight = 0.7, relMassWeight = 0.5, matchAlgorithm = 0, nodeDistFunc = 3, sibRelPen = 0.2, presAncRel = 1, useNewVWF = 1, useMOOVC = 1, matDB = 0, modelSimWeight = 0.5, idxRange = 0.4, kBest = 101, idxTau = 0.3, matchTau = 0.1, stats = 0, asyncCompu = 0, showResults = 1, saveResults = 1, objName = , iterations = 1, maxDags = -1, imgStep = 1, from = 0, to = -1, maxOcclRate = 0, saveSubsamplingInfo = 0, splitByObject = 1, bumpSize = 0, notchSize = 0, outDir = ./NoisyImgs/, xpos = 0, ypos = 0, useDirNameAsObjName = 1, shaperep = 1, timeout = 800, split3s = 0, minslope = 0.05, minerror = 2, maxydiff = 0.1, maxaccelchg = 0.5, smoothIter = 0, maxCumBAR = 0.75, maxRadRatio = 0.9, specializeBones = 0, ignoreLigature = 0, subtractLigatureAtCrossings = 1, subtractLigatureAtJunctions = 0, showDependencies = 0, showGSG = 0, skelcode = 3, minLinearError = 2, minBezierError = 8, maxLineSegments = 8, maxBezierSegments = 4, fluxStep = 1, fluxTau = 2.5, fluxResolution = 16, afmmTau1 = 0, afmmTau2 = 20, bndryWeight = 500, strucWeight = 500, doExtSimp = 1, doIntSimp = 0, doCompleteSimp = 0
+
+Shape Matcher 6.1 beta
+
+Examples:
+
+Create a database from all the pgm files in a directory and subdirectories:
+
+        sm -c objs.db MyImageDir
+
+Create a database from pgm files:
+
+        sm -c objs.db file1.pgm file2.pgm ...
+
+Delete dags from the database:
+
+        sm -delete source.db target.db id1 id2 ...
+
+List objects stored in the database (ID, name, ...):
+
+        sm -l objs.db
+
+Match a particular object in the DB against all the objects:
+
+        sm -m obj-id objs.db
+
+Match all objects in a db against those in another db:
+
+        sm -m querys.db models.db
+
+Create a similarity (MATLAB) matrix for all objects in a database:
+
+        sm -matrix simmat.m models.db
+
+Display DAG(s):
+
+        sm -v obj-id objs.db
+or
+        sm -w objs.db [obj-id obj-id...]

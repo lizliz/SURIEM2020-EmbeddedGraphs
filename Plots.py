@@ -8,6 +8,78 @@ import DataReader as dr
 import lib.Tools as t
 import Classify as classify
 
+######################## Binary Dino Images ###########################
+
+
+
+theroDict = dr.read_sm("data/Dinos/thero.xml")
+t.rename_key(theroDict, oldKey = "Theropods", newKey = "theros")
+
+ornithDict = dr.read_sm("data/Dinos/ornith.xml")
+t.rename_key(ornithDict, oldKey = "Ornithiscians", newKey = "orniths")
+
+sauroDict = dr.read_sm("data/Dinos/sauro.xml")
+t.rename_key(sauroDict, oldKey = "Sauropods", newKey = "sauros")
+
+
+dictList = [(theroDict, "theros"),
+            (ornithDict, "orniths"),
+            (sauroDict, "sauros")]
+
+
+inputs = []
+target = []
+labels = []
+
+#### Note to self to probably come back and fix the kangaroo and alien databases!!!
+
+num = 5
+frames = 1
+alpha = 0.6
+scheme = "jet"
+message = ""
+
+for Dict in dictList:
+    tuples = Dict[0][Dict[1]] # List of (graph, posdict) tuples
+    
+    #j = 0
+    for i in range(num):
+        # while ( Dict[1] + str(j) ) in Dict[2]:
+        #     j+=1
+        if i > 5:
+            warning = "\nNot enough " + Dict[1] + "s, only 5"
+            print(warning)
+            message += warning
+            break
+        
+        #breakpoint()
+        print(Dict[1])
+        print(i)
+        G = tuples[i][0]
+        G = t.main_component(G = G, report = False)
+        pos = tuples[i][1]
+        #pos = t.get_pos(G)
+        pos = t.get_pos(G)
+        inputs.append( (G, pos) )
+        labels.append(Dict[1] + str(i))
+        target.append(Dict[1])
+        #j += 1
+
+matrix = classify.get_matrix(inputs, frames, True, True, average = "median")
+flat = classify.condense(matrix)
+points = classify.mds(input_list = inputs,
+              target_list = target,
+              frames = frames,
+              D = matrix,
+              colorize = True,
+              scheme = "nipy_spectral",
+              legend = True,
+              legend_position = "upper left",
+              alpha = alpha,
+              TIME = True)
+data = classify.draw_dendro(inputs, data = flat, frames=frames, labels=labels, thresh=0.45)
+print(message)
+
 ######################## Binary ShapeMatcher Models ###########################
 
 # alienDict = dr.read_sm("data/Shape-Matcher-models/ALIEN.xml")
@@ -19,8 +91,8 @@ import Classify as classify
 # camelDict = dr.read_sm("data/Shape-Matcher-models/camel.xml")
 # t.rename_key(camelDict, oldKey = "models/camel/camel", newKey = "camel")
 
-# horseDict = dr.read_sm("data/Shape-Matcher-models/HORSE.xml")
-# t.rename_key(horseDict, oldKey = "models/HORSE/HORSE", newKey = "horse")
+# #horseDict = dr.read_sm("data/Shape-Matcher-models/HORSE.xml")
+# #t.rename_key(horseDict, oldKey = "models/HORSE/HORSE", newKey = "horse")
 # #52
 
 # eagleDict = dr.read_sm("data/Shape-Matcher-models/eagle.xml")
@@ -54,7 +126,7 @@ import Classify as classify
 # #### Note to self to probably come back and fix the kangaroo and alien databases!!!
 
 # num = 20
-# frames = 10
+# frames = 100
 # alpha = 0.6
 # scheme = "jet"
 # message = ""
@@ -78,7 +150,7 @@ import Classify as classify
 #         G = t.main_component(G = G, report = False)
 #         pos = tuples[j][1]
 #         #pos = t.get_pos(G)
-#         pos = t.get_pos(G)
+#         #pos = t.get_pos(G)
 #         inputs.append( (G, pos) )
 #         labels.append(Dict[1] + str(j))
 #         target.append(Dict[1])
@@ -86,18 +158,22 @@ import Classify as classify
 
 # matrix = classify.get_matrix(inputs, frames, True, True, average = "median")
 # flat = classify.condense(matrix)
+# #fig, ax = plt.subplots()
 # points = classify.mds(input_list = inputs,
 #               target_list = target,
 #               frames = frames,
 #               D = matrix,
 #               colorize = True,
-#               scheme = "nipy_spectral",
+#               scheme = "jet",
 #               legend = True,
 #               legend_position = "upper left",
 #               alpha = alpha,
 #               TIME = True)
+# #set_xlim()
 # data = classify.draw_dendro(inputs, data = flat, frames=frames, labels=labels, thresh=0.45)
 # print(message)
+
+
 
 ########################### Comparing Letters####################################
 

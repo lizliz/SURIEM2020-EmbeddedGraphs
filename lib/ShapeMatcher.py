@@ -9,7 +9,7 @@ Created on Thu Jul  2 23:47:49 2020
 import subprocess as sp # I don't think this is customary but I'm doing it
 import platform as p
 import networkx as nx
-from lib.sm2nx import read_sm
+#from sm2nx import read_sm
 from contextlib import contextmanager
 #import pdb
 import os
