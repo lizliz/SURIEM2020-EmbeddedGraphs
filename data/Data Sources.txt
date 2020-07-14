@@ -31,3 +31,12 @@ From the TUD datasets:
 (https://chrsmrrs.github.io/datasets/)
 Letter-high
 Letter-low
+
+From ShapeMatcher6.0.1beta:
+(http://www.cs.toronto.edu/~dmac/ShapeMatcher)
+All .xml files in /Shape-Matcher-models (converted to .xml with ShapeMatcher6.0.1beta)
+All .ppm files in
+
+From Scott Hartman's Skeletaldrawing.com:
+(https://www.skeletaldrawing.com/)
+All .xml files in /Dinos (downloaded as images, converted to .xml with ShapeMatcher6.0.1beta)

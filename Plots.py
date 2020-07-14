@@ -10,73 +10,73 @@ import DataReader as dr
 import lib.Tools as t
 import Classify as classify
 
-# ######################## Binary ShapeMatcher Models ###########################
+######################## Binary ShapeMatcher Models ###########################
 
-# alienDict = dr.read_sm("data/Shape-Matcher-models/ALIEN.xml")
-# t.rename_key(alienDict, oldKey = "models/ALIEN/ALIEN", newKey = "alien")
+alienDict = dr.read_sm("data/Shape-Matcher-models/ALIEN.xml")
+t.rename_key(alienDict, oldKey = "models/ALIEN/ALIEN", newKey = "alien")
 
-# camelDict = dr.read_sm("data/Shape-Matcher-models/camel.xml")
-# t.rename_key(camelDict, oldKey = "models/camel/camel", newKey = "camel")
+camelDict = dr.read_sm("data/Shape-Matcher-models/camel.xml")
+t.rename_key(camelDict, oldKey = "models/camel/camel", newKey = "camel")
 
-# eagleDict = dr.read_sm("data/Shape-Matcher-models/eagle.xml")
-# t.rename_key(eagleDict, oldKey = "models/eagle/eagle", newKey = "eagle")
+eagleDict = dr.read_sm("data/Shape-Matcher-models/eagle.xml")
+t.rename_key(eagleDict, oldKey = "models/eagle/eagle", newKey = "eagle")
 
-# kangaDict = dr.read_sm("data/Shape-Matcher-models/KANGAROO.xml")
-# t.rename_key(kangaDict, oldKey = "models/KANGAROO/KANGAROO", newKey = "kangaroo")
+kangaDict = dr.read_sm("data/Shape-Matcher-models/KANGAROO.xml")
+t.rename_key(kangaDict, oldKey = "models/KANGAROO/KANGAROO", newKey = "kangaroo")
 
-# # see DataCleaning.py for how we picked outliers
-# biasedAliens = ['alien67','alien0', 'alien1', 'alien2', 'alien4', 'alien5', 'alien6', 'alien9', 'alien16', 'alien18', 'alien19', 'alien27', 'alien28', 'alien30', 'alien31', 'alien32', 'alien33', 'alien34', 'alien36', 'alien37', 'alien38', 'alien39', 'alien40', 'alien41', 'alien43', 'alien44', 'alien45', 'alien48', 'alien55', 'alien57', 'alien58', 'alien66', 'alien68', 'alien69', 'alien70', 'alien71', 'alien72', 'alien73', 'alien75', 'alien76', 'alien77', 'alien78', 'alien80', 'alien87', 'alien89', 'alien90', 'alien98', 'alien99', 'alien101', 'alien102', 'alien103', 'alien105', 'alien106']
-# biasedCamels = ['camel0', 'camel1', 'camel4', 'camel5', 'camel6', 'camel16', 'camel18', 'camel19', 'camel24', 'camel28', 'camel30', 'camel31', 'camel32', 'camel33', 'camel34', 'camel36', 'camel37', 'camel38', 'camel39', 'camel48', 'camel51', 'camel60', 'camel62', 'camel63', 'camel64', 'camel67', 'camel76', 'camel78', 'camel79', 'camel80', 'camel81', 'camel82', 'camel84', 'camel85', 'camel86', 'camel89', 'camel96', 'camel97', 'camel98', 'camel99', 'camel107', 'camel108', 'camel109', 'camel110', 'camel111', 'camel112', 'camel113', 'camel114', 'camel116', 'camel117', 'camel118', 'camel121', 'camel123']
-# biasedEagles = ['eagle16', 'eagle21', 'eagle22', 'eagle30', 'eagle47', 'eagle53', 'eagle54', 'eagle68', 'eagle88', 'eagle89', 'eagle90', 'eagle92', 'eagle99', 'eagle106', 'eagle107', 'eagle127']
-# biasedKangas = ['kangaroo117','kangaroo5', 'kangaroo6', 'kangaroo7', 'kangaroo8', 'kangaroo13', 'kangaroo14', 'kangaroo15', 'kangaroo20', 'kangaroo21', 'kangaroo22', 'kangaroo23', 'kangaroo24', 'kangaroo29', 'kangaroo30', 'kangaroo31', 'kangaroo37', 'kangaroo38', 'kangaroo39', 'kangaroo40', 'kangaroo44', 'kangaroo45', 'kangaroo46', 'kangaroo47', 'kangaroo53', 'kangaroo54', 'kangaroo55', 'kangaroo56', 'kangaroo58', 'kangaroo59', 'kangaroo61', 'kangaroo62', 'kangaroo63', 'kangaroo69', 'kangaroo70', 'kangaroo71', 'kangaroo72', 'kangaroo77', 'kangaroo78', 'kangaroo79', 'kangaroo85', 'kangaroo86', 'kangaroo87', 'kangaroo88', 'kangaroo92', 'kangaroo93', 'kangaroo94', 'kangaroo95', 'kangaroo100', 'kangaroo101', 'kangaroo102', 'kangaroo103', 'kangaroo104', 'kangaroo109', 'kangaroo110', 'kangaroo111', 'kangaroo118', 'kangaroo119', 'kangaroo120', 'kangaroo124', 'kangaroo125', 'kangaroo126', 'kangaroo127', 'kangaroo132', 'kangaroo133', 'kangaroo134', 'kangaroo135', 'kangaroo136', 'kangaroo137', 'kangaroo138', 'kangaroo139', 'kangaroo141', 'kangaroo142', 'kangaroo143', 'kangaroo148', 'kangaroo149', 'kangaroo150', 'kangaroo151', 'kangaroo152', 'kangaroo153', 'kangaroo157', 'kangaroo158', 'kangaroo159']
+# see DataCleaning.py for how we picked outliers
+biasedAliens = ['alien67','alien0', 'alien1', 'alien2', 'alien4', 'alien5', 'alien6', 'alien9', 'alien16', 'alien18', 'alien19', 'alien27', 'alien28', 'alien30', 'alien31', 'alien32', 'alien33', 'alien34', 'alien36', 'alien37', 'alien38', 'alien39', 'alien40', 'alien41', 'alien43', 'alien44', 'alien45', 'alien48', 'alien55', 'alien57', 'alien58', 'alien66', 'alien68', 'alien69', 'alien70', 'alien71', 'alien72', 'alien73', 'alien75', 'alien76', 'alien77', 'alien78', 'alien80', 'alien87', 'alien89', 'alien90', 'alien98', 'alien99', 'alien101', 'alien102', 'alien103', 'alien105', 'alien106']
+biasedCamels = ['camel0', 'camel1', 'camel4', 'camel5', 'camel6', 'camel16', 'camel18', 'camel19', 'camel24', 'camel28', 'camel30', 'camel31', 'camel32', 'camel33', 'camel34', 'camel36', 'camel37', 'camel38', 'camel39', 'camel48', 'camel51', 'camel60', 'camel62', 'camel63', 'camel64', 'camel67', 'camel76', 'camel78', 'camel79', 'camel80', 'camel81', 'camel82', 'camel84', 'camel85', 'camel86', 'camel89', 'camel96', 'camel97', 'camel98', 'camel99', 'camel107', 'camel108', 'camel109', 'camel110', 'camel111', 'camel112', 'camel113', 'camel114', 'camel116', 'camel117', 'camel118', 'camel121', 'camel123']
+biasedEagles = ['eagle16', 'eagle21', 'eagle22', 'eagle30', 'eagle47', 'eagle53', 'eagle54', 'eagle68', 'eagle88', 'eagle89', 'eagle90', 'eagle92', 'eagle99', 'eagle106', 'eagle107', 'eagle127']
+biasedKangas = ['kangaroo117','kangaroo5', 'kangaroo6', 'kangaroo7', 'kangaroo8', 'kangaroo13', 'kangaroo14', 'kangaroo15', 'kangaroo20', 'kangaroo21', 'kangaroo22', 'kangaroo23', 'kangaroo24', 'kangaroo29', 'kangaroo30', 'kangaroo31', 'kangaroo37', 'kangaroo38', 'kangaroo39', 'kangaroo40', 'kangaroo44', 'kangaroo45', 'kangaroo46', 'kangaroo47', 'kangaroo53', 'kangaroo54', 'kangaroo55', 'kangaroo56', 'kangaroo58', 'kangaroo59', 'kangaroo61', 'kangaroo62', 'kangaroo63', 'kangaroo69', 'kangaroo70', 'kangaroo71', 'kangaroo72', 'kangaroo77', 'kangaroo78', 'kangaroo79', 'kangaroo85', 'kangaroo86', 'kangaroo87', 'kangaroo88', 'kangaroo92', 'kangaroo93', 'kangaroo94', 'kangaroo95', 'kangaroo100', 'kangaroo101', 'kangaroo102', 'kangaroo103', 'kangaroo104', 'kangaroo109', 'kangaroo110', 'kangaroo111', 'kangaroo118', 'kangaroo119', 'kangaroo120', 'kangaroo124', 'kangaroo125', 'kangaroo126', 'kangaroo127', 'kangaroo132', 'kangaroo133', 'kangaroo134', 'kangaroo135', 'kangaroo136', 'kangaroo137', 'kangaroo138', 'kangaroo139', 'kangaroo141', 'kangaroo142', 'kangaroo143', 'kangaroo148', 'kangaroo149', 'kangaroo150', 'kangaroo151', 'kangaroo152', 'kangaroo153', 'kangaroo157', 'kangaroo158', 'kangaroo159']
 
-# dictList = [(alienDict, "alien", biasedAliens),
-#             (camelDict, "camel", biasedCamels),
-#             (eagleDict, "eagle", biasedEagles), 
-#             (kangaDict, "kangaroo", biasedKangas)]
+dictList = [(alienDict, "alien", biasedAliens),
+            (camelDict, "camel", biasedCamels),
+            (eagleDict, "eagle", biasedEagles), 
+            (kangaDict, "kangaroo", biasedKangas)]
 
-# inputs = []
-# target = []
-# labels = []
+inputs = []
+target = []
+labels = []
 
-# num = 20 # Number of graphs from each category
-# alpha = 0.6 #Translucency of the points
-# scheme = "jet" #Color mapping used for the plots' cluster color scheme
+num = 20 # Number of graphs from each category
+alpha = 0.6 #Translucency of the points
+scheme = "jet" #Color mapping used for the plots' cluster color scheme
 
-# for frame in [5, 20, 50, 100]: # number of frames used for average branching distance
-#     for Dict in dictList:
-#         tuples = Dict[0][Dict[1]] # List of (graph, posdict) tuples
+for frame in [5, 20, 50, 100]: # number of frames used for average branching distance
+    for Dict in dictList:
+        tuples = Dict[0][Dict[1]] # List of (graph, posdict) tuples
         
-#         j = 0
-#         for i in range(num):
-#             while ( Dict[1] + str(j) ) in Dict[2]:
-#                 j+=1
-#             if j > len(tuples)-1:
-#                 unbiased = len(tuples)-len(Dict[2])
-#                 warning = "\nNot enough " + Dict[1] + "s, only "+ str(unbiased)
-#                 print("j =", j)
-#                 print(warning)
-#                 break
+        j = 0
+        for i in range(num):
+            while ( Dict[1] + str(j) ) in Dict[2]:
+                j+=1
+            if j > len(tuples)-1:
+                unbiased = len(tuples)-len(Dict[2])
+                warning = "\nNot enough " + Dict[1] + "s, only "+ str(unbiased)
+                print("j =", j)
+                print(warning)
+                break
         
-#             G = tuples[j][0]
-#             G = t.main_component(G = G, report = False)
-#             pos = tuples[j][1]
-#             inputs.append( (G, pos) )
-#             labels.append(Dict[1] + str(j))
-#             target.append(Dict[1])
-#             j += 1
+            G = tuples[j][0]
+            G = t.main_component(G = G, report = False)
+            pos = tuples[j][1]
+            inputs.append( (G, pos) )
+            labels.append(Dict[1] + str(j))
+            target.append(Dict[1])
+            j += 1
     
-#     matrix = classify.get_matrix(inputs, frame, True, True, average = "median")
-#     points = classify.mds(input_list = inputs,
-#                   target_list = target,
-#                   frames = frame,
-#                   D = matrix,
-#                   colorize = True,
-#                   scheme = scheme,
-#                   legend = True,
-#                   legend_position = "upper left",
-#                   alpha = alpha,
-#                   TIME = True)
+    matrix = classify.get_matrix(inputs, frame, True, True, average = "median")
+    points = classify.mds(input_list = inputs,
+                  target_list = target,
+                  frames = frame,
+                  D = matrix,
+                  colorize = True,
+                  scheme = scheme,
+                  legend = True,
+                  legend_position = "upper left",
+                  alpha = alpha,
+                  TIME = True)
     
 ########################### Comparing Letters####################################
 
@@ -162,10 +162,10 @@ data = classify.draw_dendro(input_list = inputs,
                             thresh=0.3)
 print(message)
 
-## Makes an ABD gif between an N and W
-# import Visualization as v
-# G1 = z[0]["1"][0]
-# pos1 = t.get_pos(G1)
-# G2 = z[0]["9"][0]
-# pos2 = t.get_pos(G2)
-# v.cool_GIF(G1, pos1, G2, pos2, frames=720)
+# Makes an ABD gif between an N and W
+import Visualization as v
+G1 = z[0]["1"][0]
+pos1 = t.get_pos(G1)
+G2 = z[0]["9"][0]
+pos2 = t.get_pos(G2)
+v.cool_GIF(G1, pos1, G2, pos2, frames=720)

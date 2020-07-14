@@ -1,0 +1,10 @@
+From ShapeMatcher6.0.1beta:
+(http://www.cs.toronto.edu/~dmac/ShapeMatcher)
+All files in /ShapeMatcher
+
+From Scott Hartman's Skeletaldrawing.com:
+(https://www.skeletaldrawing.com/)
+(downloaded as .jpg, converted to .ppm)
+All images in /Theropods 
+All images in /Sauropods
+All images in /Ornithiscians
