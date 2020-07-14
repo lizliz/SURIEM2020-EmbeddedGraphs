@@ -26,7 +26,7 @@ from sklearn.manifold import MDS
 # average: string, whether you want to use "mean" or "median" as average
 ###############################################################################
 
-# Draws a dendrogram ????
+# Gets the distance data, then draws a dendrogram
 # returns 1-D condensed distance matrix as numpy array
 def draw_dendro(input_list, frames=180, data = None, labels=None, thresh=None):
     
@@ -36,7 +36,7 @@ def draw_dendro(input_list, frames=180, data = None, labels=None, thresh=None):
     dendrogram(data, labels=labels, thresh=thresh)
     return data
 
-# Draws a dendrogam ????
+# Draws a dendrogam given the distance data
 # data parameter is NOT a 2D distance matrix
 # pass a 2D distance matrix through get_data first
 def dendrogram(data, labels=None, thresh=None):
