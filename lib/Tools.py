@@ -551,6 +551,8 @@ def get_pos(G):
 #renames a dictionary key
 def rename_key(myDict, oldKey, newKey):
     myDict[newKey] = myDict.pop(oldKey)
+    print("\n\tOld Key: ", oldKey)
+    print("\n\tNew Key: ", newKey)
 
 ###
 #END OF MISC.
