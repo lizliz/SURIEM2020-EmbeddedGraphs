@@ -21,4 +21,3 @@ Some of the data used for this project was too big for GitHub, but its source is
 - concurrent.futures
 - itertools
 - multiprocessing
-- OpenCV
