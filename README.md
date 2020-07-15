@@ -1,7 +1,9 @@
 # SURIEM2020-EmbeddedGraphs
 
-This repository contains work done by the Embedded Graphs Group under Dr. Elizabeth Munch and Dr. Erin Chambers during the SURIEM REU in the summer of 2020. 
+This repository contains work done by the Embedded Graphs group under Dr. Elizabeth Munch and Dr. Erin Chambers during the SURIEM REU in the summer of 2020. 
 Members of this group include Levent Batakci, Abigail Branson, Bryan Castillo, and Candace Todd.
+
+---
 
 Geospatial data is readily available but often noisy and inaccurate. 
 In the field of map reconstruction, there is a need to be able to quantitatively compare maps in order to evaluate specific methods and data sources
@@ -13,8 +15,9 @@ We provide:
 - An implementation of a merge tree comparison comparison algorithm suggested by Beketavey et al.
 - A graph comparison algorithm
 - Methods for visualizing the results of graph comparisons
+- Methods for converting different data formats into NetworkX graph objects
 
-## Dependencies
+### Dependencies
 - scipy  
 - numpy  
 - scikitlearn  
