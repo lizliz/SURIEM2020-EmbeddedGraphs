@@ -46,7 +46,7 @@ To use these programs on your own data, first [convert your data into a NetworkX
 
 - To **prepare a graph for merge tree construction**, see the `calc_values_height_reorient` function in Mere.py
 - To **construct a merge tree** of a graph, see the `merge_tree` function in Merge.py.  
-- To determine if two merge trees are **$\varepsilon$-similar** as defined by Beketayevet al., see the `IsEpsSimilar` function in Compare.py.
+- To determine if two merge trees are **$\epsilon$-similar** as defined by Beketayevet al., see the `IsEpsSimilar` function in Compare.py.
 - To compute the **branching distance** between two merge trees, see the `branching_distance` function in Compare.py  
 - To compute the **average branching distance** (ABD) between two graphs, see the `average_distance` function in DataCalculations.py  
 - To **construct a distance matrix** of pairwise ABDs, see the `get_matrix` function in Classify.py  
