@@ -7,7 +7,7 @@ We aim to do so by comparing corresponding merge trees of embedded graphs repres
   
 We provide:
 - A merge tree construction algorithm
-- An implementation of a merge tree comparison comparison algorithm suggested by [Beketavey et al.](https://link.springer.com/chapter/10.1007%2F978-3-319-04099-8_10"Measuring the Distance Between Merge Trees"), which we call *branching distance*
+- An implementation of a merge tree comparison comparison algorithm suggested by [Beketavey et al.](https://link.springer.com/chapter/10.1007%2F978-3-319-04099-8_10 "Measuring the Distance Between Merge Trees"), which we call *branching distance*
 - A graph comparison algorithm for a new distance function called *average branching distance*
 - Methods for visualizing the results of graph comparisons
 All implemented in Python 3.7.6.
@@ -54,7 +54,7 @@ Details on how to use these and other functions, including explanations of param
 
 ## Credits
 This repository contains work done by the Embedded Graphs group under Dr. Elizabeth Munch and Dr. Erin Chambers during the SURIEM REU in the summer of 2020. 
-Members of this group include Levent Batakci, Abigail Branson, Bryan Castillo, [Candace Todd](https://www.linkedin.com/in/candace-todd"Candace Todd's LinkedIn Profile"), [Candace Todd](https://github.com/CLTodd"Candace Todd's GitHub Profile"), and [Candace Todd](mailto:clt5441@psu.edu).
+Members of this group include Levent Batakci, Abigail Branson, Bryan Castillo, [Candace Todd](https://www.linkedin.com/in/candace-todd "Candace Todd's LinkedIn Profile"), [Candace Todd](https://github.com/CLTodd "Candace Todd's GitHub Profile"), and [Candace Todd](mailto:clt5441@psu.edu).
 <!-- list our institution? linkedin? -->
 
 The funding for the project associated with this repository was supported by the National Science Foundation (NSF Award No. 1852066), the National Security Agency (NSA Grant No. H98230-20-1-0006), and Michigan State University. 
