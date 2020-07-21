@@ -1,3 +1,4 @@
+\usepackage{amsmath}
 # Comparing Embedded Graphs
 <!-- title -->
 Geospatial data is readily available but often noisy and inaccurate. 
