@@ -9,7 +9,7 @@ We provide:
 - A merge tree construction algorithm
 - An implementation of a merge tree comparison comparison algorithm suggested by [Beketavey et al.](https://link.springer.com/chapter/10.1007%2F978-3-319-04099-8_10 "Measuring the Distance Between Merge Trees"), which we call *branching distance*
 - A graph comparison algorithm for a new distance function called *average branching distance*
-- Methods for visualizing the results of graph comparisons
+- Methods for visualizing the results of graph comparisons  
 All implemented in Python 3.7.6.
 <!-- Methods for converting different data formats into NetworkX graph objects? -->
 
@@ -37,7 +37,7 @@ The programs in this repository require the following Python libraries:
 - random
 - statistics
 
-*Many programs in this repository rely on a basic understand of NetworkX Graph objects. See [NetworkX's tutorial](https://networkx.github.io/documentation/stable/tutorial.html"NetworkX Tutorial"). 
+*Many programs in this repository rely on a basic understand of NetworkX Graph objects. See [NetworkX's tutorial](https://networkx.github.io/documentation/stable/tutorial.html "NetworkX Tutorial"). 
 
 ### Usage
 To access all functions, download and run Main.py.  
