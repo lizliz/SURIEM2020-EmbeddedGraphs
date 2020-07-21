@@ -25,7 +25,7 @@ The programs in this repository require the following Python libraries:
 - NumPy  
 - scikit-learn  
 - Matplotlib  
-- NetworkX
+- NetworkX*
 - MoviePy
 - threading 
 - concurrent.futures
@@ -40,14 +40,16 @@ The programs in this repository require the following Python libraries:
 - statistics
 
 ## Usage
-To access all functions, download and run Main.py.  
-To recreate the plots in the paper associated with this project, run Plots.py     
+To access everything, it is easiest to clone the whole repo and run Main.py. 
+To recreate the plots in the paper associated with this project, run Plots.py  
+Some sample data are included in /data but nothing in this directory is required for any program functionality.  
+Both the /images and /data directories contain .txt files listing the source for the items in their directory.
 
-To use these programs on your own data, first [convert your data into a NetworkX graph object](https://networkx.github.io/documentation/stable/reference/readwrite/index.html) whose nodes all have a least two attributes (typically representing cartesian coordinate positions). Note that many of NetworkX's built in methods for graph conversion do not preserve node attributes. For help on how to assign node attributes, see [NetworkX's tutorial for node attributes](https://networkx.github.io/documentation/networkx-1.10/tutorial/tutorial.html#adding-attributes-to-graphs-nodes-and-edges "NetworkX Tutorial: Adding attributes to graphs, nodes, and edges"). Alternatively, we provide attribute-preserving methods for converting GraphML, GeoJSON, and PPM files, as well as XML files exported from [OpenStreetMap](https://www.openstreetmap.org/export#map=15/37.9966/23.7486 "OpenStreetMap.org"), and XML files created by [ShapeMatcher6.0.1beta](http://www.cs.toronto.edu/~dmac/ShapeMatcher) into NetworkX Graph objects.
+To use these programs on your own data, first [convert your data into a NetworkX graph object](https://networkx.github.io/documentation/stable/reference/readwrite/index.html) whose nodes all have a least two attributes (typically representing cartesian coordinate positions). Note that many of NetworkX's built in methods for graph conversion do not preserve node attributes. For help on how to assign node attributes, see [NetworkX's tutorial for node attributes](https://networkx.github.io/documentation/networkx-1.10/tutorial/tutorial.html#adding-attributes-to-graphs-nodes-and-edges "NetworkX Tutorial: Adding attributes to graphs, nodes, and edges"). Alternatively, we provide attribute-preserving methods for converting GraphML, GeoJSON, PPM, some XML* files into NetworkX Graph objects. These conversion methods are all avalible in DataReader.py. For more detailed documentation on each function, see their individual scripts in /lib.
 
-- To **prepare a graph for merge tree construction**, see the `calc_values_height_reorient` function in Mere.py
+- To **prepare a graph for merge tree construction**, see the `calc_values_height_reorient` function in Merge.py
 - To **construct a merge tree** of a graph, see the `merge_tree` function in Merge.py.  
-- To determine if two merge trees are **Epsilon-similar** as defined by Beketayevet al., see the `IsEpsSimilar` function in Compare.py.
+- To determine if two merge trees are ![](http://latex.codecogs.com/gif.latex?%5Cvarepsilon) **-similar** as defined by Beketayevet al., see the `IsEpsSimilar` function in Compare.py.
 - To compute the **branching distance** between two merge trees, see the `branching_distance` function in Compare.py  
 - To compute the **average branching distance** (ABD) between two graphs, see the `average_distance` function in DataCalculations.py  
 - To **construct a distance matrix** of pairwise ABDs, see the `get_matrix` function in Classify.py  
@@ -55,17 +57,19 @@ To use these programs on your own data, first [convert your data into a NetworkX
 - To visualize the results of **multi-dimensional scaling** on a distance matrix of pairwise ABS, see the `mds` function in Classify.py  
   
 Details on how to use these and other functions, including explanations of parameters and outputs, are included within respective scripts as comments.  
-All programs and most of their in-script documentation rely on a basic understand of NetworkX Graph objects. See [NetworkX's tutorial](https://networkx.github.io/documentation/stable/tutorial.html "NetworkX Tutorial").
 
 ## Credits
 This repository contains work done by the Embedded Graphs group under Dr. Elizabeth Munch and Dr. Erin Chambers during the SURIEM REU in the summer of 2020. 
 Members of this group include Levent Batakci, Abigail Branson, Bryan Castillo, and ([Candace Todd](https://www.linkedin.com/in/candace-todd "Candace Todd's LinkedIn Profile"), [Candace Todd](https://github.com/CLTodd "Candace Todd's GitHub Profile"), or [Candace Todd](mailto:clt5441@psu.edu)).
 <!-- list our institution? linkedin? -->
-
+  
 The funding for the project associated with this repository was supported by the National Science Foundation (NSF Award No. 1852066), the National Security Agency (NSA Grant No. H98230-20-1-0006), and Michigan State University. 
 The work of Erin Chambers was supported in part by NSF grants CCF-1614562, CCF-1907612, and DBI-
 1759807. The work of Elizabeth Munch was supported in part by NSF grants CCF-1907591 and DEB-
 1904267.
-
+  
+---
+\*All programs and most of their in-script documentation rely on a basic understand of NetworkX Graph objects. See [NetworkX's tutorial](https://networkx.github.io/documentation/stable/tutorial.html "NetworkX Tutorial").  
+\*\* XML files as exported from [OpenStreetMap.org](https://www.openstreetmap.org/export#map=15/37.9966/23.7486 "OpenStreetMap.org") (`read_osm`) or the [ShapeMatcher6.0.1beta](http://www.cs.toronto.edu/~dmac/ShapeMatcher) program (`read_sm`)
 <!-- ShapeMatcher -->
 <!-- data sources -->
