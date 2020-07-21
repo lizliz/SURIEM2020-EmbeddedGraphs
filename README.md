@@ -10,6 +10,7 @@ We provide:
 - An implementation of a merge tree comparison comparison algorithm suggested by [Beketavey et al.](https://link.springer.com/chapter/10.1007%2F978-3-319-04099-8_10 "Measuring the Distance Between Merge Trees"), which we call *branching distance*
 - A graph comparison algorithm for a new distance function called *average branching distance*
 - Methods for visualizing the results of graph comparisons  
+  
 All implemented in Python 3.7.6.
 <!-- Methods for converting different data formats into NetworkX graph objects? -->
 
@@ -47,7 +48,7 @@ To **construct a merge tree** of a graph, see the `merge_tree function` in Merge
 To compute the **branching distance** between two merge trees, see the `branching_distance` function in Compare.py  
 To compute the **average branching distance**(ABD) between two graphs, see the `average_distance` function in DataCalculations.py  
 To **construct a distance matrix** of the pairwise ABDs, see the `get_matrix` function in Classify.py  
-To visualize the **hierarchical clusters** in a condensed distance matrix of pairwise ABDs, see the `draw_dendro` function in Classify.py
+To visualize the **hierarchical clusters** in a condensed distance matrix of pairwise ABDs, see the `draw_dendro` function in Classify.py  
 To visualize the results of **multi-dimensional scaling** on a distance matrix of pairwise ABS, see the `mds` function in Classify.py  
   
 Details on how to use these and other functions, including explanations of parameters and outputs, are included within respective scripts as comments.
