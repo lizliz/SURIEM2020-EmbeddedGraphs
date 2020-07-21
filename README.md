@@ -40,7 +40,7 @@ The programs in this repository require the following Python libraries:
 
 *Many programs in this repository rely on a basic understand of NetworkX Graph objects. See [NetworkX's tutorial](https://networkx.github.io/documentation/stable/tutorial.html "NetworkX Tutorial"). 
 
-### Usage
+## Usage
 To access all functions, download and run Main.py.  
 To recreate the plots in the paper associated with this project, run Plots.py    
   
