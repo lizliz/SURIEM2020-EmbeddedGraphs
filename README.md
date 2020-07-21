@@ -24,7 +24,7 @@ The programs in this repository require the following Python libraries:
 - NumPy  
 - scikit-learn  
 - Matplotlib  
-- NetworkX*
+- NetworkX
 - MoviePy
 - threading 
 - concurrent.futures
@@ -38,20 +38,23 @@ The programs in this repository require the following Python libraries:
 - random
 - statistics
 
-*Many programs in this repository rely on a basic understand of NetworkX Graph objects. See [NetworkX's tutorial](https://networkx.github.io/documentation/stable/tutorial.html "NetworkX Tutorial"). 
-
 ## Usage
 To access all functions, download and run Main.py.  
-To recreate the plots in the paper associated with this project, run Plots.py    
-  
-To **construct a merge tree** of a graph, see the `merge_tree function` in Merge.py.  
+To recreate the plots in the paper associated with this project, run Plots.py     
+
+In order to use any of these functions on your own data, first [convert your data into a NetworkX graph object](https://networkx.github.io/documentation/stable/reference/readwrite/index.html) whose nodes all have a least two attributes (typically representing cartesian coordinate positions). For help on how to assign node attributes, see [NetworkX's tutorial for node attributes](https://networkx.github.io/documentation/networkx-1.10/tutorial/tutorial.html#adding-attributes-to-graphs-nodes-and-edges "NetworkX Tutorial: Adding attributes to graphs, nodes, and edges"). Alternatively, we provide methods for converting GraphML, GeoJSON, and binary PPM files XML as exported by [OpenStreetMap](https://www.openstreetmap.org/export#map=15/37.9966/23.7486 "OpenStreetMap.org"), XML as exported by [ShapeMatcher6.0.1beta](http://www.cs.toronto.edu/~dmac/ShapeMatcher),
+
+To **prepare a graph for merge tree construction**, see the `calc_values_height_reorient` function in Mere.py
+To **construct a merge tree** of a graph, see the `merge_tree` function in Merge.py.  
+To determine if two merge trees are **&#949-similar** as defined by Beketayevet al., see the `IsEpsSimilar` function in Compare.py.
 To compute the **branching distance** between two merge trees, see the `branching_distance` function in Compare.py  
-To compute the **average branching distance**(ABD) between two graphs, see the `average_distance` function in DataCalculations.py  
-To **construct a distance matrix** of the pairwise ABDs, see the `get_matrix` function in Classify.py  
+To compute the **average branching distance** (ABD) between two graphs, see the `average_distance` function in DataCalculations.py  
+To **construct a distance matrix** of pairwise ABDs, see the `get_matrix` function in Classify.py  
 To visualize the **hierarchical clusters** in a condensed distance matrix of pairwise ABDs, see the `draw_dendro` function in Classify.py  
 To visualize the results of **multi-dimensional scaling** on a distance matrix of pairwise ABS, see the `mds` function in Classify.py  
   
-Details on how to use these and other functions, including explanations of parameters and outputs, are included within respective scripts as comments.
+Details on how to use these and other functions, including explanations of parameters and outputs, are included within respective scripts as comments.  
+All programs and most of their in-script documentation rely on a basic understand of NetworkX Graph objects. See [NetworkX's tutorial](https://networkx.github.io/documentation/stable/tutorial.html "NetworkX Tutorial").
 
 ## Credits
 This repository contains work done by the Embedded Graphs group under Dr. Elizabeth Munch and Dr. Erin Chambers during the SURIEM REU in the summer of 2020. 
