@@ -46,7 +46,7 @@ To use these programs on your own data, first [convert your data into a NetworkX
 
 - To **prepare a graph for merge tree construction**, see the `calc_values_height_reorient` function in Mere.py
 - To **construct a merge tree** of a graph, see the `merge_tree` function in Merge.py.  
-- To determine if two merge trees are &#949**-similar** as defined by Beketayevet al., see the `IsEpsSimilar` function in Compare.py.
+- To determine if two merge trees are **$\varepsilon$-similar** as defined by Beketayevet al., see the `IsEpsSimilar` function in Compare.py.
 - To compute the **branching distance** between two merge trees, see the `branching_distance` function in Compare.py  
 - To compute the **average branching distance** (ABD) between two graphs, see the `average_distance` function in DataCalculations.py  
 - To **construct a distance matrix** of pairwise ABDs, see the `get_matrix` function in Classify.py  
@@ -58,7 +58,7 @@ All programs and most of their in-script documentation rely on a basic understan
 
 ## Credits
 This repository contains work done by the Embedded Graphs group under Dr. Elizabeth Munch and Dr. Erin Chambers during the SURIEM REU in the summer of 2020. 
-Members of this group include Levent Batakci, Abigail Branson, Bryan Castillo, [Candace Todd](https://www.linkedin.com/in/candace-todd "Candace Todd's LinkedIn Profile"), [Candace Todd](https://github.com/CLTodd "Candace Todd's GitHub Profile"), and [Candace Todd](mailto:clt5441@psu.edu).
+Members of this group include Levent Batakci, Abigail Branson, Bryan Castillo, and ([Candace Todd](https://www.linkedin.com/in/candace-todd "Candace Todd's LinkedIn Profile"), [Candace Todd](https://github.com/CLTodd "Candace Todd's GitHub Profile"), or [Candace Todd](mailto:clt5441@psu.edu)).
 <!-- list our institution? linkedin? -->
 
 The funding for the project associated with this repository was supported by the National Science Foundation (NSF Award No. 1852066), the National Security Agency (NSA Grant No. H98230-20-1-0006), and Michigan State University. 
