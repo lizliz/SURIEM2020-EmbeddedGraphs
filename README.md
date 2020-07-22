@@ -56,14 +56,14 @@ Alternatively, we provide attribute-preserving methods for converting GraphML, G
 - To compute the **average branching distance** (ABD) between two graphs, see the `average_distance` function in [DataCalculations.py](https://github.com/lizliz/SURIEM2020-EmbeddedGraphs/blob/master/DataCalculations.py "DataCalculations.py Script")  
 - To **construct a distance matrix** of pairwise ABDs, see the `get_matrix` function in [Classify.py](https://github.com/lizliz/SURIEM2020-EmbeddedGraphs/blob/master/Classify.py  "Classify.py script")    
 - To visualize the **hierarchical clusters** in a condensed distance matrix of pairwise ABDs, see the `draw_dendro` function in [Classify.py](https://github.com/lizliz/SURIEM2020-EmbeddedGraphs/blob/master/Classify.py  "Classify.py script")   
-- To visualize the results of **multi-dimensional scaling** on a distance matrix of pairwise ABS, see the `mds` function in [Classify.py](https://github.com/lizliz/SURIEM2020-EmbeddedGraphs/blob/master/Classify.py  "Classify.py script")   
+- To visualize the results of **multi-dimensional scaling** on a distance matrix of pairwise ABDs, see the `mds` function in [Classify.py](https://github.com/lizliz/SURIEM2020-EmbeddedGraphs/blob/master/Classify.py  "Classify.py script")   
 - To recreate the plots in the paper associated with this project, run [Plots.py](https://github.com/lizliz/SURIEM2020-EmbeddedGraphs/blob/master/Plots.py "Plots.py script")
 
 Details on how to use these and other functions, including explanations of parameters and outputs, are included within respective scripts as comments.  
 
 ## Credits
-This repository contains work done by the Embedded Graphs group under Dr. Elizabeth Munch and Dr. Erin Chambers during the SURIEM REU in the summer of 2020. 
-Members of this group include Levent Batakci, Abigail Branson, Bryan Castillo, and ([Candace Todd](https://www.linkedin.com/in/candace-todd "Candace Todd's LinkedIn Profile"), [Candace Todd](https://github.com/CLTodd "Candace Todd's GitHub Profile"), or [Candace Todd](mailto:clt5441@psu.edu)).
+This repository contains work done by the Embedded Graphs group under [Dr. Elizabeth Munch](https://www.linkedin.com/in/elizabethmunch/ "Elizabeth Munch's LinkedIn Profile") and [Dr. Erin Chambers](https://www.linkedin.com/in/erin-wolf-chambers-836a37/ "Erin Wolf Chambers' LinkedIn Profile") during the SURIEM REU hosted by Michigan State in the summer of 2020. 
+Members of this group include [Levent Batakci](https://www.linkedin.com/in/levent-batakci-306a31190/ "Levent Batakci's LinkedIn Profile"), [Abigail Branson](https://www.linkedin.com/in/abigail-branson-466128180/ "Abigail Branson's LinkedIn Profile"), [Bryan Castillo](https://www.linkedin.com/in/bryan-castillo-7a12651ab/ "Bryan Castillo's LinkedIn Profile"), and [Candace Todd](https://www.linkedin.com/in/candace-todd "Candace Todd's LinkedIn Profile").
 <!-- list our institution? linkedin? -->
   
 The funding for the project associated with this repository was supported by the National Science Foundation (NSF Award No. 1852066), the National Security Agency (NSA Grant No. H98230-20-1-0006), and Michigan State University. 
