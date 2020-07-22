@@ -7,16 +7,15 @@ Created on Thu Jul  2 23:47:49 2020
 # This program uses the ShapeMatcher program to convert binary images to graphs
 # using ShapeMatcher6.0.1beta
 
-import sys
+#import sys
 import os
-sys.path.append(os.getcwd())
-import subprocess as sp # I don't think this is customary but I'm doing it
+#sys.path.append(os.getcwd())
+import subprocess as sp
 import platform as p
 import networkx as nx
-import sm2nx as sm
-import Tools as t
+import lib.Tools as t
+from lib.sm2nx import read_sm
 from contextlib import contextmanager
-#import os
 
 
 # ShapeMatcher Documentation: http://www.cs.toronto.edu/~dmac/ShapeMatcher/
@@ -117,7 +116,7 @@ def read_ppm(DBname, ppmDir, ppmList = None, SMD = None ):
         toXML = "sm -toXML "+ DBname + ".xml " + DBname + ".db"
         cmd(toXML)
         print("----------")   
-        g = sm.read_sm(DBname + ".xml")
+        g = read_sm(DBname + ".xml")
         print("\t----------")   
         t.rename_key(g, list(g.keys())[0], DBname)
         

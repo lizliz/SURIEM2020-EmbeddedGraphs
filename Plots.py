@@ -6,22 +6,24 @@ Created on Tue Jul  7 21:18:16 2020
 """
 # Running this script generates the plots seen in our paper
 # And a gif seen in our SUMMR 2020 conference presentation
-import DataReader as dr
+from lib.sm2nx import read_sm
+from lib.tud2nx import read_tud
 import lib.Tools as t
 import Classify as classify
 
 ######################## Binary ShapeMatcher Models ###########################
+matrices=[None,None,None,None]
 
-alienDict = dr.read_sm("data/Shape-Matcher-models/ALIEN.xml")
+alienDict = read_sm("data/Shape-Matcher-models/ALIEN.xml")
 t.rename_key(alienDict, oldKey = "models/ALIEN/ALIEN", newKey = "alien")
 
-camelDict = dr.read_sm("data/Shape-Matcher-models/camel.xml")
+camelDict = read_sm("data/Shape-Matcher-models/camel.xml")
 t.rename_key(camelDict, oldKey = "models/camel/camel", newKey = "camel")
 
-eagleDict = dr.read_sm("data/Shape-Matcher-models/eagle.xml")
+eagleDict = read_sm("data/Shape-Matcher-models/eagle.xml")
 t.rename_key(eagleDict, oldKey = "models/eagle/eagle", newKey = "eagle")
 
-kangaDict = dr.read_sm("data/Shape-Matcher-models/KANGAROO.xml")
+kangaDict = read_sm("data/Shape-Matcher-models/KANGAROO.xml")
 t.rename_key(kangaDict, oldKey = "models/KANGAROO/KANGAROO", newKey = "kangaroo")
 
 # see DataCleaning.py for how we picked outliers
@@ -44,6 +46,7 @@ alpha = 0.6 #Translucency of the points
 scheme = "jet" #Color mapping used for the plots' cluster color scheme
 
 for frame in [5, 20, 50, 100]: # number of frames used for average branching distance
+    
     for Dict in dictList:
         tuples = Dict[0][Dict[1]] # List of (graph, posdict) tuples
         
@@ -66,7 +69,10 @@ for frame in [5, 20, 50, 100]: # number of frames used for average branching dis
             target.append(Dict[1])
             j += 1
     
+    
     matrix = classify.get_matrix(inputs, frame, True, True, average = "median")
+    ind = [5, 20, 50, 100].index(frame)    
+    matrices[ind] = matrix
     points = classify.mds(input_list = inputs,
                   target_list = target,
                   frames = frame,
@@ -86,7 +92,7 @@ labels = []
 
 p = "data/Letter-low"
 ds = "Letter-low"
-z = dr.read_tud(p,ds,False)
+z = read_tud(p,ds,False)
 
 frames = 10 
 scheme = "jet"
@@ -163,9 +169,9 @@ data = classify.draw_dendro(input_list = inputs,
 print(message)
 
 # Makes an ABD gif between an N and W
-# import Visualization as v
-# G1 = z[0]["1"][0]
-# pos1 = t.get_pos(G1)
-# G2 = z[0]["9"][0]
-# pos2 = t.get_pos(G2)
-# v.cool_GIF(G1, pos1, G2, pos2, frames=720)
+import Visualization as v
+G1 = z[0]["1"][0]
+pos1 = t.get_pos(G1)
+G2 = z[0]["9"][0]
+pos2 = t.get_pos(G2)
+v.cool_GIF(G1, pos1, G2, pos2, frames=720)
