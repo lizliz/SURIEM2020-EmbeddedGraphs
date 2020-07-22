@@ -12,7 +12,7 @@ We provide:
 - A graph comparison algorithm for a new distance function called *average branching distance*
 - Methods for visualizing the results of graph comparisons  
   
-all implemented in Python 3.7.6.
+and some assisting methods, all implemented in Python 3.7.6.
 <!-- Methods for converting different data formats into NetworkX graph objects? -->
 
 <!--## Using this repository
@@ -48,7 +48,7 @@ Both directories contain .txt files listing the sources for their contents.
 To use these programs on your own data, first [convert your data into a NetworkX graph object](https://networkx.github.io/documentation/stable/reference/readwrite/index.html) whose nodes all have a least two attributes (typically representing cartesian coordinate positions). Note that many of NetworkX's built in methods for graph conversion do not preserve node attributes. For help on how to assign node attributes, see [NetworkX's tutorial for node attributes](https://networkx.github.io/documentation/networkx-1.10/tutorial/tutorial.html#adding-attributes-to-graphs-nodes-and-edges "NetworkX Tutorial: Adding attributes to graphs, nodes, and edges").  
   
 Alternatively, we provide attribute-preserving methods for converting GraphML, GeoJSON, PPM, and XML* files into NetworkX Graph objects. For convenience, these conversion methods are consolidated in [DataReader.py](https://github.com/lizliz/SURIEM2020-EmbeddedGraphs/blob/master/DataReader.py "DataReader.py script"). For detailed documentation on individual functions, see their respective scripts in the /lib directory.
-
+  
 - To **prepare a graph for merge tree construction**, see the `calc_values_height_reorient` function in [Merge.py](https://github.com/lizliz/SURIEM2020-EmbeddedGraphs/blob/master/Merge.py "Merge.py script")
 - To **construct a merge tree** of a graph, see the `merge_tree` function in [Merge.py](https://github.com/lizliz/SURIEM2020-EmbeddedGraphs/blob/master/Merge.py "Merge.py script").  
 - To determine if two merge trees are ![](http://latex.codecogs.com/gif.latex?%5Cvarepsilon) **-similar** as defined by Beketayevet al., see the `IsEpsSimilar` function in [Compare.py](https://github.com/lizliz/SURIEM2020-EmbeddedGraphs/blob/master/Compare.py "Compare.py script").
