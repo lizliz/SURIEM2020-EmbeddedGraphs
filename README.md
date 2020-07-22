@@ -56,7 +56,7 @@ Alternatively, we provide attribute-preserving methods for converting GraphML, G
 - To compute the **average branching distance** (ABD) between two graphs, see the `average_distance` function in [DataCalculations.py](https://github.com/lizliz/SURIEM2020-EmbeddedGraphs/blob/master/DataCalculations.py "DataCalculations.py Script")  
 - To **construct a distance matrix** of pairwise ABDs, see the `get_matrix` function in [Classify.py](https://github.com/lizliz/SURIEM2020-EmbeddedGraphs/blob/master/Classify.py  "Classify.py script")    
 - To visualize the **hierarchical clusters** in a condensed distance matrix of pairwise ABDs, see the `draw_dendro` function in [Classify.py](https://github.com/lizliz/SURIEM2020-EmbeddedGraphs/blob/master/Classify.py  "Classify.py script")   
-- To visualize the results of **multi-dimensional scaling** on a distance matrix of pairwise ABS, see the `mds` function in [Classify.py](https://github.com/lizliz/SURIEM2020-EmbeddedGraphs/blob/master/Classify.py  "Classify.py script")   
+- To visualize the results of **multi-dimensional scaling** on a distance matrix of pairwise ABDs, see the `mds` function in [Classify.py](https://github.com/lizliz/SURIEM2020-EmbeddedGraphs/blob/master/Classify.py  "Classify.py script")   
 - To recreate the plots in the paper associated with this project, run [Plots.py](https://github.com/lizliz/SURIEM2020-EmbeddedGraphs/blob/master/Plots.py "Plots.py script")
 
 Details on how to use these and other functions, including explanations of parameters and outputs, are included within respective scripts as comments.  
