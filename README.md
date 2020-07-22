@@ -8,7 +8,7 @@ We aim to do so by comparing corresponding merge trees of embedded graphs repres
   
 We provide:
 - A merge tree construction algorithm
-- An implementation of a merge tree comparison comparison algorithm suggested by [Beketavey et al.](https://link.springer.com/chapter/10.1007%2F978-3-319-04099-8_10 "Measuring the Distance Between Merge Trees"), which we call *branching distance*
+- An implementation of a merge tree comparison algorithm suggested by [Beketavey et al.](https://link.springer.com/chapter/10.1007%2F978-3-319-04099-8_10 "Measuring the Distance Between Merge Trees"), which we call *branching distance*
 - A graph comparison algorithm for a new distance function called *average branching distance*
 - Methods for visualizing the results of graph comparisons  
   
@@ -46,7 +46,8 @@ Some sample data and binary images are included in the /data and /images directo
 Both directories contain .txt files listing the sources for their contents.
 
 To use these programs on your own data, first [convert your data into a NetworkX graph object](https://networkx.github.io/documentation/stable/reference/readwrite/index.html) whose nodes all have a least two attributes (typically representing cartesian coordinate positions). Note that many of NetworkX's built in methods for graph conversion do not preserve node attributes. For help on how to assign node attributes, see [NetworkX's tutorial for node attributes](https://networkx.github.io/documentation/networkx-1.10/tutorial/tutorial.html#adding-attributes-to-graphs-nodes-and-edges "NetworkX Tutorial: Adding attributes to graphs, nodes, and edges").  
-Alternatively, we provide attribute-preserving methods for converting GraphML, GeoJSON, PPM, and XML* files into NetworkX Graph objects. For convenience, these conversion methods are consolidated in DataReader.py. For detailed documentation on individual functions, see their respective scripts in the /lib directory.
+  
+Alternatively, we provide attribute-preserving methods for converting GraphML, GeoJSON, PPM, and XML* files into NetworkX Graph objects. For convenience, these conversion methods are consolidated in [DataReader.py](https://github.com/lizliz/SURIEM2020-EmbeddedGraphs/blob/master/DataReader.py "DataReader.py script"). For detailed documentation on individual functions, see their respective scripts in the /lib directory.
 
 - To **prepare a graph for merge tree construction**, see the `calc_values_height_reorient` function in [Merge.py](https://github.com/lizliz/SURIEM2020-EmbeddedGraphs/blob/master/Merge.py "Merge.py script")
 - To **construct a merge tree** of a graph, see the `merge_tree` function in [Merge.py](https://github.com/lizliz/SURIEM2020-EmbeddedGraphs/blob/master/Merge.py "Merge.py script").  
@@ -72,6 +73,6 @@ The work of Erin Chambers was supported in part by NSF grants CCF-1614562, CCF-1
   
 ---
 \*All programs and most of their in-script documentation rely on a basic understand of NetworkX Graph objects. See [NetworkX's tutorial](https://networkx.github.io/documentation/stable/tutorial.html "NetworkX Tutorial").  
-\*\* XML files as exported from [OpenStreetMap.org](https://www.openstreetmap.org/export#map=15/37.9966/23.7486 "OpenStreetMap.org") (`read_osm`) or the [ShapeMatcher6.0.1beta](http://www.cs.toronto.edu/~dmac/ShapeMatcher) program (`read_sm`)
+\*\* Only supports XML files as exported from [OpenStreetMap.org](https://www.openstreetmap.org/export#map=15/37.9966/23.7486 "OpenStreetMap.org") (`read_osm`) or the [ShapeMatcher6.0.1beta](http://www.cs.toronto.edu/~dmac/ShapeMatcher) program (`read_sm`)
 <!-- ShapeMatcher -->
 <!-- data sources -->
