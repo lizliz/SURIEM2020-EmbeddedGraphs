@@ -87,10 +87,8 @@ def average_distance(G1, pos1, G2, pos2, frames=180, rotate_both=True, accuracy=
         return med
     elif average == "mean":
         return sum(heights)/frames
-    elif average == "max":
-        return max(heights)
     else:
-        print("Invalid average parameter. Valid choices are 'median', 'mean', and 'max'. Returning median.")
+        print("Invalid average parameter. Valid choices are 'median' and 'mean'. Returning median.")
         return med
 
 # samples: int, size of the sampling distribution you want. a few thousand is usually pretty good
