@@ -163,9 +163,9 @@ data = classify.draw_dendro(input_list = inputs,
 print(message)
 
 # Makes an ABD gif between an N and W
-import Visualization as v
-G1 = z[0]["1"][0]
-pos1 = t.get_pos(G1)
-G2 = z[0]["9"][0]
-pos2 = t.get_pos(G2)
-v.cool_GIF(G1, pos1, G2, pos2, frames=720)
+# import Visualization as v
+# G1 = z[0]["1"][0]
+# pos1 = t.get_pos(G1)
+# G2 = z[0]["9"][0]
+# pos2 = t.get_pos(G2)
+# v.cool_GIF(G1, pos1, G2, pos2, frames=720)

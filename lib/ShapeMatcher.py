@@ -7,13 +7,16 @@ Created on Thu Jul  2 23:47:49 2020
 # This program uses the ShapeMatcher program to convert binary images to graphs
 # using ShapeMatcher6.0.1beta
 
+import sys
+import os
+sys.path.append(os.getcwd())
 import subprocess as sp # I don't think this is customary but I'm doing it
 import platform as p
 import networkx as nx
 import sm2nx as sm
 import Tools as t
 from contextlib import contextmanager
-import os
+#import os
 
 
 # ShapeMatcher Documentation: http://www.cs.toronto.edu/~dmac/ShapeMatcher/
