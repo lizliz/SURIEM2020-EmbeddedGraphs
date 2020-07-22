@@ -62,7 +62,7 @@ Alternatively, we provide attribute-preserving methods for converting GraphML, G
 Details on how to use these and other functions, including explanations of parameters and outputs, are included within respective scripts as comments.  
 
 ## Credits
-This repository contains work done by the Embedded Graphs group under [Dr. Elizabeth Munch](https://www.linkedin.com/in/elizabethmunch/ "Elizabeth Munch's LinkedIn Profile") and [Dr. Erin Chambers](https://www.linkedin.com/in/erin-wolf-chambers-836a37/ "Erin Wolf Chambers' LinkedIn Profile") during the SURIEM REU in the summer of 2020. 
+This repository contains work done by the Embedded Graphs group under [Dr. Elizabeth Munch](https://www.linkedin.com/in/elizabethmunch/ "Elizabeth Munch's LinkedIn Profile") and [Dr. Erin Chambers](https://www.linkedin.com/in/erin-wolf-chambers-836a37/ "Erin Wolf Chambers' LinkedIn Profile") during the SURIEM REU hosted by Michigan State in the summer of 2020. 
 Members of this group include [Levent Batakci](https://www.linkedin.com/in/levent-batakci-306a31190/ "Levent Batakci's LinkedIn Profile"), [Abigail Branson](https://www.linkedin.com/in/abigail-branson-466128180/ "Abigail Branson's LinkedIn Profile"), [Bryan Castillo](https://www.linkedin.com/in/bryan-castillo-7a12651ab/ "Bryan Castillo's LinkedIn Profile"), and [Candace Todd](https://www.linkedin.com/in/candace-todd "Candace Todd's LinkedIn Profile").
 <!-- list our institution? linkedin? -->
   
