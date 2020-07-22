@@ -297,7 +297,7 @@ def compute_matchability(a, b, e, memo, costs, subtrees, mapping):
     #Return the result (True or False)
     return memo[id_a][id_b]    
   
-#A and B are two trees to compare
+#A and B are two merge trees to compare
 #e is the cost maximum
 #roots is an array containing the roots of A and B
 #The function returns whether or not the two merge trees are matchable within e

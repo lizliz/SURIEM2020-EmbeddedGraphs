@@ -5,10 +5,9 @@ import lib.txt2nx as txt
 import lib.graphml2nx as graphml
 import lib.osm2nx as osm
 import lib.json2nx as json
-#import lib.img2nx as img
 import lib.tud2nx as tud
 import lib.sm2nx as sm
-import lib.ShapeMatcher as ppm
+import ShapeMatcher as ppm
 from lib.Tools import main_component
 
 

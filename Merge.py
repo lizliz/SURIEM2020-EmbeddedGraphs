@@ -25,7 +25,16 @@ def calc_values_height(G, pos, angle):
     for i in range(0, len(n)):
         n[i]['value'] = height(pos[n[i]['name']], angle)
 
-        
+
+# Run this function on a graph before constructing its merge tree
+# This will modify the original graph object
+# G: Networx Graph whose nodes all have at least 2 attributes 
+#      (attributes corresponding to cartesian coordinates)
+# pos: position dictionary of all nodes 
+#      containing the node names as keys and cartesian coordinate tuples as values
+# angle: angle by which you want to rotate the graph before constructing the merge tree
+#      `None` taking the original position as given by the coordinates
+#      to be the desired orientation
 def calc_values_height_reorient(G, pos, angle=None):
     
     #Get the list of node objects
