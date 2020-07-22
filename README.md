@@ -12,7 +12,7 @@ We provide:
 - A graph comparison algorithm for a new distance function called *average branching distance*
 - Methods for visualizing the results of graph comparisons  
   
-All implemented in Python 3.7.6.
+all implemented in Python 3.7.6.
 <!-- Methods for converting different data formats into NetworkX graph objects? -->
 
 <!--## Using this repository
@@ -40,22 +40,24 @@ The programs in this repository require the following Python libraries:
 - statistics
 
 ## Usage
-To access everything, it is easiest to clone the whole repo and run Main.py. 
-To recreate the plots in the paper associated with this project, run Plots.py  
-Some sample data are included in /data but nothing in this directory is required for any program functionality.  
-Both the /images and /data directories contain .txt files listing the source for the items in their directory.
-
-To use these programs on your own data, first [convert your data into a NetworkX graph object](https://networkx.github.io/documentation/stable/reference/readwrite/index.html) whose nodes all have a least two attributes (typically representing cartesian coordinate positions). Note that many of NetworkX's built in methods for graph conversion do not preserve node attributes. For help on how to assign node attributes, see [NetworkX's tutorial for node attributes](https://networkx.github.io/documentation/networkx-1.10/tutorial/tutorial.html#adding-attributes-to-graphs-nodes-and-edges "NetworkX Tutorial: Adding attributes to graphs, nodes, and edges"). Alternatively, we provide attribute-preserving methods for converting GraphML, GeoJSON, PPM, some XML* files into NetworkX Graph objects. These conversion methods are all avalible in DataReader.py. For more detailed documentation on each function, see their individual scripts in /lib.
-
-- To **prepare a graph for merge tree construction**, see the `calc_values_height_reorient` function in Merge.py
-- To **construct a merge tree** of a graph, see the `merge_tree` function in Merge.py.  
-- To determine if two merge trees are ![](http://latex.codecogs.com/gif.latex?%5Cvarepsilon) **-similar** as defined by Beketayevet al., see the `IsEpsSimilar` function in Compare.py.
-- To compute the **branching distance** between two merge trees, see the `branching_distance` function in Compare.py  
-- To compute the **average branching distance** (ABD) between two graphs, see the `average_distance` function in DataCalculations.py  
-- To **construct a distance matrix** of pairwise ABDs, see the `get_matrix` function in Classify.py  
-- To visualize the **hierarchical clusters** in a condensed distance matrix of pairwise ABDs, see the `draw_dendro` function in Classify.py  
-- To visualize the results of **multi-dimensional scaling** on a distance matrix of pairwise ABS, see the `mds` function in Classify.py  
+To access everything, it is easiest to clone the whole repo and run [Main.py](https://github.com/lizliz/SURIEM2020-EmbeddedGraphs/blob/master/Main.py "Main.py script").   
   
+Some sample data and binary images are included in the /data and /images directories respectively, but nothing in either directory is required for any program functionality. 
+Both directories contain .txt files listing the sources for their contents.
+
+To use these programs on your own data, first [convert your data into a NetworkX graph object](https://networkx.github.io/documentation/stable/reference/readwrite/index.html) whose nodes all have a least two attributes (typically representing cartesian coordinate positions). Note that many of NetworkX's built in methods for graph conversion do not preserve node attributes. For help on how to assign node attributes, see [NetworkX's tutorial for node attributes](https://networkx.github.io/documentation/networkx-1.10/tutorial/tutorial.html#adding-attributes-to-graphs-nodes-and-edges "NetworkX Tutorial: Adding attributes to graphs, nodes, and edges").  
+Alternatively, we provide attribute-preserving methods for converting GraphML, GeoJSON, PPM, and XML* files into NetworkX Graph objects. For convenience, these conversion methods are consolidated in DataReader.py. For detailed documentation on individual functions, see their respective scripts in the /lib directory.
+
+- To **prepare a graph for merge tree construction**, see the `calc_values_height_reorient` function in [Merge.py](https://github.com/lizliz/SURIEM2020-EmbeddedGraphs/blob/master/Merge.py "Merge.py script")
+- To **construct a merge tree** of a graph, see the `merge_tree` function in [Merge.py](https://github.com/lizliz/SURIEM2020-EmbeddedGraphs/blob/master/Merge.py "Merge.py script").  
+- To determine if two merge trees are ![](http://latex.codecogs.com/gif.latex?%5Cvarepsilon) **-similar** as defined by Beketayevet al., see the `IsEpsSimilar` function in [Compare.py](https://github.com/lizliz/SURIEM2020-EmbeddedGraphs/blob/master/Compare.py "Compare.py script").
+- To compute the **branching distance** between two merge trees, see the `branching_distance` function in [Compare.py](https://github.com/lizliz/SURIEM2020-EmbeddedGraphs/blob/master/Compare.py "Compare.py script")
+- To compute the **average branching distance** (ABD) between two graphs, see the `average_distance` function in [DataCalculations.py](https://github.com/lizliz/SURIEM2020-EmbeddedGraphs/blob/master/DataCalculations.py "DataCalculations.py Script")  
+- To **construct a distance matrix** of pairwise ABDs, see the `get_matrix` function in [Classify.py](https://github.com/lizliz/SURIEM2020-EmbeddedGraphs/blob/master/Classify.py  "Classify.py script")    
+- To visualize the **hierarchical clusters** in a condensed distance matrix of pairwise ABDs, see the `draw_dendro` function in [Classify.py](https://github.com/lizliz/SURIEM2020-EmbeddedGraphs/blob/master/Classify.py  "Classify.py script")   
+- To visualize the results of **multi-dimensional scaling** on a distance matrix of pairwise ABS, see the `mds` function in [Classify.py](https://github.com/lizliz/SURIEM2020-EmbeddedGraphs/blob/master/Classify.py  "Classify.py script")   
+- To recreate the plots in the paper associated with this project, run [Plots.py](https://github.com/lizliz/SURIEM2020-EmbeddedGraphs/blob/master/Plots.py "Plots.py script")
+
 Details on how to use these and other functions, including explanations of parameters and outputs, are included within respective scripts as comments.  
 
 ## Credits
