@@ -57,22 +57,7 @@ Alternatively, we provide attribute-preserving methods for converting GraphML, G
 - To recreate the plots in the paper associated with this project, run [Plots.py](https://github.com/lizliz/SURIEM2020-EmbeddedGraphs/blob/master/Plots.py "Plots.py script") (this will take several hours to finish running)
 
 Details on how to use these and other functions, including explanations of parameters and outputs, are included within respective scripts as comments.  
-
-## Credits
-This repository contains work done by the Embedded Graphs group under [Dr. Elizabeth Munch](https://www.linkedin.com/in/elizabethmunch/ "Elizabeth Munch's LinkedIn Profile") and [Dr. Erin Chambers](https://www.linkedin.com/in/erin-wolf-chambers-836a37/ "Erin Wolf Chambers' LinkedIn Profile") during the SURIEM REU hosted by Michigan State in the summer of 2020. 
-Members of this group include [Levent Batakci](https://www.linkedin.com/in/levent-batakci-306a31190/ "Levent Batakci's LinkedIn Profile"), [Abigail Branson](https://www.linkedin.com/in/abigail-branson-466128180/ "Abigail Branson's LinkedIn Profile"), [Bryan Castillo](https://www.linkedin.com/in/bryan-castillo-7a12651ab/ "Bryan Castillo's LinkedIn Profile"), and [Candace Todd](https://www.linkedin.com/in/candace-todd "Candace Todd's LinkedIn Profile").
-<!-- list our institution? linkedin? -->
   
-The funding for the project associated with this repository was supported by the National Science Foundation (NSF Award No. 1852066), the National Security Agency (NSA Grant No. H98230-20-1-0006), and Michigan State University. 
-The work of Erin Chambers was supported in part by NSF grants CCF-1614562, CCF-1907612, and DBI-
-1759807. The work of Elizabeth Munch was supported in part by NSF grants CCF-1907591 and DEB-
-1904267.
-  
----
-\*All programs and most of their in-script documentation rely on a basic understand of NetworkX Graph objects. See [NetworkX's tutorial](https://networkx.github.io/documentation/stable/tutorial.html "NetworkX Tutorial").  
-\*\* Only supports XML files as exported from [OpenStreetMap.org](https://www.openstreetmap.org/export#map=15/37.9966/23.7486 "OpenStreetMap.org") (`read_osm`) or the [ShapeMatcher6.0.1beta](http://www.cs.toronto.edu/~dmac/ShapeMatcher) program (`read_sm`)
-
-## Using this repository
 Should you use the source code from this repository, please cite the following paper:
 
 ```
@@ -89,5 +74,17 @@ note = "Unpublished"
 ```
 
 Should you use any of the data in this repository or the ShapeMatcher program, please cite their original sources as listed in /images/Images Sources.txt and /data/Data Sources.txt.
-<!-- ShapeMatcher -->
-<!-- data sources -->
+
+## Credits
+This repository contains work done by the Embedded Graphs group under [Dr. Elizabeth Munch](https://www.linkedin.com/in/elizabethmunch/ "Elizabeth Munch's LinkedIn Profile") and [Dr. Erin Chambers](https://www.linkedin.com/in/erin-wolf-chambers-836a37/ "Erin Wolf Chambers' LinkedIn Profile") during the SURIEM REU hosted by Michigan State in the summer of 2020. 
+Members of this group include [Levent Batakci](https://www.linkedin.com/in/levent-batakci-306a31190/ "Levent Batakci's LinkedIn Profile"), [Abigail Branson](https://www.linkedin.com/in/abigail-branson-466128180/ "Abigail Branson's LinkedIn Profile"), [Bryan Castillo](https://www.linkedin.com/in/bryan-castillo-7a12651ab/ "Bryan Castillo's LinkedIn Profile"), and [Candace Todd](https://www.linkedin.com/in/candace-todd "Candace Todd's LinkedIn Profile").
+<!-- list our institution? linkedin? -->
+  
+The funding for the project associated with this repository was supported by the National Science Foundation (NSF Award No. 1852066), the National Security Agency (NSA Grant No. H98230-20-1-0006), and Michigan State University. 
+The work of Erin Chambers was supported in part by NSF grants CCF-1614562, CCF-1907612, and DBI-
+1759807. The work of Elizabeth Munch was supported in part by NSF grants CCF-1907591 and DEB-
+1904267.
+  
+---
+\*All programs and most of their in-script documentation rely on a basic understand of NetworkX Graph objects. See [NetworkX's tutorial](https://networkx.github.io/documentation/stable/tutorial.html "NetworkX Tutorial").  
+\*\* Only supports XML files as exported from [OpenStreetMap.org](https://www.openstreetmap.org/export#map=15/37.9966/23.7486 "OpenStreetMap.org") (`read_osm`) or the [ShapeMatcher6.0.1beta](http://www.cs.toronto.edu/~dmac/ShapeMatcher) program (`read_sm`)
