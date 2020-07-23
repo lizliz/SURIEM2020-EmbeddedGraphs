@@ -74,7 +74,7 @@ note = "Unpublished"
 }
 ```
 
-Should you use any of the data in this repository or the ShapeMatcher program, please cite their original sources as listed in /images/Images Sources.txt and /data/Data Sources.txt.
+Should you use any of the data in this repository or the ShapeMatcher program, please cite their original sources as listed in /images/Image Sources.txt and /data/Data Sources.txt.
 
 ## Credits
 This repository contains work done by the Embedded Graphs group under [Dr. Elizabeth Munch](https://www.linkedin.com/in/elizabethmunch/ "Elizabeth Munch's LinkedIn Profile") and [Dr. Erin Chambers](https://www.linkedin.com/in/erin-wolf-chambers-836a37/ "Erin Wolf Chambers' LinkedIn Profile") during the 8-week SURIEM REU hosted by Michigan State in the summer of 2020. 
