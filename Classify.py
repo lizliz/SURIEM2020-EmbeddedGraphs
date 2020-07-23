@@ -34,6 +34,7 @@ def draw_dendro(input_list, frames=180, data = None, labels=None, thresh=None):
         data = get_data(input_list, frames)[0]    
     
     dendrogram(data, labels=labels, thresh=thresh)
+    plt.show()
     return data
 
 # Draws a dendrogam given the distance data
