@@ -15,6 +15,12 @@ import glob
 import moviepy.editor as mpy
 from DataCalculations import distance_data
 
+#General Note: Most methods have an optional 'savepath' argument. By default, it is None
+#              If you wish to save the resultant plots of a method, specify a file path
+#              to save to.
+
+
+#Adds the image of the right-facing arrow (=>) to the specified axis
 def add_arrow(ax):
     ax.axis('off')
     arrow = mpimg.imread('./images/arrow.png')
@@ -26,22 +32,30 @@ def add_arrow(ax):
 def draw(G, pos, title, ax, labels=False, n_size=0, n_color="blue"):
     ax.title.set_text(title)
     nx.draw(G, pos, ax, with_labels=labels,node_color=n_color,node_size=n_size)
-    
+
+#Draws a graph, given a position diction
 def draw_basic(G, pos, n_size=0):
     nx.draw(G, pos, with_labels=False, node_color="blue",node_size=n_size)
     
-def draw_square(G, pos, title, ax, r, b=None):
+#Draws a given graph with square resolution.
+#The drawing will be centered around the average of the bounds.
+#d is the "sidelength" of the square
+#(Useful for animations of rotations)
+def draw_square(G, pos, title, ax, d, b=None):
     if(b==None):
         b = get_bounds(pos)
     xAvg = (b[0][1]+b[0][0])/2
     yAvg = (b[1][1]+b[1][0])/2
         
-    ax.set_xlim(xAvg - r/2, xAvg + r/2)
-    ax.set_ylim(yAvg - r/2, yAvg + r/2)
+    ax.set_xlim(xAvg - d/2, xAvg + d/2)
+    ax.set_ylim(yAvg - d/2, yAvg + d/2)
     
     draw(G, pos, title, ax, n_size = 100)
     
-      
+
+#Draws the given graph and corresponding merge tree
+#(Merge tree is computed at the standard orientation)
+#(There is a pretty arrow in between! (=>) )
 def input_output(G, pos, savepath=""):
     fig = plt.subplots(1,3,figsize=(15,5))
     
@@ -65,7 +79,8 @@ def input_output(G, pos, savepath=""):
     
     plt.show()
     plt.close()
-        
+    
+#Draws the given graph and corresponding merge tree with the same square resolution
 def input_output_square(G, pos, r, savepath=""):
     fig = plt.subplots(1,3,figsize=(15,5))
     
@@ -100,7 +115,9 @@ def input_output_square(G, pos, r, savepath=""):
     
     plt.show()
     plt.close()
-    
+
+#Creates an animation of G being rotated over 'frames' many angles.
+#At each step, the merge tree is also shown.
 def animate(G, pos, frames, savepath=""):
     pos_copy = pos.copy()
     
@@ -125,6 +142,7 @@ def animate(G, pos, frames, savepath=""):
 
 
 #Takes two MERGE trees.
+#Plots the merge trees and displays the Branching Distance between them
 def compare(A, pos_A, B, pos_B, n_size=0, labels=False, pth="", valid=False):
     fig = plt.subplots(1,3,figsize=(15,5))
     
@@ -146,7 +164,8 @@ def compare(A, pos_A, B, pos_B, n_size=0, labels=False, pth="", valid=False):
         
     plt.show()
     plt.close()
-    
+
+#Same as above, except plots with square resolution
 def compare_square(A, pos_A, r_A, B, pos_B, r_B, pth=""):
     fig = plt.subplots(1,3,figsize=(15,5))
     
@@ -183,6 +202,7 @@ def compare_square(A, pos_A, r_A, B, pos_B, r_B, pth=""):
     plt.show()
     plt.close()
 
+#Rotates both graphs simultaneously and compares them at each step
 def compare_many(A, pos_A, B, pos_B, frames, savepath=""):
     pos_A_copy = pos_A.copy()
     pos_B_copy = pos_B.copy()
@@ -216,6 +236,8 @@ def compare_many(A, pos_A, B, pos_B, frames, savepath=""):
         
         compare_square(mA, pos_A_copy, r_A, mB, pos_B_copy, r_B, pth)
 
+#Produces a GIF that shows how the distance changes at various orientations for a pair of input graphs
+#The gif will be saved in the main directory as whatever 'gif_name' is 
 def cool_GIF(G1, pos1, G2, pos2, frames=720, rotate_both=True, gif_name="cool_gif", fps=30, delete_frames=True):
     data = distance_data(G1, pos1, G2, pos2, frames=frames, rotate_both=rotate_both)
     pth = "./images/frames"
@@ -258,6 +280,8 @@ def cool_GIF(G1, pos1, G2, pos2, frames=720, rotate_both=True, gif_name="cool_gi
             os.remove(os.path.join("./images/frames", f))
             
 
+#Helper method for cool_GIF
+#Draws the graphs, merge trees, and distance data plot
 def cool(M1, p1, M2, p2, G2, data, index, r1, r2, savepath="", rotate_both=True, G1=None):
     if(rotate_both):
         fig = plt.subplots(2,3,figsize=(15,10))
@@ -318,7 +342,9 @@ def cool(M1, p1, M2, p2, G2, data, index, r1, r2, savepath="", rotate_both=True,
         plt.savefig(pth)
         
     plt.close()
-    
+
+#Produces a plot of how the distance between a pair of input graphs 
+#changes as one or both are rotated
 def distance_data_plot(G1, pos1, G2, pos2, frames=720, rotate_both=True, accuracy=0.0001):
     data=distance_data(G1, pos1, G2, pos2, frames=frames, rotate_both=rotate_both, accuracy=accuracy)
 
@@ -332,7 +358,8 @@ def distance_data_plot(G1, pos1, G2, pos2, frames=720, rotate_both=True, accurac
     
     return data
   
-#Shifts pos2 next to pos1
+#Shifts pos2 next to pos1 without deformation
+#Useful for nicely drawing two graphs on the same matplotlib axis
 def alter_positions(pos1, pos2, normalize_y):
     bounds1 = get_bounds_and_radius(pos1)[1]
     bounds2 = get_bounds_and_radius(pos2)[1]
@@ -354,7 +381,9 @@ def alter_positions(pos1, pos2, normalize_y):
         new_x = pos2[p][0] + x_shift
         new_y = pos2[p][1] + y_shift
         pos2[p] = (new_x, new_y)
-#Big method for real.
+        
+#Draws a mapping that shows how the leaves of the inputs got mapped to eachother
+#as well as which vertices were deleted.
 def draw_mapping(M1,pos1, M2,pos2, mapping, distance,savepath="", index=None, normalize_y=True):
 
     relabel(M1, '*')
