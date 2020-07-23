@@ -15,9 +15,6 @@ We provide:
 and some assisting methods, all implemented in Python 3.7.6.
 <!-- Methods for converting different data formats into NetworkX graph objects? -->
 
-<!--## Using this repository
-Should you use the source code and/or data from this site, please cite also the following paper? -->
-
 ## Dependencies
 The programs in this repository require the following Python libraries:
 
@@ -74,5 +71,23 @@ The work of Erin Chambers was supported in part by NSF grants CCF-1614562, CCF-1
 ---
 \*All programs and most of their in-script documentation rely on a basic understand of NetworkX Graph objects. See [NetworkX's tutorial](https://networkx.github.io/documentation/stable/tutorial.html "NetworkX Tutorial").  
 \*\* Only supports XML files as exported from [OpenStreetMap.org](https://www.openstreetmap.org/export#map=15/37.9966/23.7486 "OpenStreetMap.org") (`read_osm`) or the [ShapeMatcher6.0.1beta](http://www.cs.toronto.edu/~dmac/ShapeMatcher) program (`read_sm`)
+
+## Using this repository
+Should you use the source code from this repository, please cite the following paper:
+
+```
+@unpublished{embedded_graphs_suriem2020,
+author = "Batakci, Levent
+and Branson, Abigail
+and Castillo, Bryan
+and Chambers, Erin W.
+and Munch, Elizabeth
+and Todd, Candace",
+title = "Comparing Embedded Graphs Using Average Branching Distance",
+note = "Unpublished"
+}
+```
+
+Should you use any of the data in this repository or the ShapeMatcher program, please cite their original sources as listed in /images/Images Sources.txt and /data/Data Sources.txt.
 <!-- ShapeMatcher -->
 <!-- data sources -->
