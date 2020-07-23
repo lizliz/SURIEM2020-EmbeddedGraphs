@@ -1,6 +1,6 @@
 From ShapeMatcher6.0.1beta:
 (http://www.cs.toronto.edu/~dmac/ShapeMatcher)
-All files in /ShapeMatcher
+All files in /ShapeMatcher , including the program and the images
 
 From Scott Hartman's Skeletaldrawing.com:
 (https://www.skeletaldrawing.com/)
