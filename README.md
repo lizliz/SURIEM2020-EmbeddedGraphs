@@ -59,8 +59,8 @@ Alternatively, we provide attribute-preserving methods for converting GraphML, G
 
 Details on how to use these and other functions, including explanations of parameters and outputs, are included within respective scripts as comments.  
   
-Should you use the source code from this repository, please cite the following paper:
-
+Should you use the source code from this repository, please cite the following paper:  
+***Note: The pdf of the paper included in this repository is still in the process of being edited.***
 ```
 @unpublished{embedded_graphs_suriem2020,
 author = "Batakci, Levent
