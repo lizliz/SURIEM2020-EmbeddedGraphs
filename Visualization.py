@@ -240,7 +240,7 @@ def compare_many(A, pos_A, B, pos_B, frames, savepath=""):
 #The gif will be saved in the main directory as whatever 'gif_name' is 
 def cool_GIF(G1, pos1, G2, pos2, frames=720, rotate_both=True, gif_name="cool_gif", fps=30, delete_frames=True):
     data = distance_data(G1, pos1, G2, pos2, frames=frames, rotate_both=rotate_both)
-    pth = "./images/cool"
+    pth = "./images/frames"
     
     r1 = get_bounds_and_radius(pos1)[0]
     r2 = get_bounds_and_radius(pos2)[0]
@@ -249,21 +249,28 @@ def cool_GIF(G1, pos1, G2, pos2, frames=720, rotate_both=True, gif_name="cool_gi
     fps = frames/8
     
     for i in range(0, frames):
-        print(i)
+        if frames <=5:
+            print("Working on frame", i, "...")
+        elif frames <= 100:
+            if i % 5 == 0:
+                print("Working on frame", i, "...")
+        else:
+            if i % 25 == 0:
+                print("Working on frame", i, "...")
         p1 = pos1.copy()
         p2 = pos2.copy()
         G1c = G1.copy()
         G2c = G2.copy()
     
         calc_values_height_reorient(G1c, p1, math.pi*(1/2 + 2*i/(frames)))
-        M1 = merge_tree(G1c, normalize=True)
+        M1 = merge_tree(G1c, shift=True)
         
         calc_values_height_reorient(G2c, p2, math.pi*(1/2 + 2*i/(frames)))
-        M2 = merge_tree(G2c, normalize=True)
+        M2 = merge_tree(G2c, shift=True)
         
         cool(M1, p1, M2, p2, G2c, data, i, r1, r2, savepath=pth, rotate_both=True, G1=G1c)
         
-    file_list = glob.glob('./images/cool/*.png') # Get all the pngs in the current directory
+    file_list = glob.glob('./images/frames/*.png') # Get all the pngs in the current directory
     list.sort(file_list, key=lambda x: int(x.split('_')[1].split('.png')[0])) # Sort the images by #, this may need to be tweaked for your use case
     clip = mpy.ImageSequenceClip(file_list, fps=fps)
     clip.write_gif('{}.gif'.format(gif_name), fps=fps)
@@ -271,9 +278,10 @@ def cool_GIF(G1, pos1, G2, pos2, frames=720, rotate_both=True, gif_name="cool_gi
     #Delete the frames
     if(delete_frames):
         
-        filelist = [ f for f in os.listdir("./images/cool")]
+        filelist = [ f for f in os.listdir("./images/frames")]
         for f in filelist:
-            os.remove(os.path.join("./images/cool", f))
+            os.remove(os.path.join("./images/frames", f))
+            
 
 #Helper method for cool_GIF
 #Draws the graphs, merge trees, and distance data plot

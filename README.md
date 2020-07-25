@@ -15,9 +15,6 @@ We provide:
 and some assisting methods, all implemented in Python 3.7.6.
 <!-- Methods for converting different data formats into NetworkX graph objects? -->
 
-<!--## Using this repository
-Should you use the source code and/or data from this site, please cite also the following paper? -->
-
 ## Dependencies
 The programs in this repository require the following Python libraries:
 
@@ -58,13 +55,30 @@ Alternatively, we provide attribute-preserving methods for converting GraphML, G
 - To visualize the **hierarchical clusters** in a condensed distance matrix of pairwise ABDs, see the `draw_dendro` function in [Classify.py](https://github.com/lizliz/SURIEM2020-EmbeddedGraphs/blob/master/Classify.py  "Classify.py script")   
 - To visualize the results of **multi-dimensional scaling** on a distance matrix of pairwise ABDs, see the `mds` function in [Classify.py](https://github.com/lizliz/SURIEM2020-EmbeddedGraphs/blob/master/Classify.py  "Classify.py script")   
 - To recreate the plots in the paper associated with this project, run [Plots.py](https://github.com/lizliz/SURIEM2020-EmbeddedGraphs/blob/master/Plots.py "Plots.py script") (this will take several hours to finish running)
+<!--- To create various graph visualizations, like the ones in /images/visuals, see [Visualization.py](https://github.com/lizliz/SURIEM2020-EmbeddedGraphs/blob/master/Visualization.py "Visualization.py scripts") -->
 
 Details on how to use these and other functions, including explanations of parameters and outputs, are included within respective scripts as comments.  
+  
+Should you use the source code from this repository, please cite the following paper:  
+***Note: The pdf of the paper included in this repository is still in the process of being edited.***
+```
+@unpublished{embedded_graphs_suriem2020,
+author = "Batakci, Levent
+and Branson, Abigail
+and Castillo, Bryan
+and Chambers, Erin W.
+and Munch, Elizabeth
+and Todd, Candace",
+title = "Comparing Embedded Graphs Using Average Branching Distance",
+note = "Unpublished"
+}
+```
+
+Should you use any of the data in this repository or the ShapeMatcher program, please cite their original sources as listed in /images/Image Sources.txt and /data/Data Sources.txt.
 
 ## Credits
-This repository contains work done by the Embedded Graphs group under [Dr. Elizabeth Munch](https://www.linkedin.com/in/elizabethmunch/ "Elizabeth Munch's LinkedIn Profile") and [Dr. Erin Chambers](https://www.linkedin.com/in/erin-wolf-chambers-836a37/ "Erin Wolf Chambers' LinkedIn Profile") during the SURIEM REU hosted by Michigan State in the summer of 2020. 
+This repository contains work done by the Embedded Graphs group under [Dr. Elizabeth Munch](https://www.linkedin.com/in/elizabethmunch/ "Elizabeth Munch's LinkedIn Profile") and [Dr. Erin Chambers](https://www.linkedin.com/in/erin-wolf-chambers-836a37/ "Erin Wolf Chambers' LinkedIn Profile") during the 8-week SURIEM REU hosted by Michigan State in the summer of 2020. 
 Members of this group include [Levent Batakci](https://www.linkedin.com/in/levent-batakci-306a31190/ "Levent Batakci's LinkedIn Profile"), [Abigail Branson](https://www.linkedin.com/in/abigail-branson-466128180/ "Abigail Branson's LinkedIn Profile"), [Bryan Castillo](https://www.linkedin.com/in/bryan-castillo-7a12651ab/ "Bryan Castillo's LinkedIn Profile"), and [Candace Todd](https://www.linkedin.com/in/candace-todd "Candace Todd's LinkedIn Profile").
-<!-- list our institution? linkedin? -->
   
 The funding for the project associated with this repository was supported by the National Science Foundation (NSF Award No. 1852066), the National Security Agency (NSA Grant No. H98230-20-1-0006), and Michigan State University. 
 The work of Erin Chambers was supported in part by NSF grants CCF-1614562, CCF-1907612, and DBI-
@@ -74,5 +88,3 @@ The work of Erin Chambers was supported in part by NSF grants CCF-1614562, CCF-1
 ---
 \*All programs and most of their in-script documentation rely on a basic understand of NetworkX Graph objects. See [NetworkX's tutorial](https://networkx.github.io/documentation/stable/tutorial.html "NetworkX Tutorial").  
 \*\* Only supports XML files as exported from [OpenStreetMap.org](https://www.openstreetmap.org/export#map=15/37.9966/23.7486 "OpenStreetMap.org") (`read_osm`) or the [ShapeMatcher6.0.1beta](http://www.cs.toronto.edu/~dmac/ShapeMatcher) program (`read_sm`)
-<!-- ShapeMatcher -->
-<!-- data sources -->
