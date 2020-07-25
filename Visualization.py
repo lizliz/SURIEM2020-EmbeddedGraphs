@@ -245,6 +245,9 @@ def cool_GIF(G1, pos1, G2, pos2, frames=720, rotate_both=True, gif_name="cool_gi
     r1 = get_bounds_and_radius(pos1)[0]
     r2 = get_bounds_and_radius(pos2)[0]
     
+    #Make sure the gif is 8 seconds long
+    fps = frames/8
+    
     for i in range(0, frames):
         print(i)
         p1 = pos1.copy()
