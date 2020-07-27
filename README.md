@@ -55,12 +55,12 @@ Alternatively, we provide attribute-preserving methods for converting GraphML, G
 - To visualize the **hierarchical clusters** in a condensed distance matrix of pairwise ABDs, see the `draw_dendro` function in [Classify.py](https://github.com/lizliz/SURIEM2020-EmbeddedGraphs/blob/master/Classify.py  "Classify.py script")   
 - To visualize the results of **multi-dimensional scaling** on a distance matrix of pairwise ABDs, see the `mds` function in [Classify.py](https://github.com/lizliz/SURIEM2020-EmbeddedGraphs/blob/master/Classify.py  "Classify.py script")   
 - To recreate the plots in the paper associated with this project, run [Plots.py](https://github.com/lizliz/SURIEM2020-EmbeddedGraphs/blob/master/Plots.py "Plots.py script") (this will take several hours to finish running)
-- To create other various visualizations, like some of the plots seen in our paper, see [Visualization.py](https://github.com/lizliz/SURIEM2020-EmbeddedGraphs/blob/master/Visualization.py "Visualization.py scripts")
+- To create other various visualizations, like some of the plots seen in [our paper](https://github.com/lizliz/SURIEM2020-EmbeddedGraphs/blob/master/Comparing%20Embedded%20Graphs%20Using%20Average%20Branching%20Distance.pdf), see [Visualization.py](https://github.com/lizliz/SURIEM2020-EmbeddedGraphs/blob/master/Visualization.py "Visualization.py scripts")
 
 Details on how to use these and other functions, including explanations of parameters and outputs, are included within respective scripts as comments.  
   
-Should you use the source code from this repository, please cite the following paper:  
-***Note: The pdf of the paper included in this repository is still in the process of being edited.***
+Should you use the source code from this repository, please cite [the following paper](https://github.com/lizliz/SURIEM2020-EmbeddedGraphs/blob/master/Comparing%20Embedded%20Graphs%20Using%20Average%20Branching%20Distance.pdf):  
+
 ```
 @unpublished{embedded_graphs_suriem2020,
 author = "Batakci, Levent
