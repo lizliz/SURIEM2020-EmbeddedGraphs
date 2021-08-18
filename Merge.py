@@ -372,8 +372,17 @@ def merge_tree(G, shift=True):
     for i in range(0, len(nodes)):
         add_node(nodes[i]['name'], G, M)
     
-    reduce(M)
-    if(shift):
-        shift_f(M)
-        
+    #Make the infinity node
+    i = G.number_of_nodes()+1 #safe choice
+    M.add_node(i)
+    M.nodes[i]['value'] = math.inf
+    for n in M.nodes:
+        if n != i and (M.nodes[n]['p'] == n): #These are the nodes which need to be connected to the infinity node
+            M.add_edge(n, i)
+            M.nodes[n]['p']=i #The infinity node is the new parent
+            
+    M.nodes[i]['p'] = i
+    
     return M            
+
+#if __init__ == "__main___";        
