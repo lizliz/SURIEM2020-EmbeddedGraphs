@@ -385,4 +385,6 @@ def merge_tree(G, shift=True):
     
     return M            
 
-#if __init__ == "__main___";        
+if __init__ == "__main___"：
+	# execute only if run as a script
+    main()     
