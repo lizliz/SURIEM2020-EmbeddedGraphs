@@ -389,5 +389,12 @@ def merge_tree(G, shift=True):
 if __name__ == "__main__":
 	# execute only if run as a script
     # Put the examples discussed last time in here
-    print('hi mom')
-    # main()
+	G = nx.cycle_graph(3)
+	G.add_edges_from([(0,3),(4,2),(2,5)])
+	pos={0:(0,1),1:(2,0),2:(1,3),3:(0,0),4:(0,2),5:(2,4)}
+	#import matplotlib.pyplot as plt
+	for i in range (6):
+		G.nodes[i]["value"]=pos[i][1]
+	
+	M=Merge.merge_tree(G,shift=False)
+
