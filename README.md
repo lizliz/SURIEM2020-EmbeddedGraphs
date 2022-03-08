@@ -8,7 +8,7 @@ We aim to do so by comparing corresponding merge trees of embedded graphs repres
   
 We provide:
 - A merge tree construction algorithm
-- An implementation of a merge tree comparison algorithm suggested by [Beketavey et al.](https://link.springer.com/chapter/10.1007%2F978-3-319-04099-8_10 "Measuring the Distance Between Merge Trees"), which we call *branching distance*
+- An implementation of a merge tree comparison algorithm suggested by [Beketayev et al.](https://link.springer.com/chapter/10.1007%2F978-3-319-04099-8_10 "Measuring the Distance Between Merge Trees"), which we call *branching distance*
 - A graph comparison algorithm for a new distance function called *average branching distance*
 - Methods for visualizing the results of graph comparisons  
   
