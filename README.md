@@ -59,7 +59,7 @@ Alternatively, we provide attribute-preserving methods for converting GraphML, G
 
 Details on how to use these and other functions, including explanations of parameters and outputs, are included within respective scripts as comments.  
   
-Should you use the source code from this repository, please cite [the following paper](https://github.com/lizliz/SURIEM2020-EmbeddedGraphs/blob/master/Comparing%20Embedded%20Graphs%20Using%20Average%20Branching%20Distance.pdf):  
+Should you use the source code from this repository, please cite [the following paper](https://doi.org/10.48550/arXiv.2210.10181):  
 
 ```
 @unpublished{embedded_graphs_suriem2020,
